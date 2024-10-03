@@ -278,7 +278,7 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 2:
   st.write("記入を終えたファイルをアップロードしてください。")
 
   st.session_state["kibou_file"] = st.file_uploader("シフト希望表をアップロード", type=["xlsx"],key = "希望")
-  if st.session_state["kibou_file"] is not None:
+  if "kibou_file" in st.session_state and st.session_state["kibou_file"] is not None:
     st.session_state["book1"] = load_workbook(st.session_state["kibou_file"])
 
     for i in band_list:
