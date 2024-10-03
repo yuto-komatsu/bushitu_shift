@@ -71,6 +71,9 @@ border_allthin = Border(top=Side(style='thin', color='000000'),
 
 band_list = {}
 week = {}
+
+kibou = {}
+kibou_time = {}
 st.session_state["page_control"] = 0
 
 
@@ -207,8 +210,6 @@ def input_date():
   )
 
 
-
-
 # Webアプリのタイトル
 st.title('シフトスケジュール最適化')
 
@@ -267,26 +268,43 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 1:
 if "page_control" in st.session_state and st.session_state["page_control"] == 2:
   st.header('３．練習希望日時の入力')
   input_date()
+
+  #定数データ作成
+  I = [i for i in range(1, band_sum + 1)]
+  D = [i for i in range(1, day_sum + 1)]
+  T = [i for i in range(1, 8)]
+
+
   st.write("記入を終えたファイルをアップロードしてください。")
 
   st.session_state["kibou_file"] = st.file_uploader("シフト希望表をアップロード", type=["xlsx"],key = "希望")
   if st.session_state["kibou_file"] is not None:
-    change_page()
-    st.experimental_rerun() 
+    st.session_state["book1"] = load_workbook(st.session_state["kibou_file"])
+
+    for i in band_list:
+    sheet_band = st.session_state["book1"][band_list[i]]
+    for d in D:
+        values = [sheet_band.cell(row=2 + t, column=2 + d).value for t in T]
+        kibou[i, d] = int(any(v is not None and v > 0 for v in values))
+        for t in T:
+            kibou_time[i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
+    st.write(kibou_time)
+    
+    
 
 
 
-#ページ４：最適化の実行
-if "page_control" in st.session_state and st.session_state["page_control"] == 3:
-  st.write('４．最適化の実行')
-  st.write(st.sessin_state["start_day"])
-  try:
-        kibou_file = st.session_state['kibou_file']
-        book = load_workbook(kibou_file)
-        st.success('ファイルが正常に読み込まれました。')
-        # 最適化の処理をここに追加
-  except Exception as e:
-        st.error(f'ファイルの読み込みに失敗しました: {e}')
+# #ページ４：最適化の実行
+# if "page_control" in st.session_state and st.session_state["page_control"] == 3:
+#   st.write('４．最適化の実行')
+#   st.write(st.sessin_state["start_day"])
+#   try:
+#         kibou_file = st.session_state['kibou_file']
+#         book = load_workbook(kibou_file)
+#         st.success('ファイルが正常に読み込まれました。')
+#         # 最適化の処理をここに追加
+#   except Exception as e:
+#         st.error(f'ファイルの読み込みに失敗しました: {e}')
 #   st.session_state["kibou_file2"] = st.file_uploader("シフト希望表をアップロード", type=["xlsx"],key = "望")
 
 #         # セッションからファイルを読み込む
