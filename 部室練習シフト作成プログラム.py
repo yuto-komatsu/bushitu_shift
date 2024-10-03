@@ -284,7 +284,7 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
         book = load_workbook(kibou_file)
         st.success('ファイルが正常に読み込まれました。')
         # 最適化の処理をここに追加
-    except Exception as e:
+  except Exception as e:
         st.error(f'ファイルの読み込みに失敗しました: {e}')
 #   st.session_state["kibou_file2"] = st.file_uploader("シフト希望表をアップロード", type=["xlsx"],key = "望")
 
