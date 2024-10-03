@@ -272,12 +272,20 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 2:
   st.session_state["kibou_file"] = st.file_uploader("シフト希望表をアップロード", type=["xlsx"],key = "希望")
   if st.session_state["kibou_file"] is not None:
     change_page()
+    st.experimental_rerun() 
 
 
 
 #ページ４：最適化の実行
 if "page_control" in st.session_state and st.session_state["page_control"] == 3:
   st.write('４．最適化の実行')
+  try:
+        kibou_file = st.session_state['kibou_file']
+        book = load_workbook(kibou_file)
+        st.success('ファイルが正常に読み込まれました。')
+        # 最適化の処理をここに追加
+    except Exception as e:
+        st.error(f'ファイルの読み込みに失敗しました: {e}')
 #   st.session_state["kibou_file2"] = st.file_uploader("シフト希望表をアップロード", type=["xlsx"],key = "望")
 
 #         # セッションからファイルを読み込む
