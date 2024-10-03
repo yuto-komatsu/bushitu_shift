@@ -282,12 +282,12 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 2:
     st.session_state["book1"] = load_workbook(st.session_state["kibou_file"])
 
     for i in band_list:
-    sheet_band = st.session_state["book1"][band_list[i]]
+      sheet_band = st.session_state["book1"][band_list[i]]
     for d in D:
-        values = [sheet_band.cell(row=2 + t, column=2 + d).value for t in T]
-        kibou[i, d] = int(any(v is not None and v > 0 for v in values))
-        for t in T:
-            kibou_time[i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
+      values = [sheet_band.cell(row=2 + t, column=2 + d).value for t in T]
+      kibou[i, d] = int(any(v is not None and v > 0 for v in values))
+      for t in T:
+        kibou_time[i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
     st.write(kibou_time)
     
     
