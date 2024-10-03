@@ -279,6 +279,7 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 2:
 #ページ４：最適化の実行
 if "page_control" in st.session_state and st.session_state["page_control"] == 3:
   st.write('４．最適化の実行')
+  st.write(st.sessin_state["start_day"])
   try:
         kibou_file = st.session_state['kibou_file']
         book = load_workbook(kibou_file)
