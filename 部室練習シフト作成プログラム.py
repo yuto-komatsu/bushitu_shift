@@ -297,7 +297,7 @@ with tab3:
           for t in T:
             st.session_state["kibou_time"][i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
       st.write(st.session_state["kibou_time"])
-    elif st.session_state["input_comp"] == False:
+  elif st.session_state["input_comp"] == False:
     st.write("１で参加バンドを読み込ませてください。")
     
     
