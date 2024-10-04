@@ -293,9 +293,12 @@ with tab3:
         st.session_state["sheet_band"] = st.session_state["book1"][band_list[i]]
         for d in D:
           for t in T:
-            st.write(st.session_state["sheet_band"].cell(row=2 + t, column=2 + d).value)
-            # st.session_state["kibou_time"][i, d, t] = st.session_state["sheet_band"].cell(row=2 + t, column=2 + d).value
-      # st.write(st.session_state["kibou_time"])
+            value = st.session_state["sheet_band"].cell(row=2 + t, column=2 + d).value
+            if value == None:
+              value = 0
+            
+            st.session_state["kibou_time"][i, d, t] = value
+      st.write(st.session_state["kibou_time"])
   elif st.session_state["input_comp"] == False:
     st.write("１で参加バンドを読み込ませてください。")
     
