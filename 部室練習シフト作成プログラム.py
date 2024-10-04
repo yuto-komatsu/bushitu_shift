@@ -300,7 +300,7 @@ with tab3:
                     value = 0
 
                 # セッション状態に保存
-                k[i, d, t] = value
+                k[(i, d, t)] = value
       # st.session_state["kibou_time"] = k      
       # st.write(st.session_state["kibou_time"])
       st.write(k)
