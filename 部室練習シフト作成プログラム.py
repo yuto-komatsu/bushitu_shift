@@ -291,13 +291,13 @@ with tab3:
 
       for i in band_list:
         sheet_band = st.session_state["book1"][band_list[i]]
-      for d in D:
-        values = [sheet_band.cell(row=2 + t, column=2 + d).value for t in T]
-        kibou[i, d] = int(any(v is not None and v > 0 for v in values))
-        for t in T:
-          st.session_state["kibou_time"][i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
+        for d in D:
+          values = [sheet_band.cell(row=2 + t, column=2 + d).value for t in T]
+          kibou[i, d] = int(any(v is not None and v > 0 for v in values))
+          for t in T:
+            st.session_state["kibou_time"][i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
       st.write(st.session_state["kibou_time"])
-  elif st.session_state["input_comp"] == False:
+    elif st.session_state["input_comp"] == False:
     st.write("１で参加バンドを読み込ませてください。")
     
     
