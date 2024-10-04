@@ -262,7 +262,7 @@ with tab2:
 
 #ページ３：希望日入力
 with tab3:
-  if st.session_state["input_comp"]:
+  if st.session_state["input_comp"] == True:
     st.header('３．練習希望日時の入力')
     input_date()
 
