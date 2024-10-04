@@ -68,6 +68,18 @@ border_allthin = Border(top=Side(style='thin', color='000000'),
                 right=Side(style='thin', color='000000')
 )
 
+# セッション状態を初期化
+if 'uploaded_file1' not in st.session_state:
+    st.session_state['uploaded_file1'] = None
+if 'input_comp' not in st.session_state:
+    st.session_state['input_comp'] = False
+if 'kibou_file' not in st.session_state:
+    st.session_state['kibou_file'] = None
+if 'dates_list' not in st.session_state:
+    st.session_state['dates_list'] = []
+if 'kibou_time' not in st.session_state:
+    st.session_state['kibou_time'] = {}
+
 # Webアプリのタイトル
 st.title('シフトスケジュール最適化')
 
