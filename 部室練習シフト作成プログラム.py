@@ -267,7 +267,7 @@ with tab2:
 
     st.session_state["input_comp"] = st.button("入力完了")
   else:
-    st.write("参加バンドを読み込ませてください。")
+    st.subheader("１で参加バンドを読み込ませてください。")
 
 
 
@@ -297,6 +297,8 @@ with tab3:
         for t in T:
           st.session_state["kibou_time"][i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
       st.write(st.session_state["kibou_time"])
+  else:
+    st.header("１で参加バンドを読み込ませてください。")
     
     
 
@@ -316,6 +318,8 @@ with tab4:
         for t in T:
           st.session_state["kibou_time"][i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
     st.write(st.session_state["kibou_time"])
+  else:
+    st.header("１で参加バンドを読み込ませてください。")
 
 
 
