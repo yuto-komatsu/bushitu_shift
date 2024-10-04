@@ -265,7 +265,7 @@ with tab2:
       kinshi_select()
     week_judge(st.session_state["start_day"], vacation)
 
-    st.session_state["input_comp"] = st.button("入力完了")
+    st.session_state["input_comp"] = st.toggle("入力完了")
   else:
     st.subheader("１で参加バンドを読み込ませてください。")
 
