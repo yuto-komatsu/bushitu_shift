@@ -68,6 +68,8 @@ border_allthin = Border(top=Side(style='thin', color='000000'),
                 right=Side(style='thin', color='000000')
 )
 
+# Webアプリのタイトル
+st.title('シフトスケジュール最適化')
 
 tab1, tab2, tab3, tab4 = st.tabs(["参加バンドの入力", "ライブ概要の入力", "シフト希望の入力", "実行と結果"])
 
@@ -207,9 +209,6 @@ def input_date():
       mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   )
 
-
-# Webアプリのタイトル
-st.title('シフトスケジュール最適化')
 
 
 #ページ１：参加バンド登録
