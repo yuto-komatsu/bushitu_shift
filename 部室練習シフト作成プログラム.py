@@ -288,7 +288,8 @@ with tab3:
     st.session_state["kibou_file"] = st.file_uploader("シフト希望表をアップロード")
     if st.session_state["kibou_file"]  is not None:
       st.session_state["book1"] = load_workbook(st.session_state["kibou_file"])
-      k = {}
+      
+      st.session_state["kinshi"] = {int(i), int(d), int(t): 0 for i in I for d in D for t in T}
       for i in I:
         st.session_state["sheet_band"] = st.session_state["book1"][band_list[i]]
         for d in D:
