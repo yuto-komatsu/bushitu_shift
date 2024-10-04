@@ -298,7 +298,7 @@ with tab3:
           st.session_state["kibou_time"][i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
       st.write(st.session_state["kibou_time"])
   else:
-    st.header("１で参加バンドを読み込ませてください。")
+    st.write("１で参加バンドを読み込ませてください。")
     
     
 
@@ -306,7 +306,6 @@ with tab3:
 
 #ページ４：最適化の実行
 with tab4:
-  st.write('４．最適化の実行')
   if st.session_state["kibou_file"] is not None:
     st.session_state["book1"] = load_workbook(st.session_state["kibou_file"])
     
@@ -319,7 +318,7 @@ with tab4:
           st.session_state["kibou_time"][i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
     st.write(st.session_state["kibou_time"])
   else:
-    st.header("１で参加バンドを読み込ませてください。")
+    st.write("１で参加バンドを読み込ませてください。")
 
 
 
