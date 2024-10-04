@@ -257,6 +257,8 @@ with tab2:
     week_judge(st.session_state["start_day"], vacation)
 
     st.session_state["input_comp"] = st.button("入力完了")
+  else:
+    st.write("参加バンドを読み込ませてください。")
 
 
 
