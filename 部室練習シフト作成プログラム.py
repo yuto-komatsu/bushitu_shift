@@ -289,7 +289,7 @@ with tab3:
     if st.session_state["kibou_file"]  is not None:
       st.session_state["book1"] = load_workbook(st.session_state["kibou_file"])
 
-      for i in band_list:
+      for i in I:
         sheet_band = st.session_state["book1"][band_list[i]]
         for d in D:
           values = [sheet_band.cell(row=2 + t, column=2 + d).value for t in T]
@@ -306,20 +306,7 @@ with tab3:
 
 #ページ４：最適化の実行
 with tab4:
-  if st.session_state["kibou_file"] is not None:
-    st.session_state["book1"] = load_workbook(st.session_state["kibou_file"])
-    
-    for i in I:
-      st.write(i)
-      sheet_band = st.session_state["book1"][band_list[str(i)]]
-      for d in D:
-        values = [sheet_band.cell(row=2 + t, column=2 + d).value for t in T]
-        kibou[i, d] = int(any(v is not None and v > 0 for v in values))
-        for t in T:
-          st.session_state["kibou_time"][i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
-    st.write(st.session_state["kibou_time"])
-  else:
-    st.write("１で参加バンドを読み込ませてください。")
+  st.write()
 
 
 
