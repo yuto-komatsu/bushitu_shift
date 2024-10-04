@@ -288,7 +288,7 @@ with tab3:
     st.session_state["kibou_file"] = st.file_uploader("シフト希望表をアップロード")
     if st.session_state["kibou_file"]  is not None:
       st.session_state["book1"] = load_workbook(st.session_state["kibou_file"])
-
+      k = {}
       for i in I:
         st.session_state["sheet_band"] = st.session_state["book1"][band_list[i]]
         for d in D:
@@ -297,9 +297,11 @@ with tab3:
             if value == None:
               value = 0
 
-            st.write(i,d,t)
+            k[i,d,t] = value
+            
             # st.session_state["kibou_time"][i, d, t] = value
       # st.write(st.session_state["kibou_time"])
+      st.write(k)
   elif st.session_state["input_comp"] == False:
     st.write("１で参加バンドを読み込ませてください。")
     
