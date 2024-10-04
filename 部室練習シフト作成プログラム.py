@@ -289,20 +289,18 @@ with tab3:
     if st.session_state["kibou_file"]  is not None:
       st.session_state["book1"] = load_workbook(st.session_state["kibou_file"])
       
-      st.session_state["k"] = {(int(i), int(d), int(t)):0 for i in I for d in D for t in T}
-      st.write(st.session_state["k"])
-      # for i in I:
-      #   st.session_state["sheet_band"] = st.session_state["book1"][band_list[i]]
-      #   for d in D:
-      #     for t in T:
-      #       value = st.session_state["sheet_band"].cell(row=2 + t, column=2 + d).value
-      #       if value == None:
-      #         value = 0
 
-      #       st.session_state["k"][i,d,t] = value
-            
-            # st.session_state["kibou_time"][i, d, t] = value
-      # st.write(st.session_state["kibou_time"])
+      for i in I:
+        sheet_band = st.session_state["book1"][band_list[i]]  # シートを取得
+        for d in D:
+            for t in T:
+                value = sheet_band.cell(row=2 + t, column=2 + d).value
+                if value is None:
+                    value = 0
+
+                # セッション状態に保存
+                st.session_state["kibou_time"][i, d, t] = value
+      st.write(st.session_state["kibou_time"])
       
   elif st.session_state["input_comp"] == False:
     st.write("１で参加バンドを読み込ませてください。")
