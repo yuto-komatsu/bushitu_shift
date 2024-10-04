@@ -309,9 +309,9 @@ with tab4:
   if st.session_state["kibou_file"] is not None:
     st.session_state["book1"] = load_workbook(st.session_state["kibou_file"])
     
-    for i in range(1, band_sum+1):
+    for i in I:
       st.write(i)
-      sheet_band = st.session_state["book1"][band_list[i]]
+      sheet_band = st.session_state["book1"][band_list[str(i)]]
       for d in D:
         values = [sheet_band.cell(row=2 + t, column=2 + d).value for t in T]
         kibou[i, d] = int(any(v is not None and v > 0 for v in values))
