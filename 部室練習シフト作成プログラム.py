@@ -310,13 +310,14 @@ with tab4:
     st.session_state["book1"] = load_workbook(st.session_state["kibou_file"])
     
     for i in band_list:
-      sheet_band = st.session_state["book1"][band_list[i]]
-      for d in D:
-        values = [sheet_band.cell(row=2 + t, column=2 + d).value for t in T]
-        kibou[i, d] = int(any(v is not None and v > 0 for v in values))
-        for t in T:
-          st.session_state["kibou_time"][i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
-    st.write(st.session_state["kibou_time"])
+      st.write(i)
+    #   sheet_band = st.session_state["book1"][band_list[i]]
+    #   for d in D:
+    #     values = [sheet_band.cell(row=2 + t, column=2 + d).value for t in T]
+    #     kibou[i, d] = int(any(v is not None and v > 0 for v in values))
+    #     for t in T:
+    #       st.session_state["kibou_time"][i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
+    # st.write(st.session_state["kibou_time"])
   else:
     st.write("１で参加バンドを読み込ませてください。")
 
