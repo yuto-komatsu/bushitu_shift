@@ -288,7 +288,8 @@ with tab3:
     st.session_state["kibou_file"] = st.file_uploader("シフト希望表をアップロード")
     if st.session_state["kibou_file"]  is not None:
       st.session_state["book1"] = load_workbook(st.session_state["kibou_file"])
-      
+
+      k = {}
 
       for i in I:
         sheet_band = st.session_state["book1"][band_list[i]]  # シートを取得
@@ -299,7 +300,8 @@ with tab3:
                     value = 0
 
                 # セッション状態に保存
-                st.session_state["kibou_time"][i, d, t] = value
+                k[i, d, t] = value
+      st.session_state["kibou_time"] = k      
       st.write(st.session_state["kibou_time"])
       
   elif st.session_state["input_comp"] == False:
