@@ -289,7 +289,7 @@ with tab3:
     if st.session_state["kibou_file"]  is not None:
       st.session_state["book1"] = load_workbook(st.session_state["kibou_file"])
       
-      st.session_state["k"] = {(int(i), int(d), int(t))　: 0 for i in I for d in D for t in T}
+      st.session_state["k"] = {(int(i), int(d), int(t)):0 for i in I for d in D for t in T}
       st.write(st.session_state["k"])
       # for i in I:
       #   st.session_state["sheet_band"] = st.session_state["book1"][band_list[i]]
