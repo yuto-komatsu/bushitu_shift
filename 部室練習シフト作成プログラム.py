@@ -83,8 +83,6 @@ if 'kibou_time' not in st.session_state:
 # Webアプリのタイトル
 st.title('シフトスケジュール最適化')
 
-tab1, tab2, tab3, tab4 = st.tabs(["参加バンドの入力", "ライブ概要の入力", "シフト希望の入力", "実行と結果"])
-
 
 band_list = {}
 week = {}
@@ -221,7 +219,7 @@ def input_date():
       mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   )
 
-
+tab1, tab2, tab3, tab4 = st.tabs(["参加バンドの入力", "ライブ概要の入力", "シフト希望の入力", "実行と結果"])
 
 #ページ１：参加バンド登録
 with tab1:
