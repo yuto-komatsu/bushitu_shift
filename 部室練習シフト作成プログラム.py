@@ -272,6 +272,7 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 2:
   I = [i for i in range(1, band_sum + 1)]
   D = [i for i in range(1, day_sum + 1)]
   T = [i for i in range(1, 8)]
+  st.write(I, D, T)
 
 
   st.write("記入を終えたファイルをアップロードしてください。")
