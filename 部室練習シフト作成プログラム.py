@@ -7,7 +7,7 @@ from io import BytesIO
 import jpholiday
 from openpyxl.styles import Border, Side, Font
 from openpyxl.styles.alignment import Alignment
-from mip import Model, xsum, minimize, BINARY, OptimizationStatus
+# from mip import Model, xsum, minimize, BINARY, OptimizationStatus
 
 border_topthick = Border(top=Side(style='thick', color='000000'),
                 left=Side(style='thick', color='000000'),
@@ -214,7 +214,7 @@ def input_date():
 
 def saitekika():
   # 最適化モデルの作成
-  model = Model('PracticeShiftTime')
+  # model = Model('PracticeShiftTime')
 
   last_week = {}
   for i in st.session_state["I"]:
