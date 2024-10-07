@@ -72,8 +72,7 @@ border_allthin = Border(top=Side(style='thin', color='000000'),
 band_list = {}
 week = {}
 
-kibou = {}
-kibou_time = {}
+
 st.session_state["page_control"] = 0
 
 
@@ -285,7 +284,8 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 2:
 if "page_control" in st.session_state and st.session_state["page_control"] == 3:
   st.header('４．最適化の実行')
   book1 = load_workbook(st.session_state["kibou_file"])
-  st.write(I, D, T)
+  kibou = {}
+  kibou_time = {}
   for i in band_list:
     sheet_band = book1[band_list[i]]
     for d in D:
