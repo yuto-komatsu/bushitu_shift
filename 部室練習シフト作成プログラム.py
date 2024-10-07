@@ -1,4 +1,3 @@
-from mip import Model, xsum, minimize, BINARY, OptimizationStatus
 import streamlit as st
 import datetime
 from datetime import date
@@ -8,6 +7,7 @@ from io import BytesIO
 import jpholiday
 from openpyxl.styles import Border, Side, Font
 from openpyxl.styles.alignment import Alignment
+from mip import Model, xsum, minimize, BINARY, OptimizationStatus
 
 border_topthick = Border(top=Side(style='thick', color='000000'),
                 left=Side(style='thick', color='000000'),
