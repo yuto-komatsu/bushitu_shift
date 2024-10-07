@@ -272,7 +272,7 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 2:
   I = [i for i in range(1, band_sum + 1)]
   D = [i for i in range(1, day_sum + 1)]
   T = [i for i in range(1, 8)]
-  st.write(I, D, T)
+
 
 
   st.write("記入を終えたファイルをアップロードしてください。")
@@ -285,7 +285,7 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 2:
 if "page_control" in st.session_state and st.session_state["page_control"] == 3:
   st.header('４．最適化の実行')
   book1 = load_workbook(st.session_state["kibou_file"])
-
+  st.write(I, D, T)
   for i in band_list:
     sheet_band = book1[band_list[i]]
     for d in D:
