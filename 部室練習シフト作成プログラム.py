@@ -209,6 +209,19 @@ def input_date():
   )
 
 
+
+
+def saitekika():
+  # 最適化モデルの作成
+  model = Model('PracticeShiftTime')
+
+  last_week = {}
+  for i in st.session_state["I"]:
+    last_week[i] = int(any(kibou_time[i, d, t] for d in range(day_sum - 6, day_sum + 1) for t in st.session_state["T"]))
+  st.write(last_week)
+
+
+
 # Webアプリのタイトル
 st.title('シフトスケジュール最適化')
 
@@ -268,9 +281,9 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 2:
   input_date()
 
   #定数データ作成
-  I = [i for i in range(1, band_sum + 1)]
-  D = [i for i in range(1, day_sum + 1)]
-  T = [i for i in range(1, 8)]
+  st.session_state["I"] = [i for i in range(1, band_sum + 1)]
+  st.session_state["D"] = [i for i in range(1, day_sum + 1)]
+  st.session_state["T"] = [i for i in range(1, 8)]
 
 
 
@@ -286,10 +299,10 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
   book1 = load_workbook(st.session_state["kibou_file"])
   
 
-  for i in I:
+  for i in st.session_state["I"]:
       sheet_band = book1[band_list[i]]  # シートを取得
-      for d in D:
-          for t in T:
+      for d in st.session_state["D"]:
+          for t in st.session_state["T"]:
               value = sheet_band.cell(row=2 + t, column=2 + d).value
               if value is None:
                   value = 0
@@ -300,7 +313,12 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
 
   if st.session_state["kibou_time"] is not None:
     st.write("希望の読み込みに成功しました。")
-
+    st.write("実行ボタンを押してシフトを作成します。")
+    if st.button("実行ボタン"):
+      saitekika()
+      
+  else:
+    st.write("希望の読み込みに失敗しました。もう一度ファイルを読み込ませてください。")
 
 
 
