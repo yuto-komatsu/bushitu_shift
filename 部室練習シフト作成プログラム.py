@@ -276,18 +276,23 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 2:
 
   st.write("記入を終えたファイルをアップロードしてください。")
 
-  kibou_file = st.file_uploader("シフト希望表をアップロード")
-  if kibou_file is not None:
-    st.session_state["book1"] = load_workbook(kibou_file)
+  st.session_state["kibou_file"] = st.file_uploader(label="シフト希望表をアップロード", type=["xlsx"])
+  
+  if st.session_state["kibou_file"] is not None:
+    change_page()
 
-    for i in band_list:
-      sheet_band = st.session_state["book1"][band_list[i]]
+if "page_control" in st.session_state and st.session_state["page_control"] == 3:
+  st.header('４．最適化の実行')
+  book1 = load_workbook(kibou_file)
+
+  for i in band_list:
+    sheet_band = book1[band_list[i]]
     for d in D:
       values = [sheet_band.cell(row=2 + t, column=2 + d).value for t in T]
       kibou[i, d] = int(any(v is not None and v > 0 for v in values))
       for t in T:
         kibou_time[i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
-    st.write(kibou_time)
+  st.write(kibou_time)
 
 
 
