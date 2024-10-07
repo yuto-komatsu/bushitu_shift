@@ -68,20 +68,8 @@ border_allthin = Border(top=Side(style='thin', color='000000'),
                 right=Side(style='thin', color='000000')
 )
 
-# セッション状態を初期化
-if 'uploaded_file1' not in st.session_state:
-    st.session_state['uploaded_file1'] = None
-if 'input_comp' not in st.session_state:
-    st.session_state['input_comp'] = False
-if 'kibou_file' not in st.session_state:
-    st.session_state['kibou_file'] = None
-if 'dates_list' not in st.session_state:
-    st.session_state['dates_list'] = []
-if 'kibou_time' not in st.session_state:
-    st.session_state['kibou_time'] = {}
 
-# Webアプリのタイトル
-st.title('シフトスケジュール最適化')
+tab1, tab2, tab3, tab4 = st.tabs(["参加バンドの入力", "ライブ概要の入力", "シフト希望の入力", "実行と結果"])
 
 
 band_list = {}
@@ -219,7 +207,10 @@ def input_date():
       mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   )
 
-tab1, tab2, tab3, tab4 = st.tabs(["参加バンドの入力", "ライブ概要の入力", "シフト希望の入力", "実行と結果"])
+
+# Webアプリのタイトル
+st.title('シフトスケジュール最適化')
+
 
 #ページ１：参加バンド登録
 with tab1:
@@ -265,9 +256,9 @@ with tab2:
       kinshi_select()
     week_judge(st.session_state["start_day"], vacation)
 
-    st.session_state["input_comp"] = st.toggle("入力完了")
+    st.session_state["input_comp"] = st.button("入力完了")
   else:
-    st.subheader("１で参加バンドを読み込ませてください。")
+    st.write("参加バンドを読み込ませてください。")
 
 
 
@@ -286,36 +277,40 @@ with tab3:
     st.write("記入を終えたファイルをアップロードしてください。")
 
     st.session_state["kibou_file"] = st.file_uploader("シフト希望表をアップロード")
-    if st.session_state["kibou_file"]  is not None:
+    if kibou_file is not None:
       st.session_state["book1"] = load_workbook(st.session_state["kibou_file"])
 
-      k = {}
+      for i in band_list:
+        sheet_band = st.session_state["book1"][band_list[i]]
+      for d in D:
+        values = [sheet_band.cell(row=2 + t, column=2 + d).value for t in T]
+        kibou[i, d] = int(any(v is not None and v > 0 for v in values))
+        for t in T:
+          st.session_state["kibou_time"][i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
+      st.write(st.session_state["kibou_time"])
 
-      for i in I:
-        sheet_band = st.session_state["book1"][band_list[i]]  # シートを取得
-        for d in D:
-            for t in T:
-                value = sheet_band.cell(row=2 + t, column=2 + d).value
-                if value is None:
-                    value = 0
 
-                # セッション状態に保存
-                k[i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
-      # st.session_state["kibou_time"] = k      
-      # st.write(st.session_state["kibou_time"])
-      st.write(k)
-      
-      
-  elif st.session_state["input_comp"] == False:
-    st.write("１で参加バンドを読み込ませてください。")
-    
-    
 
 
 
 #ページ４：最適化の実行
 with tab4:
-  st.write()
+  st.write('４．最適化の実行')
+  if st.session_state["kibou_file"] is not None:
+    st.session_state["book1"] = load_workbook(st.session_state["kibou_file"])
+
+    # 各バンドのシフト希望の読み込み
+    kibou = {}
+    kibou_time = {}
+    for i in band_list:
+        sheet_band = book[band_list[i]]
+        for d in D:
+            values = [sheet_band.cell(row=2 + t, column=2 + d).value for t in T]
+            kibou[i, d] = int(any(v is not None and v > 0 for v in values))
+            for t in T:
+                kibou_time[i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
+    
+    st.write(kibou_time)
 
 
 
