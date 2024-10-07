@@ -284,16 +284,29 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 2:
 if "page_control" in st.session_state and st.session_state["page_control"] == 3:
   st.header('４．最適化の実行')
   book1 = load_workbook(st.session_state["kibou_file"])
-  kibou = {}
-  kibou_time = {}
-  for i in band_list:
-    sheet_band = book1[band_list[i]]
-    for d in D:
-      values = [sheet_band.cell(row=2 + t, column=2 + d).value for t in T]
-      kibou[i, d] = int(any(v is not None and v > 0 for v in values))
-      for t in T:
-        kibou_time[i, d, t] = int(sheet_band.cell(row=2 + t, column=2 + d).value == 1)
-  st.write(kibou_time)
+  
+  kibou_time_temp = {}  # 一時的な辞書を作成
+  k_temp = {}  # 一時的な辞書を作成
+
+  for i in I:
+      sheet_band = book1[band_list[i]]  # シートを取得
+      for d in D:
+          for t in T:
+              value = sheet_band.cell(row=2 + t, column=2 + d).value
+              if value is None:
+                  value = 0
+
+              # キーを文字列に変換して保存
+              key_str = f"{i}_{d}_{t}"
+              k_temp[key_str] = value
+              kibou_time_temp[key_str] = value
+
+  # セッション状態に保存（シリアライズ可能なデータのみを保存）
+  st.session_state["k"] = k_temp
+  st.session_state["kibou_time"] = kibou_time_temp
+
+  # セッション状態のデータを表示
+  st.write(st.session_state["kibou_time"])
 
 
 
