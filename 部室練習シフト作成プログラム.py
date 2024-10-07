@@ -1,5 +1,4 @@
 from mip import Model, xsum, minimize, BINARY, OptimizationStatus
-
 import streamlit as st
 import datetime
 from datetime import date
