@@ -283,7 +283,7 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 2:
 
 if "page_control" in st.session_state and st.session_state["page_control"] == 3:
   st.header('４．最適化の実行')
-  book1 = load_workbook(kibou_file)
+  book1 = load_workbook(st.session_state["kibou_file"])
 
   for i in band_list:
     sheet_band = book1[band_list[i]]
