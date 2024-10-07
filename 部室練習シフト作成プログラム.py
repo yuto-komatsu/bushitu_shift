@@ -298,12 +298,7 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
 
               # キーを文字列に変換して保存
               key_str = f"{i}_{d}_{t}"
-              k_temp[key_str] = value
-              kibou_time_temp[key_str] = value
-
-  # セッション状態に保存（シリアライズ可能なデータのみを保存）
-  st.session_state["k"] = k_temp
-  st.session_state["kibou_time"] = kibou_time_temp
+              st.session_state["kibou_time"][key_str] = value
 
   # セッション状態のデータを表示
   st.write(st.session_state["kibou_time"])
