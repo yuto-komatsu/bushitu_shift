@@ -285,8 +285,6 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
   st.header('４．最適化の実行')
   book1 = load_workbook(st.session_state["kibou_file"])
   
-  kibou_time_temp = {}  # 一時的な辞書を作成
-  k_temp = {}  # 一時的な辞書を作成
 
   for i in I:
       sheet_band = book1[band_list[i]]  # シートを取得
