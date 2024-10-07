@@ -298,8 +298,8 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
               key_str = f"{i}_{d}_{t}"
               st.session_state["kibou_time"][key_str] = value
 
-  # セッション状態のデータを表示
-  st.write(st.session_state["kibou_time"])
+  if st.session_state["kibou_time"] is not None:
+    st.write("希望の読み込みに成功しました。")
 
 
 
