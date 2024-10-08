@@ -235,16 +235,13 @@ def saitekika():
                   model += y[i, d, t] == 0
 
   # 部室利用禁止日に練習を割り当てない
-  for d in st.session_state["d"]:
+  for d in st.session_state["D"]:
       for k in st.session_state["kinshi"]:
-          if d == st.session_state["kinshi"][k][0]:
-              for t in st.session_state["T"]:
-                  if st.session_state["kinshi"][k][1] == t:
-                      for i in st.session_state["I"]:
-                          model += y[i, d, t] == 0
-              if st.session_state["kinshi"][k][1] == 0:
-                  for i in st.session_state["I"]:
-                      model += xsum(y[i, d, t] for t in st.session_state["T"]) == 0
+          if d == st.session_state["kinshi"][k]:
+            for i in st.session_state["I"]:
+              for t in T:
+                model += y[i, d, t] == 0
+
 
   # 最終週に希望がある場合、必ず練習を入れる
   for i in st.session_state["I"]:
