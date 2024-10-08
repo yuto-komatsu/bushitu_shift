@@ -217,6 +217,7 @@ def saitekika():
   model = Model('PracticeShiftTime')
   # 決定変数の作成
   y = {(i, d, t): model.add_var(var_type='B') for i in st.session_state["I"] for d in st.session_state["D"] for t in st.session_state["T"]}
+  st.session_state["y2"] = {(i, d, t): model.add_var(var_type='B') for i in st.session_state["I"] for d in st.session_state["D"] for t in st.session_state["T"]}
   s = {i: model.add_var(var_type='B') for i in st.session_state["I"]}
 
   # ハード制約の追加
@@ -268,6 +269,7 @@ def saitekika():
 
   if status == OptimizationStatus.OPTIMAL:
       st.write('最適値 =', model.objective_value)
+      st.session_state["y2"] = y
       result()
 
 
@@ -279,7 +281,7 @@ def result():
   for i in band_list:
     for d in range(1, day_sum + 1):
         for t in range(1, 8):
-            if y[i, d, t].x > 0.01:
+            if st.session_state["y2"][i, d, t].x > 0.01:
                 sheet.cell(row=2 + t, column=2 + d).value = band_list[i]
   buffer = BytesIO()
   book2.save(buffer)
