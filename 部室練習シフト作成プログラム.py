@@ -214,7 +214,7 @@ def input_date():
 
 def saitekika():
   # 最適化モデルの作成
-  # model = Model('PracticeShiftTime')
+  model = Model('PracticeShiftTime')
 
   last_week = {}
   for i in st.session_state["I"]:
