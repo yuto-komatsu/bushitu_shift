@@ -351,6 +351,7 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
   st.header('４．最適化の実行')
   book1 = load_workbook(st.session_state["kibou_file"])
   st.session_state["kibou_time"] = {}
+  st.session_state["last_week"] = {}
 
   for i in st.session_state["I"]:
       sheet_band = book1[band_list[i]]  # シートを取得
@@ -360,9 +361,10 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
               if value is not 1:
                   value = 0
               if d >= day_sum -7 and d <= day_sum:
-                st.session_state["last_week"] = {}
                 if value == 1:
-                  st.session_state["last_week"][i] = 1
+                  st.session_state["last_week"][i] = True
+                else:
+                  st.session_state["last_week"][i] = False
                 
               # キーを文字列に変換して保存
               key_str = f"{i}_{d}_{t}"
