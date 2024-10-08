@@ -353,22 +353,24 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
   st.session_state["kibou_time"] = {}
   st.session_state["last_week"] = {}
 
+  #希望ファイルの読み込み
   for i in st.session_state["I"]:
       sheet_band = book1[band_list[i]]  # シートを取得
       for d in st.session_state["D"]:
           for t in st.session_state["T"]:
               value = sheet_band.cell(row=2 + t, column=2 + d).value
               if value is not 1:
-                  value = 0
-              if d >= day_sum -7 and d <= day_sum:
-                if value == 1:
-                  st.session_state["last_week"][i] = True
-                else:
-                  st.session_state["last_week"][i] = False
-                
+                  value = 0      
               # キーを文字列に変換して保存
               key_str = f"{i}_{d}_{t}"
               st.session_state["kibou_time"][key_str] = value
+
+  for i in st.session_state["I"]:
+    if int xsum((kibou_time[f"{i}_{d}_{t}"] for st.session_state["d"] in range(day_sum - 6, day_sum + 1) for t in st.session_state["T"])) >= 1:
+      st.session_state["last_week"] = True
+    else:
+      st.session_state["last_week"] = False
+  
   st.write(st.session_state["last_week"])
 
   if st.session_state["kibou_time"] is not None:
