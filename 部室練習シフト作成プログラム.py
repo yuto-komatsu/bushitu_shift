@@ -268,8 +268,27 @@ def saitekika():
 
   if status == OptimizationStatus.OPTIMAL:
       st.write('最適値 =', model.objective_value)
+      result()
 
 
+
+def result():
+  book2 = openpyxl.Workbook()
+  book2.create_sheet(index=0, title="結果出力")
+  sheet = book2["結果出力"]
+  for i in band_list:
+    for d in range(1, day_sum + 1):
+        for t in range(1, 8):
+            if y[i, d, t].x > 0.01:
+                sheet.cell(row=2 + t, column=2 + d).value = band_list[i]
+  buffer = BytesIO()
+  book2.save(buffer)
+  buffer.seek(0)
+  st.download_button(
+      label="結果をダウンロード",
+      data=output,
+      file_name="最適化結果.xlsx",
+      mime='text/csv')
 
 
 
