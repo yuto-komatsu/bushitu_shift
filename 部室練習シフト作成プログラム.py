@@ -236,7 +236,7 @@ def saitekika():
 
   
   # 部室利用禁止日に練習を割り当てない
-  if st.session_state["kinshi"] is not None:
+  if st.session_state["kinshi"][0] is not None:
     for d in st.session_state["D"]:
         for k in st.session_state["kinshi"]:
             if d == st.session_state["kinshi"][k]:
