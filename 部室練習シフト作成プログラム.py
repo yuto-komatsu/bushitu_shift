@@ -366,7 +366,7 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
               st.session_state["kibou_time"][key_str] = value
 
   for i in st.session_state["I"]:
-    if int xsum((kibou_time[f"{i}_{d}_{t}"] for st.session_state["d"] in range(day_sum - 6, day_sum + 1) for t in st.session_state["T"])) >= 1:
+    if int sum((kibou_time[f"{i}_{d}_{t}"] for st.session_state["d"] in range(day_sum - 6, day_sum + 1) for t in st.session_state["T"])) >= 1:
       st.session_state["last_week"] = True
     else:
       st.session_state["last_week"] = False
