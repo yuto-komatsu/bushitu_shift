@@ -367,9 +367,9 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
 
   for i in st.session_state["I"]:
     if xsum((st.session_state["kibou_time"][f"{i}_{d}_{t}"] for d in range(day_sum - 6, day_sum + 1) for t in st.session_state["T"])) >= 1:
-      st.session_state["last_week"] = True
+      st.session_state["last_week"][i] = True
     else:
-      st.session_state["last_week"] = False
+      st.session_state["last_week"][i] = False
   
   st.write(st.session_state["last_week"])
 
