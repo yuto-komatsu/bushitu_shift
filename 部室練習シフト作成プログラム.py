@@ -288,7 +288,7 @@ def result():
   buffer.seek(0)
   st.download_button(
       label="結果をダウンロード",
-      data=output,
+      data=book2,
       file_name="最適化結果.xlsx",
       mime='text/csv')
 
