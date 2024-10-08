@@ -215,11 +215,63 @@ def input_date():
 def saitekika():
   # 最適化モデルの作成
   model = Model('PracticeShiftTime')
+  # 決定変数の作成
+  y = {(i, d, t): model.add_var(var_type='B') for i in I for d in D for t in T}
+  s = {i: model.add_var(var_type='B') for i in I}
 
-  last_week = {}
-  for i in st.session_state["I"]:
-    last_week[i] = int(any(kibou_time[i, d, t] for d in range(day_sum - 6, day_sum + 1) for t in st.session_state["T"]))
-  st.write(last_week)
+  # ハード制約の追加
+  # 各バンドの制約
+  for i in I:
+      model += xsum(y[i, d, t] for d in D for t in T) >= 1  # 最低1回は練習
+      model += xsum(y[i, d, t] for d in D for t in T) <= max_practice  # 練習回数は最大 max_practice
+      for d in D:
+          model += xsum(y[i, d, t] for t in T) <= 1  # 1日に1回のみ練習
+
+  # 希望しない時間に練習を入れない
+  for i in I:
+      for d in D:
+          for t in T:
+              if kibou_time[i, d, t] == 0:
+                  model += y[i, d, t] == 0
+
+  # 部室利用禁止日に練習を割り当てない
+  for d in D:
+      for k in kinshi:
+          if d == kinshi[k][0]:
+              for t in T:
+                  if kinshi[k][1] == t:
+                      for i in I:
+                          model += y[i, d, t] == 0
+              if kinshi[k][1] == 0:
+                  for i in I:
+                      model += xsum(y[i, d, t] for t in T) == 0
+
+  # 最終週に希望がある場合、必ず練習を入れる
+  for i in I:
+      if last_week[i] == 1:
+          model += xsum(y[i, d, t] for d in range(day_sum - 6, day_sum + 1) for t in T) >= 1 - s[i]
+
+  # 同じ時間に練習するバンドは1つまで
+  for d in D:
+      for t in T:
+          model += xsum(y[i, d, t] for i in I) <= 1
+
+  # 連続して練習しない（1日以上あける）
+  for i in I:
+      for d in range(1, day_sum):
+          model += xsum(y[i, d, t] for t in T) + xsum(y[i, d + 1, t] for t in T) <= 1
+
+  # 目的関数の設定
+  model.objective = minimize(-xsum(y[i, d, t] for i in I for d in D for t in T) + 10 * s[i])
+
+  # 最適化の実行
+  status = model.optimize()
+
+  if status == OptimizationStatus.OPTIMAL:
+      st.write('最適値 =', model.objective_value)
+
+
+
 
 
 
@@ -305,12 +357,17 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
       for d in st.session_state["D"]:
           for t in st.session_state["T"]:
               value = sheet_band.cell(row=2 + t, column=2 + d).value
-              if value is None:
+              if value is not 1:
                   value = 0
-
+              if d >= day_sum -7 and d <= day_sum:
+                st.session_state["last_week"] = {}
+                if value == 1:
+                  st.session_state["last_week"][i] = 1
+                
               # キーを文字列に変換して保存
               key_str = f"{i}_{d}_{t}"
               st.session_state["kibou_time"][key_str] = value
+  st.write(st.session_state["last_week"])
 
   if st.session_state["kibou_time"] is not None:
     st.write("希望の読み込みに成功しました。")
