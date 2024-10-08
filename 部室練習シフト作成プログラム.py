@@ -98,7 +98,7 @@ def option_select():
     )
     return max_practice
 
-def st.session_state["kinshi"]_select():
+def kinshi_select():
   # 日付を保存するためのセッション状態を初期化
   if 'dates_list' not in st.session_state:
     st.session_state['dates_list'] = []
@@ -322,7 +322,7 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 1:
     vacation = st.toggle("長期休暇期間")
     d = st.toggle("部室利用禁止日あり")
     if d == True:
-      st.session_state["kinshi"]_select()
+      kinshi_select()
     week_judge(st.session_state["start_day"], vacation)
 
     if st.toggle("入力完了"):
