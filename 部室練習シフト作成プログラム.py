@@ -98,7 +98,7 @@ def option_select():
     )
     return max_practice
 
-def kinshi_select():
+def st.session_state["kinshi"]_select():
   # 日付を保存するためのセッション状態を初期化
   if 'dates_list' not in st.session_state:
     st.session_state['dates_list'] = []
@@ -120,7 +120,7 @@ def kinshi_select():
     st.success('リセットされました。')
 
   # 追加された日付と今日の日付の差分を辞書に登録（キーを1, 2, 3, ...とする）
-  st.session_state["kinshi"] = {int(i + 1): (d - st.session_state["start_day"] + datetime.timedelta(days=1)).days for i, d in enumerate(st.session_state['dates_list'])}
+  st.session_state["st.session_state["kinshi"]"] = {int(i + 1): (d - st.session_state["start_day"] + datetime.timedelta(days=1)).days for i, d in enumerate(st.session_state['dates_list'])}
 
   # 現在の追加済みの日付を表示
   st.write('追加された日付一覧:')
@@ -131,7 +131,7 @@ def kinshi_select():
 
 
   # 日付の差分を含む辞書を表示
-  st.write('日付と今日との差分（日数）の辞書:', st.session_state["kinshi"])
+  st.write('日付と今日との差分（日数）の辞書:', st.session_state["st.session_state["kinshi"]"])
 
 def week_judge(start_day, vacation):
   # 平日と土日祝の判別
@@ -216,53 +216,53 @@ def saitekika():
   # 最適化モデルの作成
   model = Model('PracticeShiftTime')
   # 決定変数の作成
-  y = {(i, d, t): model.add_var(var_type='B') for i in I for d in D for t in T}
-  s = {i: model.add_var(var_type='B') for i in I}
+  y = {(i, d, t): model.add_var(var_type='B') for i in st.session_state["I"] for d in st.session_state["D"] for t in st.session_state["T"]}
+  s = {i: model.add_var(var_type='B') for i in st.session_state["I"]}
 
   # ハード制約の追加
   # 各バンドの制約
-  for i in I:
-      model += xsum(y[i, d, t] for d in D for t in T) >= 1  # 最低1回は練習
-      model += xsum(y[i, d, t] for d in D for t in T) <= max_practice  # 練習回数は最大 max_practice
-      for d in D:
-          model += xsum(y[i, d, t] for t in T) <= 1  # 1日に1回のみ練習
+  for i in st.session_state["I"]:
+      model += xsum(y[i, d, t] for d in st.session_state["D"] for t in st.session_state["T"]) >= 1  # 最低1回は練習
+      model += xsum(y[i, d, t] for d in st.session_state["D"] for t in st.session_state["T"]) <= max_practice  # 練習回数は最大 max_practice
+      for d in st.session_state["D"]:
+          model += xsum(y[i, d, t] for t in st.session_state["T"]) <= 1  # 1日に1回のみ練習
 
   # 希望しない時間に練習を入れない
-  for i in I:
-      for d in D:
-          for t in T:
-              if kibou_time[i, d, t] == 0:
+  for i in st.session_state["I"]:
+      for d in st.session_state["D"]:
+          for t in st.session_state["T"]:
+              if st.session_state["kibou_time"][f"{i}_{d}_{t}"] == 0:
                   model += y[i, d, t] == 0
 
   # 部室利用禁止日に練習を割り当てない
-  for d in D:
-      for k in kinshi:
-          if d == kinshi[k][0]:
-              for t in T:
-                  if kinshi[k][1] == t:
-                      for i in I:
+  for d in st.session_state["d"]:
+      for k in st.session_state["kinshi"]:
+          if d == st.session_state["kinshi"][k][0]:
+              for t in st.session_state["T"]:
+                  if st.session_state["kinshi"][k][1] == t:
+                      for i in st.session_state["I"]:
                           model += y[i, d, t] == 0
-              if kinshi[k][1] == 0:
-                  for i in I:
-                      model += xsum(y[i, d, t] for t in T) == 0
+              if st.session_state["kinshi"][k][1] == 0:
+                  for i in st.session_state["I"]:
+                      model += xsum(y[i, d, t] for t in st.session_state["T"]) == 0
 
   # 最終週に希望がある場合、必ず練習を入れる
-  for i in I:
-      if last_week[i] == 1:
-          model += xsum(y[i, d, t] for d in range(day_sum - 6, day_sum + 1) for t in T) >= 1 - s[i]
+  for i in st.session_state["I"]:
+      if st.session_state["last_week"][i] == 1:
+          model += xsum(y[i, d, t] for d in range(day_sum - 6, day_sum + 1) for t in st.session_state["T"]) >= 1 - s[i]
 
   # 同じ時間に練習するバンドは1つまで
-  for d in D:
-      for t in T:
-          model += xsum(y[i, d, t] for i in I) <= 1
+  for d in st.session_state["D"]:
+      for t in st.session_state["T"]:
+          model += xsum(y[i, d, t] for i in st.session_state["I"]) <= 1
 
   # 連続して練習しない（1日以上あける）
-  for i in I:
+  for i in st.session_state["I"]:
       for d in range(1, day_sum):
-          model += xsum(y[i, d, t] for t in T) + xsum(y[i, d + 1, t] for t in T) <= 1
+          model += xsum(y[i, d, t] for t in st.session_state["T"]) + xsum(y[i, d + 1, t] for t in st.session_state["T"]) <= 1
 
   # 目的関数の設定
-  model.objective = minimize(-xsum(y[i, d, t] for i in I for d in D for t in T) + 10 * s[i])
+  model.objective = minimize(-xsum(y[i, d, t] for i in st.session_state["I"] for d in st.session_state["D"] for t in st.session_state["T"]) + 10 * s[i])
 
   # 最適化の実行
   status = model.optimize()
@@ -322,7 +322,7 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 1:
     vacation = st.toggle("長期休暇期間")
     d = st.toggle("部室利用禁止日あり")
     if d == True:
-      kinshi_select()
+      st.session_state["kinshi"]_select()
     week_judge(st.session_state["start_day"], vacation)
 
     if st.toggle("入力完了"):
@@ -367,12 +367,7 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
 
   for i in st.session_state["I"]:
     st.session_state["last_week"][i] = int(any(st.session_state["kibou_time"][f"{i}_{d}_{t}"] for d in range(day_sum - 6, day_sum + 1) for t in st.session_state["T"]))
-    # if xsum((st.session_state["kibou_time"][f"{i}_{d}_{t}"] for d in range(day_sum - 6, day_sum + 1) for t in st.session_state["T"])) >= 1:
-    #   st.session_state["last_week"][i] = True
-    # else:
-    #   st.session_state["last_week"][i] = False
 
-  st.write(st.session_state["last_week"])
 
   if st.session_state["kibou_time"] is not None:
     st.write("希望の読み込みに成功しました。")
@@ -382,7 +377,3 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
       
   else:
     st.write("希望の読み込みに失敗しました。もう一度ファイルを読み込ませてください。")
-#         st.success('ファイルが正常に読み込まれました。')
-#         # 最適化の処理をここに追加
-#     except Exception as e:
-#         st.error(f'ファイルの読み込みに失敗しました: {e}')
