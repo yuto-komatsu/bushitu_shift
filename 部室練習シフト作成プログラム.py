@@ -205,7 +205,7 @@ def input_date():
   st.download_button(
       label="ダウンロード",
       data=buffer,
-      file_name='downloaded_file2.xlsx',
+      file_name='シフト希望記入表.xlsx',
       mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   )
 
@@ -241,7 +241,7 @@ if st.session_state["page_control"] == 0:
   st.download_button(
       label="テンプレートをダウンロード",
       data=band_listfile,
-      file_name='downloaded_file.xlsx',
+      file_name='参加バンド登録＿テンプレート.xlsx',
       mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   )
 
@@ -259,8 +259,8 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 1:
     st.session_state["sheet"] = st.session_state["book"]["概要"]
     band_sum = band_list_making()
 
-    st.session_state["start_day"] = st.date_input('シフト開始日を入力してください。', datetime.date(2024, 8, 22))
-    st.session_state["end_day"] = st.date_input('シフト終了日を入力してください。', datetime.date(2024, 9, 9))
+    st.session_state["start_day"] = st.date_input('シフト開始日を入力してください。', datetime.date(2024, 10, 10))
+    st.session_state["end_day"] = st.date_input('シフト終了日を入力してください。', datetime.date(2024, 10, 31))
     if st.session_state["start_day"] > st.session_state["end_day"]:
         st.error('開始日は終了日より後の日付を入力してください。')
         st.stop()
