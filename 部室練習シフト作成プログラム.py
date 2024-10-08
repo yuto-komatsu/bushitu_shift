@@ -370,7 +370,8 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
       st.session_state["last_week"][i] = True
     else:
       st.session_state["last_week"][i] = False
-  
+
+  st.write(day_sum)
   st.write(st.session_state["last_week"])
 
   if st.session_state["kibou_time"] is not None:
