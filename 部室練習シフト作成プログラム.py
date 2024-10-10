@@ -269,7 +269,7 @@ def saitekika():
 
   if status == OptimizationStatus.OPTIMAL:
       st.write('最適値 =', model.objective_value)
-      st.session_state["y2"] = y
+      # st.session_state["y2"] = y
       result()
 
 
@@ -281,16 +281,16 @@ def result():
   for i in band_list:
     for d in range(1, day_sum + 1):
         for t in range(1, 8):
-            if st.session_state["y2"][i, d, t].x > 0.01:
+            if y[i, d, t].x > 0.01:
                 sheet.cell(row=2 + t, column=2 + d).value = band_list[i]
   buffer = BytesIO()
   book2.save(buffer)
   buffer.seek(0)
   st.download_button(
-      label="結果をダウンロード",
-      data=book2,
-      file_name="最適化結果.xlsx",
-      mime='text/csv')
+    label="結果をダウンロード",
+    data=book2,
+    file_name="最適化結果.xlsx",
+    mime='text/csv')
 
 
 
@@ -345,8 +345,12 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 1:
       kinshi_select()
     week_judge(st.session_state["start_day"], vacation)
 
-    if st.toggle("入力完了"):
-        change_page()
+    st.session_state["3pagenext"] = False
+    st.button("入力完了") = st.session_state["3pagenext"]
+    if st.session_state["3pagenext"]:
+      change_page()
+    # if st.toggle("入力完了"):
+    #     change_page()
 
 #ページ３：希望日入力
 if "page_control" in st.session_state and st.session_state["page_control"] == 2:
