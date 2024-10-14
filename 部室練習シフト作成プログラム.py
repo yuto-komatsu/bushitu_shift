@@ -78,8 +78,8 @@ week = {}
 
 st.session_state["page_control"] = 0
 st.session_state["kinshi"] = {}
-st.session_state["3pagenext"] = False
-st.session_state["saitekika_button"] = False
+st.session_state["3pagenext"]
+st.session_state["saitekika_button"]
 
 
 def wakusen(sheet):
