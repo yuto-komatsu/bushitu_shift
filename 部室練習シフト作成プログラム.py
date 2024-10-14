@@ -269,11 +269,12 @@ def saitekika():
 
   if status == OptimizationStatus.OPTIMAL:
     st.write('最適値 =', model.objective_value)
+    # st.write(y.x)
     # st.session_state["y2"] = y
     for i in st.session_state["I"]:
       for d in st.session_state["D"]:
         for t in st.session_state["T"]:
-          st.write(y[i, d, t])
+          st.write(y[i, d, t].x)
       
     # result()
 
