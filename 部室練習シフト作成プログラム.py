@@ -169,8 +169,8 @@ def kinshi_select():
     i += 1
 
 
-  # 日付の差分を含む辞書を表示
-  st.write('日付と今日との差分（日数）の辞書:', st.session_state["kinshi"])
+  # # 日付の差分を含む辞書を表示
+  # st.write('日付と今日との差分（日数）の辞書:', st.session_state["kinshi"])
 
 def week_judge(start_day, vacation):
   # 平日と土日祝の判別
