@@ -78,6 +78,8 @@ week = {}
 
 st.session_state["page_control"] = 0
 st.session_state["kinshi"] = {}
+st.session_state["3pagenext"] = False
+st.session_state["saitekika_button"] = False
 
 
 def wakusen(sheet):
@@ -198,36 +200,6 @@ def input_date():
 
     wakusen(sheet)
 
-    # #枠線作成
-    # #B列目
-    # sheet.cell(row=2, column=2).border = border_topleft
-    # for t in range(1,8):
-    #   sheet.cell(row=2+t, column=2).border = border_left
-    # sheet.cell(row=9, column=2).border = border_bottomleft
-    # #2行目
-    # for j in range(1, day_sum):
-    #   sheet.cell(row=2, column=2+j).border = border_topcenter
-    # #右端
-    # sheet.cell(row=2, column=day_sum+2).border = border_topright
-    # for t in range(1,8):
-    #   sheet.cell(row=2+t, column=day_sum+2).border = border_right
-    # sheet.cell(row=9, column=day_sum+2).border = border_bottomright
-    # #中
-    # for i in range(1, day_sum):
-    #   for t in range(1,7):
-    #     sheet.cell(row=2+t, column=2+i).border = border_allthin
-    # #下
-    # for j in range(1, day_sum):
-    #   sheet.cell(row=9, column=2+j).border = border_bottomcenter
-
-    # #書式設定
-    # font = Font(name="游ゴシック",size=11,bold=True)
-    # for t in range(1, 9):
-    #   for j in range(1, day_sum+2):
-    #     sheet.cell(row=1+t, column=1+j).font = font
-    #     sheet.cell(row=1+t, column=1+j).alignment = Alignment(horizontal = 'left', vertical = 'center')
-
-
     # デフォルトで作成されるシートを削除
   if 'Sheet' in book1.sheetnames:
       book1.remove(book1['Sheet'])
@@ -336,35 +308,10 @@ def result():
                 sheet.cell(row=2 + t, column=2 + d).value = band_list[i]
 
   wakusen(sheet)
-# #枠線作成
-#   #B列目
-#   sheet.cell(row=2, column=2).border = border_topleft
-#   for t in range(1,8):
-#     sheet.cell(row=2+t, column=2).border = border_left
-#   sheet.cell(row=9, column=2).border = border_bottomleft
-#   #2行目
-#   for j in range(1, day_sum):
-#     sheet.cell(row=2, column=2+j).border = border_topcenter
-#   #右端
-#   sheet.cell(row=2, column=day_sum+2).border = border_topright
-#   for t in range(1,8):
-#     sheet.cell(row=2+t, column=day_sum+2).border = border_right
-#   sheet.cell(row=9, column=day_sum+2).border = border_bottomright
-#   #中
-#   for i in range(1, day_sum):
-#     for t in range(1,7):
-#       sheet.cell(row=2+t, column=2+i).border = border_allthin
-#   #下
-#   for j in range(1, day_sum):
-#     sheet.cell(row=9, column=2+j).border = border_bottomcenter
 
-#   #書式設定
-#   font = Font(name="游ゴシック",size=11,bold=True)
-#   for t in range(1, 9):
-#     for j in range(1, day_sum+2):
-#       sheet.cell(row=1+t, column=1+j).font = font
-#       sheet.cell(row=1+t, column=1+j).alignment = Alignment(horizontal = 'left', vertical = 'center')
-
+  # デフォルトで作成されるシートを削除
+  if 'Sheet' in book2.sheetnames:
+    book2.remove(book2['Sheet'])
   
   buffer2 = BytesIO()
   book2.save(buffer2)
