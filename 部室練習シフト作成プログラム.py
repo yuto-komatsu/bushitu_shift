@@ -190,7 +190,7 @@ def week_judge(start_day, vacation):
 
 def input_date():
   book1 = openpyxl.Workbook()
-  for i in range(1, st.session_state["st.session_state["band_sum"]"] + 1):
+  for i in range(1, st.session_state["band_sum"] + 1):
     book1.create_sheet(index=0, title=band_list[i])
     sheet = book1[band_list[i]]
     for t in range(1, 8):
