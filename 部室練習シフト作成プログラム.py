@@ -295,8 +295,9 @@ def result():
   buffer2.seek(0)
   st.download_button(
     label="結果をダウンロード",
-    data=book2,
-    file_name="最適化結果.xlsx")
+    data=buffer2,
+    file_name="最適化結果.xlsx",
+  mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 
 
