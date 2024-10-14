@@ -269,13 +269,13 @@ def saitekika():
 
   if status == OptimizationStatus.OPTIMAL:
       st.write('最適値 =', model.objective_value)
-      # st.session_state["y2"] = y
+      st.session_state["y2"] = y
       result()
 
 
 
 def result():
-  st.write(y)
+  st.write(st.session_state["y2"])
   # book2 = openpyxl.Workbook()
   # book2.create_sheet(index=0, title="結果出力")
   # sheet = book2["結果出力"]
