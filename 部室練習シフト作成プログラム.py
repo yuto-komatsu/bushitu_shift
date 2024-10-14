@@ -293,11 +293,11 @@ def result():
   buffer = BytesIO()
   book2.save(buffer)
   buffer.seek(0)
-  st.download_button(
-    label="結果をダウンロード",
-    data=book2,
-    file_name="最適化結果.xlsx",
-    mime='text/csv')
+  # st.download_button(
+  #   label="結果をダウンロード",
+  #   data=book2,
+  #   file_name="最適化結果.xlsx",
+  #   mime='text/csv')
 
 
 
