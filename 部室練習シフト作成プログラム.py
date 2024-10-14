@@ -78,8 +78,11 @@ week = {}
 
 st.session_state["page_control"] = 0
 st.session_state["kinshi"] = {}
-st.session_state["3pagenext"]
-st.session_state["saitekika_button"]
+
+if "3pagenext" not in st.session_state:
+  st.session_state["3pagenext"] = False
+if "saitekika_button" not in st.session_state:
+  st.session_state["saitekika_button"] = False
 
 
 def wakusen(sheet):
