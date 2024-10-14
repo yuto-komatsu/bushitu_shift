@@ -12,38 +12,38 @@ from mip import Model, xsum, minimize, BINARY, OptimizationStatus
 tab_titles = ['部室練習固定シフト', '設営パートシフト']
 tab1, tab2 = st.tabs(tab_titles)
 
-#幅自動調整用データ
-width_dict = {
-  'F': 2,   # Fullwidth
-  'H': 1,   # Halfwidth
-  'W': 2,   # Wide
-  'Na': 1,  # Narrow
-  'A': 2,   # Ambiguous
-  'N': 1    # Neutral
-}
-Font_depend = 1.2
+# #幅自動調整用データ
+# width_dict = {
+#   'F': 2,   # Fullwidth
+#   'H': 1,   # Halfwidth
+#   'W': 2,   # Wide
+#   'Na': 1,  # Narrow
+#   'A': 2,   # Ambiguous
+#   'N': 1    # Neutral
+# }
+# Font_depend = 1.2
 
-#幅自動調整の関数
-def sheet_adjusted_width(ws):
-    # set column width
-    for col in ws.columns:
-        max_length= 1
-        max_diameter = 1
-        column= col[1].column_letter # Get the column name
-        for cell in col:
-            diameter = (cell.font.size*Font_depend)/10
-            if diameter > max_diameter:
-                max_diameter = diameter
-            try:
-                if(cell.value == None) : continue
-                chars = [char for char in str(cell.value)]
-                east_asian_width_list = [east_asian_width(char) for char in chars]
-                width_list = [width_dict[east_asian_width] for east_asian_width in east_asian_width_list]
-                if sum(width_list) > max_length:
-                    max_length= sum(width_list)
-            except:
-                pass
-            ws.column_dimensions[column].width= max_length*max_diameter + 1.2
+# #幅自動調整の関数
+# def sheet_adjusted_width(ws):
+#     # set column width
+#     for col in ws.columns:
+#         max_length= 1
+#         max_diameter = 1
+#         column= col[1].column_letter # Get the column name
+#         for cell in col:
+#             diameter = (cell.font.size*Font_depend)/10
+#             if diameter > max_diameter:
+#                 max_diameter = diameter
+#             try:
+#                 if(cell.value == None) : continue
+#                 chars = [char for char in str(cell.value)]
+#                 east_asian_width_list = [east_asian_width(char) for char in chars]
+#                 width_list = [width_dict[east_asian_width] for east_asian_width in east_asian_width_list]
+#                 if sum(width_list) > max_length:
+#                     max_length= sum(width_list)
+#             except:
+#                 pass
+#             ws.column_dimensions[column].width= max_length*max_diameter + 1.2
 
 
 border_topthick = Border(top=Side(style='thick', color='000000'),
@@ -351,7 +351,7 @@ def result():
   if 'Sheet' in book2.sheetnames:
     book2.remove(book2['Sheet'])
 
-  sheet_adjusted_width(sheet)
+  # sheet_adjusted_width(sheet)
   
   buffer2 = BytesIO()
   book2.save(buffer2)
@@ -474,3 +474,6 @@ def practice_shift_main():
 
 with tab1:
   practice_shift_main()
+
+with tab2:
+  st.write("未実装")
