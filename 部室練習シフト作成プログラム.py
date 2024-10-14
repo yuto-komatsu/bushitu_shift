@@ -290,14 +290,14 @@ def result():
         for t in range(1, 8):
             if st.session_state["y2"][f"{i}_{d}_{t}"] > 0.01:
                 sheet.cell(row=2 + t, column=2 + d).value = band_list[i]
-  buffer = BytesIO()
-  book2.save(buffer)
-  buffer.seek(0)
-  # st.download_button(
-  #   label="結果をダウンロード",
-  #   data=book2,
-  #   file_name="最適化結果.xlsx",
-  #   mime='text/csv')
+  buffer2 = BytesIO()
+  book2.save(buffer2)
+  buffer2.seek(0)
+  st.download_button(
+    label="結果をダウンロード",
+    data=book2,
+    file_name="最適化結果.xlsx",
+    mime='text/csv')
 
 
 
