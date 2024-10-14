@@ -363,7 +363,7 @@ def practice_shift_main():
       st.header('２．ライブ情報の入力')
       st.session_state["book"] = load_workbook(st.session_state["uploaded_file1"])
       st.session_state["sheet"] = st.session_state["book"]["概要"]
-      st.session_state["st.session_state["band_sum"]"] = band_list_making()
+      st.session_state["band_sum"] = band_list_making()
   
       st.session_state["start_day"] = st.date_input('シフト開始日を入力してください。', datetime.date(2024, 10, 10))
       st.session_state["end_day"] = st.date_input('シフト終了日を入力してください。', datetime.date(2024, 10, 31))
@@ -390,7 +390,7 @@ def practice_shift_main():
     input_date()
   
     #定数データ作成
-    st.session_state["I"] = [i for i in range(1, st.session_state["st.session_state["band_sum"]"] + 1)]
+    st.session_state["I"] = [i for i in range(1, st.session_state["band_sum"] + 1)]
     st.session_state["D"] = [i for i in range(1, st.session_state["day_sum"] + 1)]
     st.session_state["T"] = [i for i in range(1, 8)]
   
