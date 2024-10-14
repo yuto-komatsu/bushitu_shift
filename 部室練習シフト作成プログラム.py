@@ -300,6 +300,38 @@ def result():
         for t in range(1, 8):
             if st.session_state["y2"][f"{i}_{d}_{t}"] > 0.01:
                 sheet.cell(row=2 + t, column=2 + d).value = band_list[i]
+
+
+#枠線作成
+  #B列目
+  sheet.cell(row=2, column=2).border = border_topleft
+  for t in range(1,8):
+    sheet.cell(row=2+t, column=2).border = border_left
+  sheet.cell(row=9, column=2).border = border_bottomleft
+  #2行目
+  for j in range(1, day_sum):
+    sheet.cell(row=2, column=2+j).border = border_topcenter
+  #右端
+  sheet.cell(row=2, column=day_sum+2).border = border_topright
+  for t in range(1,8):
+    sheet.cell(row=2+t, column=day_sum+2).border = border_right
+  sheet.cell(row=9, column=day_sum+2).border = border_bottomright
+  #中
+  for i in range(1, day_sum):
+    for t in range(1,7):
+      sheet.cell(row=2+t, column=2+i).border = border_allthin
+  #下
+  for j in range(1, day_sum):
+    sheet.cell(row=9, column=2+j).border = border_bottomcenter
+
+  #書式設定
+  font = Font(name="游ゴシック",size=11,bold=True)
+  for t in range(1, 9):
+    for j in range(1, day_sum+2):
+      sheet.cell(row=1+t, column=1+j).font = font
+      sheet.cell(row=1+t, column=1+j).alignment = Alignment(horizontal = 'left', vertical = 'center')
+
+  
   buffer2 = BytesIO()
   book2.save(buffer2)
   buffer2.seek(0)
