@@ -271,7 +271,7 @@ def saitekika():
     st.write('最適値 =', model.objective_value)
     # st.write(y.x)
     # st.session_state["y2"] = y　
-    st.write("status")
+    st.write(status)
 
     # for i in st.session_state["I"]:
     #   for d in st.session_state["D"]:
