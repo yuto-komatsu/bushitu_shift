@@ -269,28 +269,29 @@ def saitekika():
 
   if status == OptimizationStatus.OPTIMAL:
       st.write('最適値 =', model.objective_value)
-      # st.session_state["y2"] = y
+      st.session_state["y2"] = y
       result()
 
 
 
 def result():
-  book2 = openpyxl.Workbook()
-  book2.create_sheet(index=0, title="結果出力")
-  sheet = book2["結果出力"]
-  for i in band_list:
-    for d in range(1, day_sum + 1):
-        for t in range(1, 8):
-            if y[i, d, t].x > 0.01:
-                sheet.cell(row=2 + t, column=2 + d).value = band_list[i]
-  buffer = BytesIO()
-  book2.save(buffer)
-  buffer.seek(0)
-  st.download_button(
-    label="結果をダウンロード",
-    data=book2,
-    file_name="最適化結果.xlsx",
-    mime='text/csv')
+  st.write(st.session_state["y2"])
+  # book2 = openpyxl.Workbook()
+  # book2.create_sheet(index=0, title="結果出力")
+  # sheet = book2["結果出力"]
+  # for i in band_list:
+  #   for d in range(1, day_sum + 1):
+  #       for t in range(1, 8):
+  #           if y[i, d, t].x > 0.01:
+  #               sheet.cell(row=2 + t, column=2 + d).value = band_list[i]
+  # buffer = BytesIO()
+  # book2.save(buffer)
+  # buffer.seek(0)
+  # st.download_button(
+  #   label="結果をダウンロード",
+  #   data=book2,
+  #   file_name="最適化結果.xlsx",
+  #   mime='text/csv')
 
 
 
@@ -345,13 +346,10 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 1:
       kinshi_select()
     week_judge(st.session_state["start_day"], vacation)
 
-    # st.session_state["3pagenext"] = False
     if st.button("入力完了"):
       st.session_state["3pagenext"] = True
     if st.session_state["3pagenext"]:
       change_page()
-    # if st.toggle("入力完了"):
-    #     change_page()
 
 #ページ３：希望日入力
 if "page_control" in st.session_state and st.session_state["page_control"] == 2:
