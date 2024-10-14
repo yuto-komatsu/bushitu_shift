@@ -271,37 +271,33 @@ def saitekika():
 
   if status == OptimizationStatus.OPTIMAL:
     st.write('最適値 =', model.objective_value)
-    y2 = json.dumps(y)
-    st.write(y2)
-    # st.session_state["y2"] = y　
 
     # for i in st.session_state["I"]:
     #   for d in st.session_state["D"]:
     #     for t in st.session_state["T"]:
     #       st.write(y[i, d, t].x)
-      
-    # result()
+
+    result()
 
 
-
-# def result():
-  # st.write(st.session_state["y2"])
-  # book2 = openpyxl.Workbook()
-  # book2.create_sheet(index=0, title="結果出力")
-  # sheet = book2["結果出力"]
-  # for i in band_list:
-  #   for d in range(1, day_sum + 1):
-  #       for t in range(1, 8):
-  #           if y[i, d, t].x > 0.01:
-  #               sheet.cell(row=2 + t, column=2 + d).value = band_list[i]
-  # buffer = BytesIO()
-  # book2.save(buffer)
-  # buffer.seek(0)
-  # st.download_button(
-  #   label="結果をダウンロード",
-  #   data=book2,
-  #   file_name="最適化結果.xlsx",
-  #   mime='text/csv')
+def result():
+  st.write(st.session_state["y2"])
+  book2 = openpyxl.Workbook()
+  book2.create_sheet(index=0, title="結果出力")
+  sheet = book2["結果出力"]
+  for i in band_list:
+    for d in range(1, day_sum + 1):
+        for t in range(1, 8):
+            if y[i, d, t].x > 0.01:
+                sheet.cell(row=2 + t, column=2 + d).value = band_list[i]
+  buffer = BytesIO()
+  book2.save(buffer)
+  buffer.seek(0)
+  st.download_button(
+    label="結果をダウンロード",
+    data=book2,
+    file_name="最適化結果.xlsx",
+    mime='text/csv')
 
 
 
