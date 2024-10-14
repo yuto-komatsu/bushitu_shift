@@ -130,13 +130,13 @@ def band_list_making():
   return band_sum
 
 def option_select():
-    max_practice = st.selectbox(
+    st.session_state["max_practice"] = st.selectbox(
         '最大練習回数',
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         index=0,
         placeholder="練習回数を選択してください"
     )
-    return max_practice
+    return st.session_state["max_practice"]
 
 def kinshi_select():
   # 日付を保存するためのセッション状態を初期化
@@ -236,7 +236,7 @@ def saitekika():
   # 各バンドの制約
   for i in st.session_state["I"]:
       model += xsum(y[i, d, t] for d in st.session_state["D"] for t in st.session_state["T"]) >= 1  # 最低1回は練習
-      model += xsum(y[i, d, t] for d in st.session_state["D"] for t in st.session_state["T"]) <= max_practice  # 練習回数は最大 max_practice
+      model += xsum(y[i, d, t] for d in st.session_state["D"] for t in st.session_state["T"]) <= st.session_state["max_practice"]  # 練習回数は最大 st.session_state["max_practice"]
       for d in st.session_state["D"]:
           model += xsum(y[i, d, t] for t in st.session_state["T"]) <= 1  # 1日に1回のみ練習
 
@@ -372,7 +372,7 @@ def practice_shift_main():
           st.stop()
   
       st.session_state["day_sum"] = (st.session_state["end_day"] - st.session_state["start_day"] + datetime.timedelta(days=1)).days
-      max_practice = option_select()
+      st.session_state["max_practice"] = option_select()
       vacation = st.toggle("長期休暇期間")
       d = st.toggle("部室利用禁止日あり")
       if d == True:
