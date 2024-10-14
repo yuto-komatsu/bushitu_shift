@@ -281,7 +281,7 @@ def saitekika():
 
 
 def result():
-  st.write(st.session_state["y2"])
+  print(st.session_state["y2"])
   book2 = openpyxl.Workbook()
   book2.create_sheet(index=0, title="結果出力")
   sheet = book2["結果出力"]
