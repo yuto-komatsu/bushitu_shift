@@ -94,25 +94,25 @@ def wakusen(sheet):
     sheet.cell(row=2+t, column=2).border = border_left
   sheet.cell(row=9, column=2).border = border_bottomleft
   #2行目
-  for j in range(1, day_sum):
+  for j in range(1, st.session_state["day_sum"]):
     sheet.cell(row=2, column=2+j).border = border_topcenter
   #右端
-  sheet.cell(row=2, column=day_sum+2).border = border_topright
+  sheet.cell(row=2, column=st.session_state["day_sum"]+2).border = border_topright
   for t in range(1,8):
-    sheet.cell(row=2+t, column=day_sum+2).border = border_right
-  sheet.cell(row=9, column=day_sum+2).border = border_bottomright
+    sheet.cell(row=2+t, column=st.session_state["day_sum"]+2).border = border_right
+  sheet.cell(row=9, column=st.session_state["day_sum"]+2).border = border_bottomright
   #中
-  for i in range(1, day_sum):
+  for i in range(1, st.session_state["day_sum"]):
     for t in range(1,7):
       sheet.cell(row=2+t, column=2+i).border = border_allthin
   #下
-  for j in range(1, day_sum):
+  for j in range(1, st.session_state["day_sum"]):
     sheet.cell(row=9, column=2+j).border = border_bottomcenter
 
   #書式設定
   font = Font(name="游ゴシック",size=11,bold=True)
   for t in range(1, 9):
-    for j in range(1, day_sum+2):
+    for j in range(1, st.session_state["day_sum"]+2):
       sheet.cell(row=1+t, column=1+j).font = font
       sheet.cell(row=1+t, column=1+j).alignment = Alignment(horizontal = 'left', vertical = 'center')
 
@@ -176,7 +176,7 @@ def kinshi_select():
 def week_judge(start_day, vacation):
   # 平日と土日祝の判別
   current_day = start_day
-  for i in range(1, day_sum + 1):
+  for i in range(1, st.session_state["day_sum"] + 1):
     if not vacation:
       if jpholiday.is_holiday(current_day) or current_day.weekday() in [5, 6]:
         week[i] = 1  # 祝日または土日
@@ -261,7 +261,7 @@ def saitekika():
   # 最終週に希望がある場合、必ず練習を入れる
   for i in st.session_state["I"]:
       if st.session_state["last_week"][i] == 1:
-          model += xsum(y[i, d, t] for d in range(day_sum - 6, day_sum + 1) for t in st.session_state["T"]) >= 1 - s[i]
+          model += xsum(y[i, d, t] for d in range(st.session_state["day_sum"] - 6, st.session_state["day_sum"] + 1) for t in st.session_state["T"]) >= 1 - s[i]
 
   # 同じ時間に練習するバンドは1つまで
   for d in st.session_state["D"]:
@@ -270,7 +270,7 @@ def saitekika():
 
   # 連続して練習しない（1日以上あける）
   for i in st.session_state["I"]:
-      for d in range(1, day_sum):
+      for d in range(1, st.session_state["day_sum"]):
           model += xsum(y[i, d, t] for t in st.session_state["T"]) + xsum(y[i, d + 1, t] for t in st.session_state["T"]) <= 1
 
   # 目的関数の設定
@@ -306,7 +306,7 @@ def result():
       calc_day += datetime.timedelta(days=1)
   
   for i in band_list:
-    for d in range(1, day_sum + 1):
+    for d in range(1, st.session_state["day_sum"] + 1):
         for t in range(1, 8):
             if st.session_state["y2"][f"{i}_{d}_{t}"] > 0.01:
                 sheet.cell(row=2 + t, column=2 + d).value = band_list[i]
@@ -371,7 +371,7 @@ def practice_shift_main():
           st.error('開始日は終了日より後の日付を入力してください。')
           st.stop()
   
-      day_sum = (st.session_state["end_day"] - st.session_state["start_day"] + datetime.timedelta(days=1)).days
+      st.session_state["day_sum"] = (st.session_state["end_day"] - st.session_state["start_day"] + datetime.timedelta(days=1)).days
       max_practice = option_select()
       vacation = st.toggle("長期休暇期間")
       d = st.toggle("部室利用禁止日あり")
@@ -391,7 +391,7 @@ def practice_shift_main():
   
     #定数データ作成
     st.session_state["I"] = [i for i in range(1, band_sum + 1)]
-    st.session_state["D"] = [i for i in range(1, day_sum + 1)]
+    st.session_state["D"] = [i for i in range(1, st.session_state["day_sum"] + 1)]
     st.session_state["T"] = [i for i in range(1, 8)]
   
   
@@ -422,7 +422,7 @@ def practice_shift_main():
                 st.session_state["kibou_time"][key_str] = value
   
     for i in st.session_state["I"]:
-      st.session_state["last_week"][i] = int(any(st.session_state["kibou_time"][f"{i}_{d}_{t}"] for d in range(day_sum - 6, day_sum + 1) for t in st.session_state["T"]))
+      st.session_state["last_week"][i] = int(any(st.session_state["kibou_time"][f"{i}_{d}_{t}"] for d in range(st.session_state["day_sum"] - 6, st.session_state["day_sum"] + 1) for t in st.session_state["T"]))
   
   
     if st.session_state["kibou_time"] is not None:
