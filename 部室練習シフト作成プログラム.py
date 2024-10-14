@@ -274,7 +274,7 @@ def saitekika():
     for i in st.session_state["I"]:
       for d in st.session_state["D"]:
         for t in st.session_state["T"]:
-          st.write(y[i, d, t].x)
+          st.write(model.y[i, d, t].x)
       
     # result()
 
