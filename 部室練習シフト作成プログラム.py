@@ -253,7 +253,7 @@ def saitekika():
         for k in st.session_state["kinshi"]:
             if d == st.session_state["kinshi"][k]:
               for i in st.session_state["I"]:
-                for t in T:
+                for t in st.session_state["T"]:
                   model += y[i, d, t] == 0
 
 
