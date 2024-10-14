@@ -285,6 +285,16 @@ def result():
   book2 = openpyxl.Workbook()
   book2.create_sheet(index=0, title="結果出力")
   sheet = book2["結果出力"]
+
+  for t in range(1, 8):
+    sheet.cell(row=2 + t, column=2).value = str(t) + "限"
+  calc_day = st.session_state["start_day"]
+  j = 1
+  while calc_day <= st.session_state["end_day"]:
+      sheet.cell(row=2, column=2 + j).value = str(calc_day.month) + "/" + str(calc_day.day)
+      j += 1
+      calc_day += datetime.timedelta(days=1)
+  
   for i in band_list:
     for d in range(1, day_sum + 1):
         for t in range(1, 8):
