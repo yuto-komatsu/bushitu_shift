@@ -296,8 +296,7 @@ def result():
   st.download_button(
     label="結果をダウンロード",
     data=book2,
-    file_name="最適化結果.xlsx",
-    mime='text/csv')
+    file_name="最適化結果.xlsx")
 
 
 
