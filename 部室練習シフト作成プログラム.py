@@ -9,6 +9,8 @@ from openpyxl.styles import Border, Side, Font
 from openpyxl.styles.alignment import Alignment
 from mip import Model, xsum, minimize, BINARY, OptimizationStatus
 
+import json
+
 border_topthick = Border(top=Side(style='thick', color='000000'),
                 left=Side(style='thick', color='000000'),
                 right=Side(style='thick', color='000000')
@@ -266,11 +268,11 @@ def saitekika():
 
   # 最適化の実行
   status = model.optimize()
-  st.write(y.x)
 
   if status == OptimizationStatus.OPTIMAL:
     st.write('最適値 =', model.objective_value)
-    # st.write(y.x)
+    y2 = json.dumps(y)
+    st.write(y2)
     # st.session_state["y2"] = y　
 
     # for i in st.session_state["I"]:
@@ -282,7 +284,7 @@ def saitekika():
 
 
 
-def result():
+# def result():
   # st.write(st.session_state["y2"])
   # book2 = openpyxl.Workbook()
   # book2.create_sheet(index=0, title="結果出力")
