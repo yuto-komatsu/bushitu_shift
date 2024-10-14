@@ -346,7 +346,8 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 1:
     week_judge(st.session_state["start_day"], vacation)
 
     st.session_state["3pagenext"] = False
-    st.button("入力完了") = st.session_state["3pagenext"]
+    if st.button("入力完了"):
+      st.session_state["3pagenext"] = True
     if st.session_state["3pagenext"]:
       change_page()
     # if st.toggle("入力完了"):
