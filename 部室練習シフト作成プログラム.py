@@ -412,6 +412,8 @@ if "page_control" in st.session_state and st.session_state["page_control"] == 3:
     st.write("希望の読み込みに成功しました。")
     st.write("実行ボタンを押してシフトを作成します。")
     if st.button("実行ボタン"):
+      st.session_state["saitekika_button"] = True
+    if st.session_state["saitekika_button"]:
       saitekika()
       
   else:
