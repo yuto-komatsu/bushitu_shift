@@ -9,7 +9,8 @@ from openpyxl.styles import Border, Side, Font
 from openpyxl.styles.alignment import Alignment
 from mip import Model, xsum, minimize, BINARY, OptimizationStatus
 
-import json
+tab_titles = ['部室練習固定シフト', '設営パートシフト']
+tab1, tab2 = st.tabs(tab_titles)
 
 border_topthick = Border(top=Side(style='thick', color='000000'),
                 left=Side(style='thick', color='000000'),
@@ -327,110 +328,113 @@ def result():
 
 
 
-
-# Webアプリのタイトル
-st.title('シフトスケジュール最適化')
-
-
-#ページ１：参加バンド登録
-uploaded_file_path = 'バンドリスト_テンプレート.xlsx'
-# ファイルをバイトとして読み込む
-with open(uploaded_file_path, 'rb') as file:
-    band_listfile = file.read()
-
-if st.session_state["page_control"] == 0:
-  st.header('１．参加バンドの登録')
-  st.caption('ダウンロードボタンからテンプレートをダウンロードして、出演バンドを記入してください。')
-  st.caption('記入を終えたファイルをアップロードしてください。')
-
-  st.download_button(
-      label="テンプレートをダウンロード",
-      data=band_listfile,
-      file_name='参加バンド登録＿テンプレート.xlsx',
-      mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  )
-
-  st.session_state["uploaded_file1"] = st.file_uploader("バンド名簿をアップロード", type=["xlsx"],key = "バンド名簿")
-  if st.session_state["uploaded_file1"] is not None:
-    change_page()
-
-
-
-#ページ２：ライブ情報の入力
-if "page_control" in st.session_state and st.session_state["page_control"] == 1:
-    # st.session_state['uploaded'] = True
-    st.header('２．ライブ情報の入力')
-    st.session_state["book"] = load_workbook(st.session_state["uploaded_file1"])
-    st.session_state["sheet"] = st.session_state["book"]["概要"]
-    band_sum = band_list_making()
-
-    st.session_state["start_day"] = st.date_input('シフト開始日を入力してください。', datetime.date(2024, 10, 10))
-    st.session_state["end_day"] = st.date_input('シフト終了日を入力してください。', datetime.date(2024, 10, 31))
-    if st.session_state["start_day"] > st.session_state["end_day"]:
-        st.error('開始日は終了日より後の日付を入力してください。')
-        st.stop()
-
-    day_sum = (st.session_state["end_day"] - st.session_state["start_day"] + datetime.timedelta(days=1)).days
-    max_practice = option_select()
-    vacation = st.toggle("長期休暇期間")
-    d = st.toggle("部室利用禁止日あり")
-    if d == True:
-      kinshi_select()
-    week_judge(st.session_state["start_day"], vacation)
-    
-    if st.button("入力完了"):
-      st.session_state["3pagenext"] = True
-    if st.session_state["3pagenext"]:
-      change_page()
-
-#ページ３：希望日入力
-if "page_control" in st.session_state and st.session_state["page_control"] == 2:
-  st.header('３．練習希望日時の入力')
-  input_date()
-
-  #定数データ作成
-  st.session_state["I"] = [i for i in range(1, band_sum + 1)]
-  st.session_state["D"] = [i for i in range(1, day_sum + 1)]
-  st.session_state["T"] = [i for i in range(1, 8)]
-
-
-
-  st.write("記入を終えたファイルをアップロードしてください。")
-
-  st.session_state["kibou_file"] = st.file_uploader(label="シフト希望表をアップロード", type=["xlsx"])
+def practice_shift_main():
+  # Webアプリのタイトル
+  st.title('シフトスケジュール最適化')
   
-  if st.session_state["kibou_file"] is not None:
-    change_page()
-
-if "page_control" in st.session_state and st.session_state["page_control"] == 3:
-  st.header('４．最適化の実行')
-  book1 = load_workbook(st.session_state["kibou_file"])
-  st.session_state["kibou_time"] = {}
-  st.session_state["last_week"] = {}
-
-  #希望ファイルの読み込み
-  for i in st.session_state["I"]:
-      sheet_band = book1[band_list[i]]  # シートを取得
-      for d in st.session_state["D"]:
-          for t in st.session_state["T"]:
-              value = sheet_band.cell(row=2 + t, column=2 + d).value
-              if value is not 1:
-                  value = 0      
-              # キーを文字列に変換して保存
-              key_str = f"{i}_{d}_{t}"
-              st.session_state["kibou_time"][key_str] = value
-
-  for i in st.session_state["I"]:
-    st.session_state["last_week"][i] = int(any(st.session_state["kibou_time"][f"{i}_{d}_{t}"] for d in range(day_sum - 6, day_sum + 1) for t in st.session_state["T"]))
-
-
-  if st.session_state["kibou_time"] is not None:
-    st.write("希望の読み込みに成功しました。")
-    st.write("実行ボタンを押してシフトを作成します。")
-    if st.button("実行ボタン"):
-      st.session_state["saitekika_button"] = True
-    if st.session_state["saitekika_button"]:
-      saitekika()
+  
+  #ページ１：参加バンド登録
+  uploaded_file_path = 'バンドリスト_テンプレート.xlsx'
+  # ファイルをバイトとして読み込む
+  with open(uploaded_file_path, 'rb') as file:
+      band_listfile = file.read()
+  
+  if st.session_state["page_control"] == 0:
+    st.header('１．参加バンドの登録')
+    st.caption('ダウンロードボタンからテンプレートをダウンロードして、出演バンドを記入してください。')
+    st.caption('記入を終えたファイルをアップロードしてください。')
+  
+    st.download_button(
+        label="テンプレートをダウンロード",
+        data=band_listfile,
+        file_name='参加バンド登録＿テンプレート.xlsx',
+        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+  
+    st.session_state["uploaded_file1"] = st.file_uploader("バンド名簿をアップロード", type=["xlsx"],key = "バンド名簿")
+    if st.session_state["uploaded_file1"] is not None:
+      change_page()
+  
+  
+  
+  #ページ２：ライブ情報の入力
+  if "page_control" in st.session_state and st.session_state["page_control"] == 1:
+      # st.session_state['uploaded'] = True
+      st.header('２．ライブ情報の入力')
+      st.session_state["book"] = load_workbook(st.session_state["uploaded_file1"])
+      st.session_state["sheet"] = st.session_state["book"]["概要"]
+      band_sum = band_list_making()
+  
+      st.session_state["start_day"] = st.date_input('シフト開始日を入力してください。', datetime.date(2024, 10, 10))
+      st.session_state["end_day"] = st.date_input('シフト終了日を入力してください。', datetime.date(2024, 10, 31))
+      if st.session_state["start_day"] > st.session_state["end_day"]:
+          st.error('開始日は終了日より後の日付を入力してください。')
+          st.stop()
+  
+      day_sum = (st.session_state["end_day"] - st.session_state["start_day"] + datetime.timedelta(days=1)).days
+      max_practice = option_select()
+      vacation = st.toggle("長期休暇期間")
+      d = st.toggle("部室利用禁止日あり")
+      if d == True:
+        kinshi_select()
+      week_judge(st.session_state["start_day"], vacation)
       
-  else:
-    st.write("希望の読み込みに失敗しました。もう一度ファイルを読み込ませてください。")
+      if st.button("入力完了"):
+        st.session_state["3pagenext"] = True
+      if st.session_state["3pagenext"]:
+        change_page()
+  
+  #ページ３：希望日入力
+  if "page_control" in st.session_state and st.session_state["page_control"] == 2:
+    st.header('３．練習希望日時の入力')
+    input_date()
+  
+    #定数データ作成
+    st.session_state["I"] = [i for i in range(1, band_sum + 1)]
+    st.session_state["D"] = [i for i in range(1, day_sum + 1)]
+    st.session_state["T"] = [i for i in range(1, 8)]
+  
+  
+  
+    st.write("記入を終えたファイルをアップロードしてください。")
+  
+    st.session_state["kibou_file"] = st.file_uploader(label="シフト希望表をアップロード", type=["xlsx"])
+    
+    if st.session_state["kibou_file"] is not None:
+      change_page()
+  
+  if "page_control" in st.session_state and st.session_state["page_control"] == 3:
+    st.header('４．最適化の実行')
+    book1 = load_workbook(st.session_state["kibou_file"])
+    st.session_state["kibou_time"] = {}
+    st.session_state["last_week"] = {}
+  
+    #希望ファイルの読み込み
+    for i in st.session_state["I"]:
+        sheet_band = book1[band_list[i]]  # シートを取得
+        for d in st.session_state["D"]:
+            for t in st.session_state["T"]:
+                value = sheet_band.cell(row=2 + t, column=2 + d).value
+                if value is not 1:
+                    value = 0      
+                # キーを文字列に変換して保存
+                key_str = f"{i}_{d}_{t}"
+                st.session_state["kibou_time"][key_str] = value
+  
+    for i in st.session_state["I"]:
+      st.session_state["last_week"][i] = int(any(st.session_state["kibou_time"][f"{i}_{d}_{t}"] for d in range(day_sum - 6, day_sum + 1) for t in st.session_state["T"]))
+  
+  
+    if st.session_state["kibou_time"] is not None:
+      st.write("希望の読み込みに成功しました。")
+      st.write("実行ボタンを押してシフトを作成します。")
+      if st.button("実行ボタン"):
+        st.session_state["saitekika_button"] = True
+      if st.session_state["saitekika_button"]:
+        saitekika()
+        
+    else:
+      st.write("希望の読み込みに失敗しました。もう一度ファイルを読み込ませてください。")
+
+with tab1:
+  practice_shift_main()
