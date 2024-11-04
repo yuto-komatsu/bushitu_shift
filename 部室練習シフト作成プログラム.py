@@ -814,7 +814,7 @@ def part_shift_main():
     
         #パートメンバーの表示(縦)
         j=0
-        for i in member:
+        for i in st.session_state["member"]:
           sheet.cell(row=11+j-m, column=3+n).value = i
           sheet.cell(row=11+j-m, column=4+n).value = member[i]
           j += 1
