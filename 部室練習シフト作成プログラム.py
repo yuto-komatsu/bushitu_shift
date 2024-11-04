@@ -513,8 +513,9 @@ def part_shift_main():
       change_page2()
 
     #ページ２
+
     if "page_control2" in st.session_state and st.session_state["page_control2"] == 1:
-      st.header('２．ライブ情報の入力')
+      st.header('２．シフト希望の入力')
       st.caption('シフト希望入力表を作成しました。')
       st.caption('ダウンロードボタンからダウンロードし、記入を終えたファイルをアップロードしてください。')
       
@@ -751,6 +752,14 @@ def part_shift_main():
           file_name='シフト希望記入表.xlsx',
           mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       )
+      st.session_state["kibou_file2"] = st.file_uploader("シフト希望をアップロード", type=["xlsx"])
+      if st.session_state["kibou_file2"] is not None:
+        change_page2()
+        
+    if "page_control2" in st.session_state and st.session_state["page_control2"] == 2:
+      st.header('３．最適化の実行')
+      
+    
         
   
 
