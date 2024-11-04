@@ -574,13 +574,13 @@ def part_shift_main():
       
           #タイムテーブルの表示(横)
           for i in st.session_state["timetable"]:
-            sheet.cell(row=10, column=5+i).value = timetable[i]
+            sheet.cell(row=10, column=5+i).value = st.session_state["timetable"][i]
       
           #パートメンバーの表示(縦)
           j=0
           for i in st.session_state["member"]:
             sheet.cell(row=11+j, column=3).value = str(i)
-            sheet.cell(row=11+j, column=4).value = member[i]
+            sheet.cell(row=11+j, column=4).value = st.session_state["member"][i]
             j += 1
       
           #g_(i)を表示
