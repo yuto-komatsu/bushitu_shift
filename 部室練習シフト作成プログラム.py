@@ -919,18 +919,18 @@ def part_shift_main():
         if Part == "照明":
           book.remove(book['Sheet'])
     
-       # バイトストリームにExcelファイルを保存
-        buffer2 = BytesIO()
-        book.save(buffer2)
-        buffer2.seek(0)
-      
-        # StreamlitのダウンロードボタンでExcelファイルをダウンロード
-        st.download_button(
-            label="ダウンロード",
-            data=buffer2,
-            file_name='test.xlsx',
-            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
+     # バイトストリームにExcelファイルを保存
+      buffer2 = BytesIO()
+      book.save(buffer2)
+      buffer2.seek(0)
+    
+      # StreamlitのダウンロードボタンでExcelファイルをダウンロード
+      st.download_button(
+          label="ダウンロード",
+          data=buffer2,
+          file_name='test.xlsx',
+          mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      )
 
 
       
