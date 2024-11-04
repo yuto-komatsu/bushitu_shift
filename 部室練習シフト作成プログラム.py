@@ -630,7 +630,7 @@ def part_shift_main():
           for i in range(1,11+n1+n2+n3):
             for j in range(1,5+t+2):
               sheet.cell(row=1+i, column=1+j).font = font
-              sheet.cell(row=1+i, column=1+j).alignment = Alignment(horizontal = 'left', vertical = 'center'
+              sheet.cell(row=1+i, column=1+j).alignment = Alignment(horizontal = 'left', vertical = 'center')
 
           #幅の自動調整(関数呼び出し)
           sheet_adjusted_width(sheet)
