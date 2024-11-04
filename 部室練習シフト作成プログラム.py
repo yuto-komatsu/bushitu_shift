@@ -930,7 +930,7 @@ def part_shift_main():
       #最適化
       st.session_state["book"] = load_workbook(st.session_state["buffer2"])
       for Part in Part_list:
-        st.session_state["sheet"] = st.session_state["book"][Part]
+        sheet = st.session_state["book"][Part]
         jouken = [0,0,0,0,0]
         if Part == "ボーカル":
           jouken=[3,0,1,0,1,1]
