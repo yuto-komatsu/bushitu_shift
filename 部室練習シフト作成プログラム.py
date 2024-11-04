@@ -12,6 +12,16 @@ from mip import Model, xsum, minimize, BINARY, OptimizationStatus
 tab_titles = ['部室練習固定シフト', '設営パートシフト']
 tab1, tab2 = st.tabs(tab_titles)
 
+border1 = Border(top=Side(style='thick', color='000000'),
+                bottom=Side(style='thick', color='000000'),
+                left=Side(style='thick', color='000000'),
+                right=Side(style='thin', color='000000')
+)
+
+border2 = Border(top=Side(style='thick', color='000000'),
+                bottom=Side(style='thick', color='000000'),
+                right=Side(style='thick', color='000000')
+)
 
 border_topthick = Border(top=Side(style='thick', color='000000'),
                 left=Side(style='thick', color='000000'),
@@ -528,7 +538,174 @@ def part_shift_main():
           i += 1
           n1 += 1
         st.write(st.session_state["member"])
+        if n1  != 0 and n2 != 0 and n3 != 0:
+          #希望用エクセルファイルの作成
+          book = openpyxl.Workbook()
+          book.create_sheet(index=0, title=Part)
+          sheet = book[Part]
       
+          #固定の文字列の作成
+          sheet.cell(row=2, column=2).value = "総バンド数"
+          sheet.cell(row=2, column=3).value = t
+      
+          sheet.cell(row=4, column=3).value = "人数"
+          sheet.cell(row=5, column=2).value = "3年生"
+          sheet.cell(row=6, column=2).value = "2年生"
+          sheet.cell(row=7, column=2).value = "1年生"
+      
+          sheet.cell(row=5, column=3).value = n3
+          sheet.cell(row=6, column=3).value = n2
+          sheet.cell(row=7, column=3).value = n1
+      
+          sheet.cell(row=2, column=5).value = "インタミ直前"
+          sheet.cell(row=2, column=6).value = intami
+      
+          #c[i,j,t]の表示
+          sheet.cell(row=10, column=2).value = "c_(i,j,t)"
+          sheet.cell(row=11, column=2).value = "3年生"
+          sheet.cell(row=11+n3, column=2).value = "2年生"
+          sheet.cell(row=11+n3+n2, column=2).value = "1年生"
+      
+          sheet.merge_cells(start_row=11, start_column=2, end_row=11+n3-1, end_column=2)
+          sheet.merge_cells(start_row=11+n3, start_column=2, end_row=11+n2+n3-1, end_column=2)
+          sheet.merge_cells(start_row=11+n2+n3, start_column=2, end_row=11+n1+n2+n3-1, end_column=2)
+      
+          sheet.merge_cells(start_row=10, start_column=3, end_row=10, end_column=4)
+      
+          #タイムテーブルの表示(横)
+          for i in timetable:
+            sheet.cell(row=10, column=5+i).value = timetable[i]
+      
+          #パートメンバーの表示(縦)
+          j=0
+          for i in member:
+            sheet.cell(row=11+j, column=3).value = str(i)
+            sheet.cell(row=11+j, column=4).value = member[i]
+            j += 1
+      
+          #g_(i)を表示
+          sheet.cell(row=10, column=4+t+2).value = "g_(i)"
+          j = 1
+          for i in member:
+            if j >= n2+n3+1 and j < n1+n2+n3+1:
+              sheet.cell(row=10+j-n2-n3, column=4+t+2).value = i
+            j+=1
+          #総バンド数の枠線
+          sheet.cell(row=2, column=2).border = border1
+          sheet.cell(row=2, column=3).border = border2
+
+          #インタミ直前の枠線
+          sheet.cell(row=2, column=5).border = border1
+          sheet.cell(row=2, column=6).border = border2
+        #各学年の部員の人数の枠線
+    
+          sheet.cell(row=4, column=2).border = border_topleft
+          sheet.cell(row=4, column=3).border = border_topright
+          sheet.cell(row=7, column=2).border = border_bottomleft
+          sheet.cell(row=7, column=3).border = border_bottomright
+          for i in range(5,7):
+            sheet.cell(row=i, column=2).border = border_left
+            sheet.cell(row=i, column=3).border = border_right
+      
+          #↓バンドによって出力が変わる
+          #g[i]の枠線
+          sheet.cell(row=10, column=5+t+1).border = border_topleft
+          sheet.cell(row=10, column=5+t+2).border = border_topright
+          sheet.cell(row=10+n1, column=5+t+1).border = border_bottomleft
+          sheet.cell(row=10+n1, column=5+t+2).border = border_bottomright
+          for i in range(11,10+n1):
+            sheet.cell(row=i, column=5+t+1).border = border_left
+            sheet.cell(row=i, column=5+t+2).border = border_right
+      
+          #c[i,t]の枠線
+          #列Bの枠線
+          sheet.cell(row=10, column=2).border = border_topthick
+      
+          sheet.cell(row=11, column=2).border = border_topthick
+          sheet.cell(row=11+n3, column=2).border = border_topthick
+          sheet.cell(row=11+n3+n2, column=2).border = border_topthick
+      
+          sheet.cell(row=11+n3-1, column=2).border = border_bottomthick
+          sheet.cell(row=11+n2+n3-1, column=2).border = border_bottomthick
+          sheet.cell(row=11+n3+n2+n1-1, column=2).border = border_bottomthick
+          for i in range(12,12+n3-2):
+              sheet.cell(row=i, column=2).border = border_sidethick
+          for i in range(12+n3,12+n3+n2-2):
+              sheet.cell(row=i, column=2).border = border_sidethick
+          for i in range(12+n3+n2,12+n3+n2+n1-2):
+              sheet.cell(row=i, column=2).border = border_sidethick
+      
+          #列C,Dの枠線
+          sheet.cell(row=10, column=3).border = border_topleft
+          sheet.cell(row=10, column=4).border = border_topright
+          #3回生
+          sheet.cell(row=11+n3-1, column=3).border = border_bottomleft
+          sheet.cell(row=11+n3-1, column=4).border = border_bottomright
+          sheet.cell(row=11, column=3).border = border_topleft
+          sheet.cell(row=11, column=4).border = border_topright
+          for i in range(12,10+n3):
+            sheet.cell(row=i, column=3).border = border_left
+            sheet.cell(row=i, column=4).border = border_right
+      
+          #2回生
+          sheet.cell(row=11+n2+n3-1, column=3).border = border_bottomleft
+          sheet.cell(row=11+n2+n3-1, column=4).border = border_bottomright
+          sheet.cell(row=11+n3, column=3).border = border_topleft
+          sheet.cell(row=11+n3, column=4).border = border_topright
+          for i in range(12+n3,10+n2+n3):
+            sheet.cell(row=i, column=3).border = border_left
+            sheet.cell(row=i, column=4).border = border_right
+      
+          #1回生
+          sheet.cell(row=11+n1+n2+n3-1, column=3).border = border_bottomleft
+          sheet.cell(row=11+n1+n2+n3-1, column=4).border = border_bottomright
+          sheet.cell(row=11+n2+n3, column=3).border = border_topleft
+          sheet.cell(row=11+n2+n3, column=4).border = border_topright
+          for i in range(12+n2+n3,10+n1+n2+n3):
+            sheet.cell(row=i, column=3).border = border_left
+            sheet.cell(row=i, column=4).border = border_right
+      
+          #列E～の枠線
+          sheet.cell(row=10, column=5).border = border_topleft
+          sheet.cell(row=11, column=5).border = border_topleft
+          sheet.cell(row=10+n1+n2+n3, column=5).border = border_bottomleft
+      
+          for i in range(6, 6+t-2):
+            sheet.cell(row=10, column=i).border = border_topcenter
+            sheet.cell(row=11, column=i).border = border_topcenter
+            sheet.cell(row=10+n1+n2+n3, column=i).border = border_bottomcenter
+      
+      
+          #右端の枠線
+          sheet.cell(row=10, column=6+t-2).border = border_topright
+          sheet.cell(row=11, column=6+t-2).border = border_topright
+          sheet.cell(row=10+n1+n2+n3, column=6+t-2).border = border_bottomright
+      
+          #右,左端の枠線
+          for i in range(12,12+n1+n2+n3-2):
+            sheet.cell(row=i, column=5).border = border_left
+            sheet.cell(row=i, column=6+t-2).border = border_right
+      
+          for i in range(12,12+n1+n2+n3-2):
+            for j in range(6,6+t-2):
+              sheet.cell(row=i, column=j).border = border_allthin
+      
+      book.remove(book['Sheet'])
+      book.save('2023年学祭パートシフト希望('+Part+').xlsx')
+
+     # バイトストリームにExcelファイルを保存
+      buffer = BytesIO()
+      book.save(buffer)
+      buffer.seek(0)
+    
+      # StreamlitのダウンロードボタンでExcelファイルをダウンロード
+      st.download_button(
+          label="ダウンロード",
+          data=buffer,
+          file_name='シフト希望記入表.xlsx',
+          mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      )
+        
   
 
 with tab1:
