@@ -919,16 +919,16 @@ def part_shift_main():
         if Part == "照明":
           book.remove(book['Sheet'])
     
-     # バイトストリームにExcelファイルを保存
-      st.session_state["buffer2"] = BytesIO()
-      book.save(st.session_state["buffer2"])
-      st.session_state["buffer2"].seek(0)
+     # # バイトストリームにExcelファイルを保存
+     #  st.session_state["buffer2"] = BytesIO()
+     #  book.save(st.session_state["buffer2"])
+     #  st.session_state["buffer2"].seek(0)
 
 
 
       
       #最適化
-      st.session_state["book"] = load_workbook(st.session_state["buffer2"])
+      st.session_state["book"] = load_workbook(book)
       for Part in Part_list:
         sheet = st.session_state["book"][Part]
         jouken = [0,0,0,0,0]
