@@ -489,9 +489,8 @@ def part_shift_main():
       intami = sheet.cell(row=3, column=4).value
 
       for Part in Part_list:
-        book = load_workbook(st.session_state["member_file1"])
         #↓パートごとに分かれる
-        sheet = book[Part]
+        st.session_state["sheet"] = st.session_state["book"][Part]
         st.write(Part)
       
   
