@@ -498,10 +498,11 @@ def part_shift_main():
       #インタミ直前のバンド数の読み込み
       intami = st.session_state["sheet"].cell(row=3, column=4).value
 
+
+      book = openpyxl.Workbook()
       for Part in Part_list:
         #↓パートごとに分かれる
         st.session_state["sheet"] = st.session_state["book"][Part]
-        st.write(Part)
 
         i = 0  
         n1 = 0
@@ -540,7 +541,6 @@ def part_shift_main():
         st.write(st.session_state["member"])
         if n1  != 0 and n2 != 0 and n3 != 0:
           #希望用エクセルファイルの作成
-          book = openpyxl.Workbook()
           book.create_sheet(index=0, title=Part)
           sheet = book[Part]
       
