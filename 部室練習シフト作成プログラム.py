@@ -5,7 +5,7 @@ import openpyxl
 from openpyxl import load_workbook
 from io import BytesIO
 import jpholiday
-from openpyxl.styles import Border, Side, Font
+from openpyxl.styles import Border, Side, Font, PatternFill
 from openpyxl.styles.alignment import Alignment
 from mip import Model, xsum, minimize, BINARY, OptimizationStatus
 from unicodedata import east_asian_width
