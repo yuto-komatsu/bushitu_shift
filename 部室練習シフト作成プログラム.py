@@ -816,7 +816,7 @@ def part_shift_main():
         j=0
         for i in st.session_state["member"]:
           sheet.cell(row=11+j-m, column=3+n).value = i
-          sheet.cell(row=11+j-m, column=4+n).value = member[i]
+          sheet.cell(row=11+j-m, column=4+n).value = st.session_state["member"][i]
           j += 1
     
         #書式設定
