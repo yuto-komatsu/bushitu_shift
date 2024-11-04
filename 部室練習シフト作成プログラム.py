@@ -486,7 +486,7 @@ def part_shift_main():
       st.write(st.session_state["timetable"])
 
       #インタミ直前のバンド数の読み込み
-      intami = sheet.cell(row=3, column=4).value
+      intami = st.session_state["sheet"].cell(row=3, column=4).value
 
       for Part in Part_list:
         #↓パートごとに分かれる
