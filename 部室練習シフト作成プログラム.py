@@ -573,12 +573,12 @@ def part_shift_main():
           sheet.merge_cells(start_row=10, start_column=3, end_row=10, end_column=4)
       
           #タイムテーブルの表示(横)
-          for i in timetable:
+          for i in st.session_state["timetable"]:
             sheet.cell(row=10, column=5+i).value = timetable[i]
       
           #パートメンバーの表示(縦)
           j=0
-          for i in member:
+          for i in st.session_state["member"]:
             sheet.cell(row=11+j, column=3).value = str(i)
             sheet.cell(row=11+j, column=4).value = member[i]
             j += 1
@@ -586,7 +586,7 @@ def part_shift_main():
           #g_(i)を表示
           sheet.cell(row=10, column=4+t+2).value = "g_(i)"
           j = 1
-          for i in member:
+          for i in st.session_state["member"]:
             if j >= n2+n3+1 and j < n1+n2+n3+1:
               sheet.cell(row=10+j-n2-n3, column=4+t+2).value = i
             j+=1
