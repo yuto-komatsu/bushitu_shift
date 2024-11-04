@@ -8,6 +8,7 @@ import jpholiday
 from openpyxl.styles import Border, Side, Font
 from openpyxl.styles.alignment import Alignment
 from mip import Model, xsum, minimize, BINARY, OptimizationStatus
+from unicodedata import east_asian_width
 
 #幅自動調整用データ
 width_dict = {
@@ -575,7 +576,7 @@ def part_shift_main():
         st.write(st.session_state["member"])
         if n1  != 0 and n2 != 0 and n3 != 0:
           #希望用エクセルファイルの作成
-          book.create_sheet(index=0, title=Part)
+          book.create_sheet(index=0, title=Part, index=0)
           sheet = book[Part]
       
           #固定の文字列の作成
