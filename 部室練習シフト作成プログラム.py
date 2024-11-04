@@ -925,13 +925,13 @@ def part_shift_main():
     
        # バイトストリームにExcelファイルを保存
         buffer = BytesIO()
-        book.save(buffer)
-        buffer.seek(0)
+        book.save(buffer2)
+        buffer2.seek(0)
       
         # StreamlitのダウンロードボタンでExcelファイルをダウンロード
         st.download_button(
             label="ダウンロード",
-            data=buffer,
+            data=buffer2,
             file_name='test.xlsx',
             mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
