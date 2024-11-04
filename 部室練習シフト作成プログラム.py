@@ -928,7 +928,7 @@ def part_shift_main():
 
       
       #最適化
-      st.session_state["book"] = load_workbook(st.session_state["kibou_file2"])
+      st.session_state["book"] = load_workbook(buffer2)
       for Part in Part_list:
         st.session_state["sheet"] = st.session_state["book"][Part]
         jouken = [0,0,0,0,0]
