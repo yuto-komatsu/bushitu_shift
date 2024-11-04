@@ -467,9 +467,24 @@ def part_shift_main():
     if st.session_state["member_file1"] is not None:
       change_page2()
 
+    #ページ２
     if "page_control2" in st.session_state and st.session_state["page_control2"] == 1:
-      # st.session_state['uploaded'] = True
       st.header('２．ライブ情報の入力')
+      st.session_state["book"] = load_workbook(st.session_state["member_file1"])
+      st.session_state["sheet"] = st.session_state["book"]["タイムテーブル"]
+      Part_list=["ボーカル","ギター","ベース","ドラム","キーボード","PA","照明"]
+
+      #タイムテーブルの読み込み
+      st.session_state["timetable"]={}
+      t=0
+      while True:
+        value = sheet.cell(row=3+t, column=2).value
+        if value is None:
+          break
+        st.session_state["timetable"][t] = value
+        t += 1
+      st.write(st.session_state["timetable"])
+      
   
 
 with tab1:
