@@ -923,245 +923,247 @@ def part_shift_main():
       st.session_state["buffer2"] = BytesIO()
       book.save(st.session_state["buffer2"])
       st.session_state["buffer2"].seek(0)
-    
-      #最適化
-      for Part in Part_list:
-        st.session_state["book"] = load_workbook(st.session_state["kibou_file2"])
-        for Part in Part_list:
-          st.session_state["sheet"] = st.session_state["book"][Part]
-          jouken = [0,0,0,0,0]
-          if Part == "ボーカル":
-            jouken=[3,0,1,0,1,1]
-          elif Part == "ギター":
-            jouken=[3,0,1,0,1,1]
-          elif Part == "ベース":
-            jouken=[3,0,1,0,1,1]
-          elif Part == "PA":
-            jouken=[4,1,1,0,1,1]
-          elif Part == "照明":
-            jouken=[4,1,1,0,1,1]
-          elif Part == "ドラム":
-            jouken=[4,1,1,1,0,0]
-  
-  
-          #総バンド数
-          m = sheet.cell(row=2, column=3).value
-        
-          #各学年の人数
-          n1 = sheet.cell(row=7, column=3).value
-          n2 = sheet.cell(row=6, column=3).value
-          n3 = sheet.cell(row=5, column=3).value
-          st.write(n1)
-        
-          #定数用のデータの作成
-          I = [i+1 for i in range(n1 + n2 + n3)]
-          T = [i+1 for i in range(m)]
-        
-          #インタミ直前のバンド
-          intami = sheet.cell(row=2, column=6).value
-        
-          c ={} #出演都合
-          for i in I:
-            for t in T:
-              value = sheet.cell(row=10+i, column=4+t).value
-              c[i, t] = value if value is not None else 1
-        
-          g = {} #1回生の講習会参加
-          for i in range(n2+n3+1,n1+n2+n3+1):
-            value = sheet.cell(row=10+i-n2-n3, column=18).value
-            g[i] = value if value is not None else 0
-        
-          #空問題の作成
-          model = Model('PartShift')
-  
-  
-          #決定変数の作成
-          x = {}
-          for i in I:
-            for t in T:
-              x[i, t] = model.add_var(f'x{i},{t}', var_type='B')
-        
-          y = {}
-          for i in I:
-            for j in I:
-              for t in T:
-                y[i,j,t] = model.add_var(f'y{i},{j},{t}', var_type='B')
-        
-          z = {}
-          for i in I:
-            for j in I:
-              z[i,j] = model.add_var(f'z{i},{j}', var_type='B')
-        
-          #ペナルティ変数
-          w = {}
-          for i in I:
-            for t in T:
-              w[i, t] = model.add_var(f'w{i},{t}', var_type='B')
-        
-          v = {}
-          for i in I:
-            for t in range(1,m):
-              v[i, t] = model.add_var(f'v{i},{t}', var_type='B')
-        
-          u = {}
-          for i in I:
-            for t in range(1,m):
-              u[i, t] = model.add_var(f'u{i},{t}', var_type='B')
-        
-          s = {}
-          for i in I:
-            for j in I:
-              s[i,j] = model.add_var(f's{i},{j}', var_type='B')
-        
-        
-          #制約条件の追加
-        
-        
-          #①出演直後のメンバーに仕事を割り当てない
-          #②講習会に参加していない1回生が仕事を割り当てられた場合、必ず2回生が２人以上同じスロットに入る
-          #③できるだけメンバーは連続して仕事をしない
-          #④できるだけ出演前のシフトに仕事を割り当てない
-          #⑤なるべく違う部員と仕事をする
-        
-          #ハード制約条件
-          #スロットｔには2人以上,4人以下を割り当てる
-          for t in T:
-            model += xsum(x[i,t] for i in I) >= 2
-            model += xsum(x[i,t] for i in I) <= jouken[0]
-        
-          #連続して仕事ができるのは最大3回まで
-          if jouken[3] == 0:
-            for i in I:
-              for t in range(1,m-2):
-                model += x[i,t] + x[i,t+1] + x[i,t+2] +x[i,t+3] <= 3
-        
-          #希望スロット以外に仕事を割り振らない
-          for i in I:
-            for t in T:
-              if c[i,t] == 2 or c[i,t] == 0:
-                model += x[i,t] == 0
-              # elif c[i,t] == 1:
-              #   model += x[i,t] <= 1
-        
-          #1回生が仕事を割り当てられた場合、必ず2回生が1人以上同じスロットに入る
-          for t in T:
-            model += xsum(x[i,t] for i in range(n2+n3+1, n1+n2+n3+1)) <= xsum(x[i,t] for i in range(1,n2+n3+1))*3
-        
-          #講習会に参加していない1回生は最低2回以上仕事をする
-          for i in range(n2+n3+1,n1+n2+n3+1):
-            if xsum(c[i,t] for t in T) >= 1:
-              model += xsum(x[i,t] for t in T) >= 1
-        
-          #①出演直後のメンバーに仕事を割り当てない
-          if jouken[1] == 1:
-            for i in I:
-              for t in range(1,m):
-                if c[i,t] == 2:
-                  if t != intami:
-                    model += x[i,t+1] == 0
-        
-        
-          #ソフト制約条件
-          #②講習会に参加していない1回生が仕事を割り当てられた場合、必ず2回生が２人以上同じスロットに入る
-          for i in range(n2+n3+1, n1+n2+n3+1):
-            if g[i] == 1:
-              for t in T:
-                model += xsum(x[j,t] for j in range(1,n2+n3+1)) >= 2 * x[i,t] - w[i,t]
-        
-          #③できるだけメンバーは連続して仕事をしない
-          for i in I:
-            for t in range(1,m):
-              model += x[i,t] + x[i,t+1] <= 1 + v[i,t]
-        
-          #④できるだけ出演前のシフトに仕事を割り当てない
-          for i in I:
-            for t in range(1,m):
-              if c[i,t+1] == 2:
-                model += x[i,t] <= u[i,t]
-        
-          #⑤なるべく違う部員と仕事をする
-          if n2 < n1:
-            for i in range(n2+1,n2+n3+1):
-              for j in I:
-                for t in T:
-                  if i != j:
-                    model += x[i,t] + x[j,t] >= 2*y[i,j,t]
-        
-            for i in range(n2+1,n2+n3+1):
-              for j in I:
-                if i != j:
-                  model += xsum(y[i,j,t] for t in T) >= z[i,j] - s[i,j]
-          elif n1 <= n2:
-            for i in range(n2+n3+1,n1+n2+n3+1):
-              for j in I:
-                for t in T:
-                  if i != j:
-                    model += x[i,t] + x[j,t] >= 2*y[i,j,t]
-        
-            for i in range(n2+n3+1,n1+n2+n3+1):
-              for j in I:
-                if i != j:
-                  model += xsum(y[i,j,t] for t in T) >= z[i,j] - s[i,j]
-        
-          #最適化
-          #目的関数の設定
-          model.objective = minimize(jouken[2]*xsum(w[i,t] for i in I for t in T) + jouken[3]*xsum(v[i,t] for i in I for t in range(1,m)) + jouken[4]*xsum(u[i,t] for i in I for t in range(1,m))
-          -jouken[5]*xsum(z[i,j] for i in I for j in I)
-          + jouken[5]*1.1*xsum(s[i,j] for i in I for j in I)
-          +xsum(x[i,t] for i in range(n3+1,n2+n3+1) for t in T) +5*xsum(x[i,t] for i in range(1,n3+1) for t in T))
-        
-          #最適化の実行
-          status = model.optimize()
 
-          book = load_workbook(buffer2)
-          sheet = book[str(Part)]
-          if status == OptimizationStatus.OPTIMAL:
-              st.write('最適値('+ Part +') =', model.objective_value)
-        
-              for i in I:
-                for t in T:
-                  if t <= intami:
+
+
+      
+      #最適化
+      st.session_state["book"] = load_workbook(st.session_state["kibou_file2"])
+      for Part in Part_list:
+        st.session_state["sheet"] = st.session_state["book"][Part]
+        jouken = [0,0,0,0,0]
+        if Part == "ボーカル":
+          jouken=[3,0,1,0,1,1]
+        elif Part == "ギター":
+          jouken=[3,0,1,0,1,1]
+        elif Part == "ベース":
+          jouken=[3,0,1,0,1,1]
+        elif Part == "PA":
+          jouken=[4,1,1,0,1,1]
+        elif Part == "照明":
+          jouken=[4,1,1,0,1,1]
+        elif Part == "ドラム":
+          jouken=[4,1,1,1,0,0]
+
+
+        #総バンド数
+        m = sheet.cell(row=2, column=3).value
+      
+        #各学年の人数
+        n1 = sheet.cell(row=7, column=3).value
+        n2 = sheet.cell(row=6, column=3).value
+        n3 = sheet.cell(row=5, column=3).value
+        st.write(n1)
+      
+        #定数用のデータの作成
+        I = [i+1 for i in range(n1 + n2 + n3)]
+        T = [i+1 for i in range(m)]
+      
+        #インタミ直前のバンド
+        intami = sheet.cell(row=2, column=6).value
+      
+        c ={} #出演都合
+        for i in I:
+          for t in T:
+            value = sheet.cell(row=10+i, column=4+t).value
+            c[i, t] = value if value is not None else 1
+      
+        g = {} #1回生の講習会参加
+        for i in range(n2+n3+1,n1+n2+n3+1):
+          value = sheet.cell(row=10+i-n2-n3, column=18).value
+          g[i] = value if value is not None else 0
+      
+        #空問題の作成
+        model = Model('PartShift')
+
+
+        #決定変数の作成
+        x = {}
+        for i in I:
+          for t in T:
+            x[i, t] = model.add_var(f'x{i},{t}', var_type='B')
+      
+        y = {}
+        for i in I:
+          for j in I:
+            for t in T:
+              y[i,j,t] = model.add_var(f'y{i},{j},{t}', var_type='B')
+      
+        z = {}
+        for i in I:
+          for j in I:
+            z[i,j] = model.add_var(f'z{i},{j}', var_type='B')
+      
+        #ペナルティ変数
+        w = {}
+        for i in I:
+          for t in T:
+            w[i, t] = model.add_var(f'w{i},{t}', var_type='B')
+      
+        v = {}
+        for i in I:
+          for t in range(1,m):
+            v[i, t] = model.add_var(f'v{i},{t}', var_type='B')
+      
+        u = {}
+        for i in I:
+          for t in range(1,m):
+            u[i, t] = model.add_var(f'u{i},{t}', var_type='B')
+      
+        s = {}
+        for i in I:
+          for j in I:
+            s[i,j] = model.add_var(f's{i},{j}', var_type='B')
+      
+      
+        #制約条件の追加
+      
+      
+        #①出演直後のメンバーに仕事を割り当てない
+        #②講習会に参加していない1回生が仕事を割り当てられた場合、必ず2回生が２人以上同じスロットに入る
+        #③できるだけメンバーは連続して仕事をしない
+        #④できるだけ出演前のシフトに仕事を割り当てない
+        #⑤なるべく違う部員と仕事をする
+      
+        #ハード制約条件
+        #スロットｔには2人以上,4人以下を割り当てる
+        for t in T:
+          model += xsum(x[i,t] for i in I) >= 2
+          model += xsum(x[i,t] for i in I) <= jouken[0]
+      
+        #連続して仕事ができるのは最大3回まで
+        if jouken[3] == 0:
+          for i in I:
+            for t in range(1,m-2):
+              model += x[i,t] + x[i,t+1] + x[i,t+2] +x[i,t+3] <= 3
+      
+        #希望スロット以外に仕事を割り振らない
+        for i in I:
+          for t in T:
+            if c[i,t] == 2 or c[i,t] == 0:
+              model += x[i,t] == 0
+            # elif c[i,t] == 1:
+            #   model += x[i,t] <= 1
+      
+        #1回生が仕事を割り当てられた場合、必ず2回生が1人以上同じスロットに入る
+        for t in T:
+          model += xsum(x[i,t] for i in range(n2+n3+1, n1+n2+n3+1)) <= xsum(x[i,t] for i in range(1,n2+n3+1))*3
+      
+        #講習会に参加していない1回生は最低2回以上仕事をする
+        for i in range(n2+n3+1,n1+n2+n3+1):
+          if xsum(c[i,t] for t in T) >= 1:
+            model += xsum(x[i,t] for t in T) >= 1
+      
+        #①出演直後のメンバーに仕事を割り当てない
+        if jouken[1] == 1:
+          for i in I:
+            for t in range(1,m):
+              if c[i,t] == 2:
+                if t != intami:
+                  model += x[i,t+1] == 0
+      
+      
+        #ソフト制約条件
+        #②講習会に参加していない1回生が仕事を割り当てられた場合、必ず2回生が２人以上同じスロットに入る
+        for i in range(n2+n3+1, n1+n2+n3+1):
+          if g[i] == 1:
+            for t in T:
+              model += xsum(x[j,t] for j in range(1,n2+n3+1)) >= 2 * x[i,t] - w[i,t]
+      
+        #③できるだけメンバーは連続して仕事をしない
+        for i in I:
+          for t in range(1,m):
+            model += x[i,t] + x[i,t+1] <= 1 + v[i,t]
+      
+        #④できるだけ出演前のシフトに仕事を割り当てない
+        for i in I:
+          for t in range(1,m):
+            if c[i,t+1] == 2:
+              model += x[i,t] <= u[i,t]
+      
+        #⑤なるべく違う部員と仕事をする
+        if n2 < n1:
+          for i in range(n2+1,n2+n3+1):
+            for j in I:
+              for t in T:
+                if i != j:
+                  model += x[i,t] + x[j,t] >= 2*y[i,j,t]
+      
+          for i in range(n2+1,n2+n3+1):
+            for j in I:
+              if i != j:
+                model += xsum(y[i,j,t] for t in T) >= z[i,j] - s[i,j]
+        elif n1 <= n2:
+          for i in range(n2+n3+1,n1+n2+n3+1):
+            for j in I:
+              for t in T:
+                if i != j:
+                  model += x[i,t] + x[j,t] >= 2*y[i,j,t]
+      
+          for i in range(n2+n3+1,n1+n2+n3+1):
+            for j in I:
+              if i != j:
+                model += xsum(y[i,j,t] for t in T) >= z[i,j] - s[i,j]
+      
+        #最適化
+        #目的関数の設定
+        model.objective = minimize(jouken[2]*xsum(w[i,t] for i in I for t in T) + jouken[3]*xsum(v[i,t] for i in I for t in range(1,m)) + jouken[4]*xsum(u[i,t] for i in I for t in range(1,m))
+        -jouken[5]*xsum(z[i,j] for i in I for j in I)
+        + jouken[5]*1.1*xsum(s[i,j] for i in I for j in I)
+        +xsum(x[i,t] for i in range(n3+1,n2+n3+1) for t in T) +5*xsum(x[i,t] for i in range(1,n3+1) for t in T))
+      
+        #最適化の実行
+        status = model.optimize()
+
+        book = load_workbook(buffer2)
+        sheet = book[str(Part)]
+        if status == OptimizationStatus.OPTIMAL:
+            st.write('最適値('+ Part +') =', model.objective_value)
+      
+            for i in I:
+              for t in T:
+                if t <= intami:
+                  if c[i,t] == 2:
+                    sheet.cell(row=3+i, column=5+t, value = "出演")
+                  if x[i,t].x > 0.01:
+                    if i >= n2+n3+1:
+                      if g[i] == 1:
+                        sheet.cell(row=3+i, column=5+t).value = "☆"
+                      else:
+                        sheet.cell(row=3+i, column=5+t).value = "〇"
+                    else:
+                      sheet.cell(row=3+i, column=5+t).value = "〇"
+                elif t > intami:
                     if c[i,t] == 2:
-                      sheet.cell(row=3+i, column=5+t, value = "出演")
+                      sheet.cell(row=3+i, column=5+t+1, value = "出演")
                     if x[i,t].x > 0.01:
                       if i >= n2+n3+1:
                         if g[i] == 1:
-                          sheet.cell(row=3+i, column=5+t).value = "☆"
-                        else:
-                          sheet.cell(row=3+i, column=5+t).value = "〇"
-                      else:
-                        sheet.cell(row=3+i, column=5+t).value = "〇"
-                  elif t > intami:
-                      if c[i,t] == 2:
-                        sheet.cell(row=3+i, column=5+t+1, value = "出演")
-                      if x[i,t].x > 0.01:
-                        if i >= n2+n3+1:
-                          if g[i] == 1:
-                            sheet.cell(row=3+i, column=5+t+1).value = "☆"
-                          else:
-                            sheet.cell(row=3+i, column=5+t+1).value = "〇"
+                          sheet.cell(row=3+i, column=5+t+1).value = "☆"
                         else:
                           sheet.cell(row=3+i, column=5+t+1).value = "〇"
-        
-              #書式設定
-              font = Font(size=18,bold=True)
-              for i in I:
-                for t in range(1,m+2):
-                  sheet.cell(row=3+i, column=5+t).font = font
-                  sheet.cell(row=3+i, column=5+t).alignment = Alignment(horizontal = 'center', vertical = 'center')
-    
-        # バイトストリームにExcelファイルを保存
-        buffer = BytesIO()
-        book.save(buffer)
-        buffer.seek(0)
+                      else:
+                        sheet.cell(row=3+i, column=5+t+1).value = "〇"
       
-        # StreamlitのダウンロードボタンでExcelファイルをダウンロード
-        st.download_button(
-            label="ダウンロード",
-            data=buffer,
-            file_name='シフト希望記入表.xlsx',
-            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
+            #書式設定
+            font = Font(size=18,bold=True)
+            for i in I:
+              for t in range(1,m+2):
+                sheet.cell(row=3+i, column=5+t).font = font
+                sheet.cell(row=3+i, column=5+t).alignment = Alignment(horizontal = 'center', vertical = 'center')
+  
+      # バイトストリームにExcelファイルを保存
+      buffer = BytesIO()
+      book.save(buffer)
+      buffer.seek(0)
+    
+      # StreamlitのダウンロードボタンでExcelファイルをダウンロード
+      st.download_button(
+          label="ダウンロード",
+          data=buffer,
+          file_name='シフト希望記入表.xlsx',
+          mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      )
 
     
         
