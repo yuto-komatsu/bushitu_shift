@@ -478,7 +478,7 @@ def part_shift_main():
       st.session_state["timetable"]={}
       t=0
       while True:
-        value = sheet.cell(row=3+t, column=2).value
+        value = st.session_state["sheet"].cell(row=3+t, column=2).value
         if value is None:
           break
         st.session_state["timetable"][t] = value
