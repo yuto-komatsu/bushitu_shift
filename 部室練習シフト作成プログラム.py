@@ -531,7 +531,6 @@ def part_shift_main():
           break
         st.session_state["timetable"][t] = value
         t += 1
-      st.write(st.session_state["timetable"])
 
       #インタミ直前のバンド数の読み込み
       intami = st.session_state["sheet"].cell(row=3, column=4).value
