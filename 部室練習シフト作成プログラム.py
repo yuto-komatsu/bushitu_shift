@@ -492,6 +492,42 @@ def part_shift_main():
         #↓パートごとに分かれる
         st.session_state["sheet"] = st.session_state["book"][Part]
         st.write(Part)
+
+        i = 0  
+        n1 = 0
+        n2 = 0
+        n3 = 0
+      
+        #3年生のデータを読み込む
+        st.session_state["member"] = {}
+        while True:
+          value = st.session_state["sheet"].cell(row=4+i, column=2).value
+          if value is None:
+            break
+          st.session_state["member"][value] =  st.session_state["sheet"].cell(row=4+i, column=3).value
+          i += 1
+          n3 += 1
+      
+        #2年生のデータを読み込む
+        i = 0
+        while True:
+          value = st.session_state["sheet"].cell(row=4+i, column=5).value
+          if value is None:
+            break
+          st.session_state["member"][value] =  st.session_state["sheet"].cell(row=4+i, column=6).value
+          i += 1
+          n2 += 1
+      
+        #1年生のデータを読み込む
+        i = 0
+        while True:
+          value = st.session_state["sheet"].cell(row=4+i, column=8).value
+          if value is None:
+            break
+          st.session_state["member"][value] =  st.session_state["sheet"].cell(row=4+i, column=9).value
+          i += 1
+          n1 += 1
+        st.write(st.session_state["member"])
       
   
 
