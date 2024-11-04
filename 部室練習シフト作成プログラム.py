@@ -768,12 +768,8 @@ def part_shift_main():
         
     if "page_control2" in st.session_state and st.session_state["page_control2"] == 3:
       #出力用ファイルの作成
+      book = openpyxl.Workbook()
       for Part in Part_list:
-        if Part == "ボーカル":
-          book = openpyxl.Workbook()
-        else:
-          book = load_workbook('2023年学祭パートシフト表(外ステージ).xlsx')
-
         #パートシートの追加
         book.create_sheet(index=-1, title=Part)
         sheet = book[Part]
