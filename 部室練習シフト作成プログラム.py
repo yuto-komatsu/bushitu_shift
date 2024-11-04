@@ -9,6 +9,40 @@ from openpyxl.styles import Border, Side, Font
 from openpyxl.styles.alignment import Alignment
 from mip import Model, xsum, minimize, BINARY, OptimizationStatus
 
+#幅自動調整用データ
+width_dict = {
+  'F': 2,   # Fullwidth
+  'H': 1,   # Halfwidth
+  'W': 2,   # Wide
+  'Na': 1,  # Narrow
+  'A': 2,   # Ambiguous
+  'N': 1    # Neutral
+}
+Font_depend = 1.2
+
+#幅自動調整の関数
+def sheet_adjusted_width(ws):
+    # set column width
+    for col in ws.columns:
+        max_length= 1
+        max_diameter = 1
+        column= col[1].column_letter # Get the column name
+        for cell in col:
+            diameter = (cell.font.size*Font_depend)/10
+            if diameter > max_diameter:
+                max_diameter = diameter
+            try:
+                if(cell.value == None) : continue
+                chars = [char for char in str(cell.value)]
+                east_asian_width_list = [east_asian_width(char) for char in chars]
+                width_list = [width_dict[east_asian_width] for east_asian_width in east_asian_width_list]
+                if sum(width_list) > max_length:
+                    max_length= sum(width_list)
+            except:
+                pass
+            ws.column_dimensions[column].width= max_length*max_diameter + 1.2
+
+
 tab_titles = ['部室練習固定シフト', '設営パートシフト']
 tab1, tab2 = st.tabs(tab_titles)
 
@@ -590,6 +624,17 @@ def part_shift_main():
             if j >= n2+n3+1 and j < n1+n2+n3+1:
               sheet.cell(row=10+j-n2-n3, column=4+t+2).value = i
             j+=1
+
+          #書式設定
+          font = Font(name="游ゴシック",size=14,bold=True)
+          for i in range(1,11+n1+n2+n3):
+            for j in range(1,5+t+2):
+              sheet.cell(row=1+i, column=1+j).font = font
+              sheet.cell(row=1+i, column=1+j).alignment = Alignment(horizontal = 'left', vertical = 'center'
+
+          #幅の自動調整(関数呼び出し)
+          sheet_adjusted_width(sheet)
+          
           #総バンド数の枠線
           sheet.cell(row=2, column=2).border = border1
           sheet.cell(row=2, column=3).border = border2
