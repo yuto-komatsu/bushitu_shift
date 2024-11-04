@@ -951,10 +951,10 @@ def part_shift_main():
           n1 = sheet.cell(row=7, column=3).value
           n2 = sheet.cell(row=6, column=3).value
           n3 = sheet.cell(row=5, column=3).value
-        
+          st.write(n1 + n2 + n3)
         
           #定数用のデータの作成
-          I = [i+1 for i in range(int(n1)+int(n2)+int(n3))]
+          I = [i+1 for i in range(n1 + n2 + n3)]
           T = [i+1 for i in range(m)]
         
           #インタミ直前のバンド
