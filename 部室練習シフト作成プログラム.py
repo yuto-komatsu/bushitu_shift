@@ -472,8 +472,17 @@ def practice_shift_main():
     else:
       st.write("希望の読み込みに失敗しました。もう一度ファイルを読み込ませてください。")
 
+def part_shift_main():
+    st.download_button(
+        label="テンプレートをダウンロード",
+        data=band_listfile,
+        file_name='参加バンド登録＿テンプレート.xlsx',
+        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+  
+
 with tab1:
   practice_shift_main()
 
 with tab2:
-  st.write("未実装")
+  part_shift_main()
