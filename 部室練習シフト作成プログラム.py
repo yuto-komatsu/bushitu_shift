@@ -515,7 +515,7 @@ def part_shift_main():
     #ページ２
     if "page_control2" in st.session_state and st.session_state["page_control2"] == 1:
       st.header('２．ライブ情報の入力')
-      st.caption('シフト希望入力表を作成しました。)
+      st.caption('シフト希望入力表を作成しました。')
       st.caption('ダウンロードボタンからダウンロードし、記入を終えたファイルをアップロードしてください。')
       
       st.session_state["book"] = load_workbook(st.session_state["member_file1"])
