@@ -484,6 +484,15 @@ def part_shift_main():
         st.session_state["timetable"][t] = value
         t += 1
       st.write(st.session_state["timetable"])
+
+      #インタミ直前のバンド数の読み込み
+      intami = sheet.cell(row=3, column=4).value
+
+      for Part in Part_list:
+        book = load_workbook('パートシフト希望表作成データ.xlsx')
+        #↓パートごとに分かれる
+        sheet = book[Part]
+        st.write(Part)
       
   
 
