@@ -466,6 +466,10 @@ def part_shift_main():
     st.session_state["member_file1"] = st.file_uploader("パート名簿をアップロード", type=["xlsx"],key = "パート名簿")
     if st.session_state["member_file1"] is not None:
       change_page2()
+
+    if "page_control" in st.session_state and st.session_state["page_control"] == 1:
+      # st.session_state['uploaded'] = True
+      st.header('２．ライブ情報の入力')
   
 
 with tab1:
