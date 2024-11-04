@@ -473,11 +473,24 @@ def practice_shift_main():
       st.write("希望の読み込みに失敗しました。もう一度ファイルを読み込ませてください。")
 
 def part_shift_main():
+  st.title('シフトスケジュール最適化')
+  
+  #ページ１：参加バンド登録
+  uploaded_file_path2 = 'パートシフト_テンプレート.xlsx'
+  # ファイルをバイトとして読み込む
+  with open(uploaded_file_path2, 'rb') as file:
+    member_listfile = file.read()
+  
+
+    st.header('１．パートメンバーの登録')
+    st.caption('ダウンロードボタンからテンプレートをダウンロードして、各パートに所属を記入してください。')
+    st.caption('記入を終えたファイルをアップロードしてください。')
+  
     st.download_button(
-        label="テンプレートをダウンロード",
-        data=band_listfile,
-        file_name='参加バンド登録＿テンプレート.xlsx',
-        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      label="テンプレートをダウンロード",
+      data=member_listfile,
+      file_name='パートメンバー登録＿テンプレート.xlsx',
+      mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
   
 
