@@ -12,39 +12,6 @@ from mip import Model, xsum, minimize, BINARY, OptimizationStatus
 tab_titles = ['部室練習固定シフト', '設営パートシフト']
 tab1, tab2 = st.tabs(tab_titles)
 
-# #幅自動調整用データ
-# width_dict = {
-#   'F': 2,   # Fullwidth
-#   'H': 1,   # Halfwidth
-#   'W': 2,   # Wide
-#   'Na': 1,  # Narrow
-#   'A': 2,   # Ambiguous
-#   'N': 1    # Neutral
-# }
-# Font_depend = 1.2
-
-# #幅自動調整の関数
-# def sheet_adjusted_width(ws):
-#     # set column width
-#     for col in ws.columns:
-#         max_length= 1
-#         max_diameter = 1
-#         column= col[1].column_letter # Get the column name
-#         for cell in col:
-#             diameter = (cell.font.size*Font_depend)/10
-#             if diameter > max_diameter:
-#                 max_diameter = diameter
-#             try:
-#                 if(cell.value == None) : continue
-#                 chars = [char for char in str(cell.value)]
-#                 east_asian_width_list = [east_asian_width(char) for char in chars]
-#                 width_list = [width_dict[east_asian_width] for east_asian_width in east_asian_width_list]
-#                 if sum(width_list) > max_length:
-#                     max_length= sum(width_list)
-#             except:
-#                 pass
-#             ws.column_dimensions[column].width= max_length*max_diameter + 1.2
-
 
 border_topthick = Border(top=Side(style='thick', color='000000'),
                 left=Side(style='thick', color='000000'),
@@ -112,6 +79,7 @@ week = {}
 
 
 st.session_state["page_control"] = 0
+st.session_state["page_control2"] = 0
 st.session_state["kinshi"] = {}
 
 if "3pagenext" not in st.session_state:
@@ -154,6 +122,9 @@ def wakusen(sheet):
 def change_page():
   # ページ切り替えボタンコールバック
   st.session_state["page_control"] += 1
+
+def change_page2():
+  st.session_state["page_control2"] += 1
 
 def band_list_making():
   i = 1
@@ -473,7 +444,7 @@ def practice_shift_main():
       st.write("希望の読み込みに失敗しました。もう一度ファイルを読み込ませてください。")
 
 def part_shift_main():
-  st.title('シフトスケジュール最適化')
+  st.title('設営パートシフト最適化')
   
   #ページ１：参加バンド登録
   uploaded_file_path2 = 'パートシフト_テンプレート.xlsx'
@@ -492,6 +463,9 @@ def part_shift_main():
       file_name='パートメンバー登録＿テンプレート.xlsx',
       mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
+    st.session_state["member_file1"] = st.file_uploader("パート名簿をアップロード", type=["xlsx"],key = "パート名簿")
+    if st.session_state["member_file1"] is not None:
+      change_page2()
   
 
 with tab1:
