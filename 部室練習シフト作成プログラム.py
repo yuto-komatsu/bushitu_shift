@@ -515,6 +515,9 @@ def part_shift_main():
     #ページ２
     if "page_control2" in st.session_state and st.session_state["page_control2"] == 1:
       st.header('２．ライブ情報の入力')
+      st.caption('シフト希望入力表を作成しました。)
+      st.caption('ダウンロードボタンからダウンロードし、記入を終えたファイルをアップロードしてください。')
+      
       st.session_state["book"] = load_workbook(st.session_state["member_file1"])
       st.session_state["sheet"] = st.session_state["book"]["タイムテーブル"]
       Part_list=["ボーカル","ギター","ベース","ドラム","キーボード","PA","照明"]
@@ -573,7 +576,6 @@ def part_shift_main():
           st.session_state["member"][value] =  st.session_state["sheet"].cell(row=4+i, column=9).value
           i += 1
           n1 += 1
-        st.write(st.session_state["member"])
         if n1  != 0 and n2 != 0 and n3 != 0:
           #希望用エクセルファイルの作成
           book.create_sheet(index=-1, title=Part)
@@ -737,7 +739,6 @@ def part_shift_main():
               sheet.cell(row=i, column=j).border = border_allthin
       
       book.remove(book['Sheet'])
-      book.save('2023年学祭パートシフト希望('+Part+').xlsx')
 
      # バイトストリームにExcelファイルを保存
       buffer = BytesIO()
