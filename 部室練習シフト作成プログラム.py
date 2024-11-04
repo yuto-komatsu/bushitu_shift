@@ -576,7 +576,7 @@ def part_shift_main():
         st.write(st.session_state["member"])
         if n1  != 0 and n2 != 0 and n3 != 0:
           #希望用エクセルファイルの作成
-          book.create_sheet(index=0, title=Part, index=0)
+          book.create_sheet(index=-1, title=Part)
           sheet = book[Part]
       
           #固定の文字列の作成
