@@ -924,7 +924,7 @@ def part_shift_main():
           book.remove(book['Sheet'])
     
        # バイトストリームにExcelファイルを保存
-        buffer = BytesIO()
+        buffer2 = BytesIO()
         book.save(buffer2)
         buffer2.seek(0)
       
