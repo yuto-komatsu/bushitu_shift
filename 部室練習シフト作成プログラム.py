@@ -1114,6 +1114,8 @@ def part_shift_main():
       
         #最適化の実行
         status = model.optimize()
+        if status == OptimizationStatus.OPTIMAL:
+          st.write("最適化に成功")
 
         book = load_workbook(buffer2)
         sheet = book[str(Part)]
