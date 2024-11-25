@@ -498,7 +498,7 @@ def part_shift_main():
   st.title('設営パートシフト最適化')
   
   #ページ１：参加バンド登録
-  uploaded_file_path2 = 'パートシフト_テンプレート.xlsx'
+  uploaded_file_path2 = 'パートメンバー登録＿テンプレート1.xlsx'
   # ファイルをバイトとして読み込む
   with open(uploaded_file_path2, 'rb') as file:
     member_listfile = file.read()
