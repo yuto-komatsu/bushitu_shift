@@ -510,7 +510,7 @@ def part_shift_main():
     
     st.caption("下のセレクトボックスから、シフトを作成するパートを選択してください。")
     st.session_state["Part"] = st.selectbox(
-      '最大練習回数',
+      '作成パートの選択',
       ["ボーカル","ギター","ベース","ドラム","キーボード","PA","照明"],
       index=0,
       placeholder="パートを選択してください"
