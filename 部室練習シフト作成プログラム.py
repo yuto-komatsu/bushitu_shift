@@ -1129,30 +1129,30 @@ def part_shift_main():
   
         
       
-            for i in I:
-              for t in T:
-                if t <= intami:
-                  if c[i,t] == 2:
-                    sheet.cell(row=3+i, column=5+t, value = "出演")
-                  if x[i,t].x > 0.01:
-                    if i >= n2+n3+1:
-                      if g[i] == 1:
-                        sheet.cell(row=3+i, column=5+t).value = "☆"
-                      else:
-                        sheet.cell(row=3+i, column=5+t).value = "〇"
+        for i in I:
+          for t in T:
+            if t <= intami:
+              if c[i,t] == 2:
+                sheet.cell(row=3+i, column=5+t, value = "出演")
+              if x[i,t].x > 0.01:
+                if i >= n2+n3+1:
+                  if g[i] == 1:
+                    sheet.cell(row=3+i, column=5+t).value = "☆"
+                  else:
+                    sheet.cell(row=3+i, column=5+t).value = "〇"
+                else:
+                  sheet.cell(row=3+i, column=5+t).value = "〇"
+            elif t > intami:
+                if c[i,t] == 2:
+                  sheet.cell(row=3+i, column=5+t+1, value = "出演")
+                if x[i,t].x > 0.01:
+                  if i >= n2+n3+1:
+                    if g[i] == 1:
+                      sheet.cell(row=3+i, column=5+t+1).value = "☆"
                     else:
-                      sheet.cell(row=3+i, column=5+t).value = "〇"
-                elif t > intami:
-                    if c[i,t] == 2:
-                      sheet.cell(row=3+i, column=5+t+1, value = "出演")
-                    if x[i,t].x > 0.01:
-                      if i >= n2+n3+1:
-                        if g[i] == 1:
-                          sheet.cell(row=3+i, column=5+t+1).value = "☆"
-                        else:
-                          sheet.cell(row=3+i, column=5+t+1).value = "〇"
-                      else:
-                        sheet.cell(row=3+i, column=5+t+1).value = "〇"
+                      sheet.cell(row=3+i, column=5+t+1).value = "〇"
+                  else:
+                    sheet.cell(row=3+i, column=5+t+1).value = "〇"
       
             #書式設定
             font = Font(size=18,bold=True)
