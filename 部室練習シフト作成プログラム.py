@@ -753,21 +753,21 @@ def part_shift_main():
           for j in range(6,6+t-2):
             sheet.cell(row=i, column=j).border = border_allthin
     
-    book.remove(book['Sheet'])
-
-   # バイトストリームにExcelファイルを保存
-    buffer = BytesIO()
-    book.save(buffer)
-    buffer.seek(0)
-  
-    # StreamlitのダウンロードボタンでExcelファイルをダウンロード
-    st.download_button(
-        label="ダウンロード",
-        data=buffer,
-        file_name='シフト希望記入表.xlsx',
-        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
-    st.session_state["kibou_file2"] = st.file_uploader("シフト希望をアップロード", type=["xlsx"])
+        book.remove(book['Sheet'])
+    
+       # バイトストリームにExcelファイルを保存
+        buffer = BytesIO()
+        book.save(buffer)
+        buffer.seek(0)
+      
+        # StreamlitのダウンロードボタンでExcelファイルをダウンロード
+        st.download_button(
+            label="ダウンロード",
+            data=buffer,
+            file_name='シフト希望記入表.xlsx',
+            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        st.session_state["kibou_file2"] = st.file_uploader("シフト希望をアップロード", type=["xlsx"])
     if st.session_state["kibou_file2"] is not None:
       change_page2()
         
