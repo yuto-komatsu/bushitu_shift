@@ -594,7 +594,7 @@ def part_shift_main():
       if n1  != 0 and n2 != 0 and n3 != 0:
         #希望用エクセルファイルの作成
         book.create_sheet(index=-1, title=st.session_state["Part"])
-        sheet = book[Part]
+        sheet = book[st.session_state["Part"]]
     
         #固定の文字列の作成
         sheet.cell(row=2, column=2).value = "総バンド数"
