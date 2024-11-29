@@ -558,9 +558,9 @@ def part_shift_main():
       st.session_state["sheet"] = st.session_state["book"]["メンバー"]
 
       i = 0  
-      n1 = 0
-      n2 = 0
-      n3 = 0
+      st.session_state["n1"] = 0
+      st.session_state["n2"] = 0
+      st.session_state["n3"] = 0
     
       #3年生のデータを読み込む
       st.session_state["member"] = {}
@@ -570,7 +570,7 @@ def part_shift_main():
           break
         st.session_state["member"][value] =  st.session_state["sheet"].cell(row=4+i, column=3).value
         i += 1
-        n3 += 1
+        st.session_state["n3"] += 1
     
       #2年生のデータを読み込む
       i = 0
@@ -580,7 +580,7 @@ def part_shift_main():
           break
         st.session_state["member"][value] =  st.session_state["sheet"].cell(row=4+i, column=6).value
         i += 1
-        n2 += 1
+        st.session_state["n2"] += 1
     
       #1年生のデータを読み込む
       i = 0
@@ -590,8 +590,8 @@ def part_shift_main():
           break
         st.session_state["member"][value] =  st.session_state["sheet"].cell(row=4+i, column=9).value
         i += 1
-        n1 += 1
-      if n1  != 0 and n2 != 0 and n3 != 0:
+        st.session_state["n1"] += 1
+      if st.session_state["n1"]  != 0 and st.session_state["n2"] != 0 and st.session_state["n3"] != 0:
         #希望用エクセルファイルの作成
         book.create_sheet(index=-1, title=st.session_state["Part"])
         sheet = book[st.session_state["Part"]]
@@ -605,9 +605,9 @@ def part_shift_main():
         sheet.cell(row=6, column=2).value = "2年生"
         sheet.cell(row=7, column=2).value = "1年生"
     
-        sheet.cell(row=5, column=3).value = n3
-        sheet.cell(row=6, column=3).value = n2
-        sheet.cell(row=7, column=3).value = n1
+        sheet.cell(row=5, column=3).value = st.session_state["n3"]
+        sheet.cell(row=6, column=3).value = st.session_state["n2"]
+        sheet.cell(row=7, column=3).value = st.session_state["n1"]
     
         sheet.cell(row=2, column=5).value = "インタミ直前"
         sheet.cell(row=2, column=6).value = st.session_state["intami"]
@@ -615,12 +615,12 @@ def part_shift_main():
         #c[i,j,t]の表示
         sheet.cell(row=10, column=2).value = "c_(i,j,t)"
         sheet.cell(row=11, column=2).value = "3年生"
-        sheet.cell(row=11+n3, column=2).value = "2年生"
-        sheet.cell(row=11+n3+n2, column=2).value = "1年生"
+        sheet.cell(row=11+st.session_state["n3"], column=2).value = "2年生"
+        sheet.cell(row=11+st.session_state["n3"]+st.session_state["n2"], column=2).value = "1年生"
     
-        sheet.merge_cells(start_row=11, start_column=2, end_row=11+n3-1, end_column=2)
-        sheet.merge_cells(start_row=11+n3, start_column=2, end_row=11+n2+n3-1, end_column=2)
-        sheet.merge_cells(start_row=11+n2+n3, start_column=2, end_row=11+n1+n2+n3-1, end_column=2)
+        sheet.merge_cells(start_row=11, start_column=2, end_row=11+st.session_state["n3"]-1, end_column=2)
+        sheet.merge_cells(start_row=11+st.session_state["n3"], start_column=2, end_row=11+st.session_state["n2"]+st.session_state["n3"]-1, end_column=2)
+        sheet.merge_cells(start_row=11+st.session_state["n2"]+st.session_state["n3"], start_column=2, end_row=11+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-1, end_column=2)
     
         sheet.merge_cells(start_row=10, start_column=3, end_row=10, end_column=4)
     
@@ -639,13 +639,13 @@ def part_shift_main():
         sheet.cell(row=10, column=4+t+2).value = "g_(i)"
         j = 1
         for i in st.session_state["member"]:
-          if j >= n2+n3+1 and j < n1+n2+n3+1:
-            sheet.cell(row=10+j-n2-n3, column=4+t+2).value = i
+          if j >= st.session_state["n2"]+st.session_state["n3"]+1 and j < st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1:
+            sheet.cell(row=10+j-st.session_state["n2"]-st.session_state["n3"], column=4+t+2).value = i
           j+=1
 
         #書式設定
         font = Font(name="游ゴシック",size=14,bold=True)
-        for i in range(1,11+n1+n2+n3):
+        for i in range(1,11+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]):
           for j in range(1,5+t+2):
             sheet.cell(row=1+i, column=1+j).font = font
             sheet.cell(row=1+i, column=1+j).alignment = Alignment(horizontal = 'left', vertical = 'center')
@@ -674,9 +674,9 @@ def part_shift_main():
         #g[i]の枠線
         sheet.cell(row=10, column=5+t+1).border = border_topleft
         sheet.cell(row=10, column=5+t+2).border = border_topright
-        sheet.cell(row=10+n1, column=5+t+1).border = border_bottomleft
-        sheet.cell(row=10+n1, column=5+t+2).border = border_bottomright
-        for i in range(11,10+n1):
+        sheet.cell(row=10+st.session_state["n1"], column=5+t+1).border = border_bottomleft
+        sheet.cell(row=10+st.session_state["n1"], column=5+t+2).border = border_bottomright
+        for i in range(11,10+st.session_state["n1"]):
           sheet.cell(row=i, column=5+t+1).border = border_left
           sheet.cell(row=i, column=5+t+2).border = border_right
     
@@ -685,71 +685,71 @@ def part_shift_main():
         sheet.cell(row=10, column=2).border = border_topthick
     
         sheet.cell(row=11, column=2).border = border_topthick
-        sheet.cell(row=11+n3, column=2).border = border_topthick
-        sheet.cell(row=11+n3+n2, column=2).border = border_topthick
+        sheet.cell(row=11+st.session_state["n3"], column=2).border = border_topthick
+        sheet.cell(row=11+st.session_state["n3"]+st.session_state["n2"], column=2).border = border_topthick
     
-        sheet.cell(row=11+n3-1, column=2).border = border_bottomthick
-        sheet.cell(row=11+n2+n3-1, column=2).border = border_bottomthick
-        sheet.cell(row=11+n3+n2+n1-1, column=2).border = border_bottomthick
-        for i in range(12,12+n3-2):
+        sheet.cell(row=11+st.session_state["n3"]-1, column=2).border = border_bottomthick
+        sheet.cell(row=11+st.session_state["n2"]+st.session_state["n3"]-1, column=2).border = border_bottomthick
+        sheet.cell(row=11+st.session_state["n3"]+st.session_state["n2"]+st.session_state["n1"]-1, column=2).border = border_bottomthick
+        for i in range(12,12+st.session_state["n3"]-2):
             sheet.cell(row=i, column=2).border = border_sidethick
-        for i in range(12+n3,12+n3+n2-2):
+        for i in range(12+st.session_state["n3"],12+st.session_state["n3"]+st.session_state["n2"]-2):
             sheet.cell(row=i, column=2).border = border_sidethick
-        for i in range(12+n3+n2,12+n3+n2+n1-2):
+        for i in range(12+st.session_state["n3"]+st.session_state["n2"],12+st.session_state["n3"]+st.session_state["n2"]+st.session_state["n1"]-2):
             sheet.cell(row=i, column=2).border = border_sidethick
     
         #列C,Dの枠線
         sheet.cell(row=10, column=3).border = border_topleft
         sheet.cell(row=10, column=4).border = border_topright
         #3回生
-        sheet.cell(row=11+n3-1, column=3).border = border_bottomleft
-        sheet.cell(row=11+n3-1, column=4).border = border_bottomright
+        sheet.cell(row=11+st.session_state["n3"]-1, column=3).border = border_bottomleft
+        sheet.cell(row=11+st.session_state["n3"]-1, column=4).border = border_bottomright
         sheet.cell(row=11, column=3).border = border_topleft
         sheet.cell(row=11, column=4).border = border_topright
-        for i in range(12,10+n3):
+        for i in range(12,10+st.session_state["n3"]):
           sheet.cell(row=i, column=3).border = border_left
           sheet.cell(row=i, column=4).border = border_right
     
         #2回生
-        sheet.cell(row=11+n2+n3-1, column=3).border = border_bottomleft
-        sheet.cell(row=11+n2+n3-1, column=4).border = border_bottomright
-        sheet.cell(row=11+n3, column=3).border = border_topleft
-        sheet.cell(row=11+n3, column=4).border = border_topright
-        for i in range(12+n3,10+n2+n3):
+        sheet.cell(row=11+st.session_state["n2"]+st.session_state["n3"]-1, column=3).border = border_bottomleft
+        sheet.cell(row=11+st.session_state["n2"]+st.session_state["n3"]-1, column=4).border = border_bottomright
+        sheet.cell(row=11+st.session_state["n3"], column=3).border = border_topleft
+        sheet.cell(row=11+st.session_state["n3"], column=4).border = border_topright
+        for i in range(12+st.session_state["n3"],10+st.session_state["n2"]+st.session_state["n3"]):
           sheet.cell(row=i, column=3).border = border_left
           sheet.cell(row=i, column=4).border = border_right
     
         #1回生
-        sheet.cell(row=11+n1+n2+n3-1, column=3).border = border_bottomleft
-        sheet.cell(row=11+n1+n2+n3-1, column=4).border = border_bottomright
-        sheet.cell(row=11+n2+n3, column=3).border = border_topleft
-        sheet.cell(row=11+n2+n3, column=4).border = border_topright
-        for i in range(12+n2+n3,10+n1+n2+n3):
+        sheet.cell(row=11+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-1, column=3).border = border_bottomleft
+        sheet.cell(row=11+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-1, column=4).border = border_bottomright
+        sheet.cell(row=11+st.session_state["n2"]+st.session_state["n3"], column=3).border = border_topleft
+        sheet.cell(row=11+st.session_state["n2"]+st.session_state["n3"], column=4).border = border_topright
+        for i in range(12+st.session_state["n2"]+st.session_state["n3"],10+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]):
           sheet.cell(row=i, column=3).border = border_left
           sheet.cell(row=i, column=4).border = border_right
     
         #列E～の枠線
         sheet.cell(row=10, column=5).border = border_topleft
         sheet.cell(row=11, column=5).border = border_topleft
-        sheet.cell(row=10+n1+n2+n3, column=5).border = border_bottomleft
+        sheet.cell(row=10+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"], column=5).border = border_bottomleft
     
         for i in range(6, 6+t-2):
           sheet.cell(row=10, column=i).border = border_topcenter
           sheet.cell(row=11, column=i).border = border_topcenter
-          sheet.cell(row=10+n1+n2+n3, column=i).border = border_bottomcenter
+          sheet.cell(row=10+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"], column=i).border = border_bottomcenter
     
     
         #右端の枠線
         sheet.cell(row=10, column=6+t-2).border = border_topright
         sheet.cell(row=11, column=6+t-2).border = border_topright
-        sheet.cell(row=10+n1+n2+n3, column=6+t-2).border = border_bottomright
+        sheet.cell(row=10+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"], column=6+t-2).border = border_bottomright
     
         #右,左端の枠線
-        for i in range(12,12+n1+n2+n3-2):
+        for i in range(12,12+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-2):
           sheet.cell(row=i, column=5).border = border_left
           sheet.cell(row=i, column=6+t-2).border = border_right
     
-        for i in range(12,12+n1+n2+n3-2):
+        for i in range(12,12+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-2):
           for j in range(6,6+t-2):
             sheet.cell(row=i, column=j).border = border_allthin
     
@@ -805,12 +805,12 @@ def part_shift_main():
       m = sheet.cell(row=2, column=3).value
     
       #各学年の人数
-      n1 = sheet.cell(row=7, column=3).value
-      n2 = sheet.cell(row=6, column=3).value
-      n3 = sheet.cell(row=5, column=3).value
+      st.session_state["n1"] = sheet.cell(row=7, column=3).value
+      st.session_state["n2"] = sheet.cell(row=6, column=3).value
+      st.session_state["n3"] = sheet.cell(row=5, column=3).value
     
       #定数用のデータの作成
-      st.session_state["I"] = [i+1 for i in range(n1 + n2 + n3)]
+      st.session_state["I"] = [i+1 for i in range(st.session_state["n1"] + st.session_state["n2"] + st.session_state["n3"])]
       st.session_state["T"] = [i+1 for i in range(m)]
     
       #インタミ直前のバンド
@@ -823,8 +823,8 @@ def part_shift_main():
           c[i, t] = value if value is not None else 1
     
       g = {} #1回生の講習会参加
-      for i in range(n2+n3+1,n1+n2+n3+1):
-        value = sheet.cell(row=10+i-n2-n3, column=18).value
+      for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
+        value = sheet.cell(row=10+i-st.session_state["n2"]-st.session_state["n3"], column=18).value
         g[i] = value if value is not None else 0
     
       #空問題の作成
@@ -901,10 +901,10 @@ def part_shift_main():
     
       #1回生が仕事を割り当てられた場合、必ず2回生が1人以上同じスロットに入る
       for t in st.session_state["T"]:
-        model += xsum(x[i,t] for i in range(n2+n3+1, n1+n2+n3+1)) <= xsum(x[i,t] for i in range(1,n2+n3+1))*3
+        model += xsum(x[i,t] for i in range(st.session_state["n2"]+st.session_state["n3"]+1, st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1)) <= xsum(x[i,t] for i in range(1,st.session_state["n2"]+st.session_state["n3"]+1))*3
     
       #講習会に参加していない1回生は最低2回以上仕事をする
-      for i in range(n2+n3+1,n1+n2+n3+1):
+      for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
         if xsum(c[i,t] for t in st.session_state["T"]) >= 1:
           model += xsum(x[i,t] for t in st.session_state["T"]) >= 1
     
@@ -919,10 +919,10 @@ def part_shift_main():
     
       #ソフト制約条件
       #②講習会に参加していない1回生が仕事を割り当てられた場合、必ず2回生が２人以上同じスロットに入る
-      for i in range(n2+n3+1, n1+n2+n3+1):
+      for i in range(st.session_state["n2"]+st.session_state["n3"]+1, st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
         if g[i] == 1:
           for t in st.session_state["T"]:
-            model += xsum(x[j,t] for j in range(1,n2+n3+1)) >= 2 * x[i,t] - w[i,t]
+            model += xsum(x[j,t] for j in range(1,st.session_state["n2"]+st.session_state["n3"]+1)) >= 2 * x[i,t] - w[i,t]
     
       #③できるだけメンバーは連続して仕事をしない
       for i in st.session_state["I"]:
@@ -936,25 +936,25 @@ def part_shift_main():
             model += x[i,t] <= u[i,t]
     
       #⑤なるべく違う部員と仕事をする
-      if n2 < n1:
-        for i in range(n2+1,n2+n3+1):
+      if st.session_state["n2"] < st.session_state["n1"]:
+        for i in range(st.session_state["n2"]+1,st.session_state["n2"]+st.session_state["n3"]+1):
           for j in st.session_state["I"]:
             for t in st.session_state["T"]:
               if i != j:
                 model += x[i,t] + x[j,t] >= 2*y[i,j,t]
     
-        for i in range(n2+1,n2+n3+1):
+        for i in range(st.session_state["n2"]+1,st.session_state["n2"]+st.session_state["n3"]+1):
           for j in st.session_state["I"]:
             if i != j:
               model += xsum(y[i,j,t] for t in st.session_state["T"]) >= z[i,j] - s[i,j]
-      elif n1 <= n2:
-        for i in range(n2+n3+1,n1+n2+n3+1):
+      elif st.session_state["n1"] <= st.session_state["n2"]:
+        for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
           for j in st.session_state["I"]:
             for t in st.session_state["T"]:
               if i != j:
                 model += x[i,t] + x[j,t] >= 2*y[i,j,t]
     
-        for i in range(n2+n3+1,n1+n2+n3+1):
+        for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
           for j in st.session_state["I"]:
             if i != j:
               model += xsum(y[i,j,t] for t in st.session_state["T"]) >= z[i,j] - s[i,j]
@@ -964,7 +964,7 @@ def part_shift_main():
       model.objective = minimize(jouken[2]*xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"]) + jouken[3]*xsum(v[i,t] for i in st.session_state["I"] for t in range(1,m)) + jouken[4]*xsum(u[i,t] for i in st.session_state["I"] for t in range(1,m))
       -jouken[5]*xsum(z[i,j] for i in st.session_state["I"] for j in st.session_state["I"])
       + jouken[5]*1.1*xsum(s[i,j] for i in st.session_state["I"] for j in st.session_state["I"])
-      +xsum(x[i,t] for i in range(n3+1,n2+n3+1) for t in st.session_state["T"]) +5*xsum(x[i,t] for i in range(1,n3+1) for t in st.session_state["T"]))
+      +xsum(x[i,t] for i in range(st.session_state["n3"]+1,st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"]) +5*xsum(x[i,t] for i in range(1,st.session_state["n3"]+1) for t in st.session_state["T"]))
 
 
 
@@ -1004,14 +1004,14 @@ def part_shift_main():
       #c[i,j,t]の表示
       sheet.cell(row=3, column=2).value = st.session_state["Part"]
       sheet.cell(row=11-m, column=2+n).value = "3年生"
-      sheet.cell(row=11+n3-m, column=2+n).value = "2年生"
-      sheet.cell(row=11+n3+n2-m, column=2+n).value = "1年生"
+      sheet.cell(row=11+st.session_state["n3"]-m, column=2+n).value = "2年生"
+      sheet.cell(row=11+st.session_state["n3"]+st.session_state["n2"]-m, column=2+n).value = "1年生"
   
-      sheet.merge_cells(start_row=3, start_column=2, end_row=3+n1+n2+n3, end_column=2)
+      sheet.merge_cells(start_row=3, start_column=2, end_row=3+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"], end_column=2)
   
-      sheet.merge_cells(start_row=11-m, start_column=2+n, end_row=11+n3-1-m, end_column=2+n)
-      sheet.merge_cells(start_row=11+n3-m, start_column=2+n, end_row=11+n2+n3-1-m, end_column=2+n)
-      sheet.merge_cells(start_row=11+n2+n3-m, start_column=2+n, end_row=11+n1+n2+n3-1-m, end_column=2+n)
+      sheet.merge_cells(start_row=11-m, start_column=2+n, end_row=11+st.session_state["n3"]-1-m, end_column=2+n)
+      sheet.merge_cells(start_row=11+st.session_state["n3"]-m, start_column=2+n, end_row=11+st.session_state["n2"]+st.session_state["n3"]-1-m, end_column=2+n)
+      sheet.merge_cells(start_row=11+st.session_state["n2"]+st.session_state["n3"]-m, start_column=2+n, end_row=11+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-1-m, end_column=2+n)
   
       sheet.merge_cells(start_row=3, start_column=3, end_row=3, end_column=5)
   
@@ -1039,8 +1039,8 @@ def part_shift_main():
   
       #列Bの枠線
       sheet.cell(row=3, column=2).border = border_topthick
-      sheet.cell(row=3+n1+n2+n3, column=2).border = border_bottomthick
-      for i in range(4,3+n1+n2+n3):
+      sheet.cell(row=3+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"], column=2).border = border_bottomthick
+      for i in range(4,3+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]):
         sheet.cell(row=i, column=2).border = border_sidethick
   
   
@@ -1048,17 +1048,17 @@ def part_shift_main():
       sheet.cell(row=3, column=3).border = border_topleft
   
       sheet.cell(row=4, column=3).border = border_topthick
-      sheet.cell(row=4+n3, column=3).border = border_topthick
-      sheet.cell(row=4+n3+n2, column=3).border = border_topthick
+      sheet.cell(row=4+st.session_state["n3"], column=3).border = border_topthick
+      sheet.cell(row=4+st.session_state["n3"]+st.session_state["n2"], column=3).border = border_topthick
   
-      sheet.cell(row=4+n3-1, column=3).border = border_bottomthick
-      sheet.cell(row=4+n2+n3-1, column=3).border = border_bottomthick
-      sheet.cell(row=4+n3+n2+n1-1, column=3).border = border_bottomthick
-      for i in range(5,5+n3-2):
+      sheet.cell(row=4+st.session_state["n3"]-1, column=3).border = border_bottomthick
+      sheet.cell(row=4+st.session_state["n2"]+st.session_state["n3"]-1, column=3).border = border_bottomthick
+      sheet.cell(row=4+st.session_state["n3"]+st.session_state["n2"]+st.session_state["n1"]-1, column=3).border = border_bottomthick
+      for i in range(5,5+st.session_state["n3"]-2):
           sheet.cell(row=i, column=3).border = border_sidethick
-      for i in range(5+n3,5+n3+n2-2):
+      for i in range(5+st.session_state["n3"],5+st.session_state["n3"]+st.session_state["n2"]-2):
           sheet.cell(row=i, column=3).border = border_sidethick
-      for i in range(5+n3+n2,5+n3+n2+n1-2):
+      for i in range(5+st.session_state["n3"]+st.session_state["n2"],5+st.session_state["n3"]+st.session_state["n2"]+st.session_state["n1"]-2):
           sheet.cell(row=i, column=3).border = border_sidethick
   
       #列D,Eの枠線
@@ -1066,9 +1066,9 @@ def part_shift_main():
       sheet.cell(row=3, column=4).border = border_topcenter
       sheet.cell(row=3, column=5).border = border_topright
   
-      sheet.cell(row=4+n3-1, column=4).border = border_bottomleft
-      sheet.cell(row=4+n3-1, column=5).border = border_bottomright
-      for i in range(5,5+n3-2):
+      sheet.cell(row=4+st.session_state["n3"]-1, column=4).border = border_bottomleft
+      sheet.cell(row=4+st.session_state["n3"]-1, column=5).border = border_bottomright
+      for i in range(5,5+st.session_state["n3"]-2):
         sheet.cell(row=i, column=4).border = border_left
         sheet.cell(row=i, column=5).border = border_right
       sheet.cell(row=4, column=4).border = border_topleft
@@ -1078,53 +1078,53 @@ def part_shift_main():
   
   
       #2回生
-      for i in range(5+n3,5+n2+n3-2):
+      for i in range(5+st.session_state["n3"],5+st.session_state["n2"]+st.session_state["n3"]-2):
         sheet.cell(row=i, column=4).border = border_left
         sheet.cell(row=i, column=5).border = border_right
-      sheet.cell(row=4+n2+n3-1, column=4).border = border_bottomleft
-      sheet.cell(row=4+n2+n3-1, column=5).border = border_bottomright
-      sheet.cell(row=4+n3, column=4).border = border_topleft
-      sheet.cell(row=4+n3, column=5).border = border_topright
+      sheet.cell(row=4+st.session_state["n2"]+st.session_state["n3"]-1, column=4).border = border_bottomleft
+      sheet.cell(row=4+st.session_state["n2"]+st.session_state["n3"]-1, column=5).border = border_bottomright
+      sheet.cell(row=4+st.session_state["n3"], column=4).border = border_topleft
+      sheet.cell(row=4+st.session_state["n3"], column=5).border = border_topright
   
   
       #1回生
-      for i in range(5+n2+n3,5+n1+n2+n3-2):
+      for i in range(5+st.session_state["n2"]+st.session_state["n3"],5+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-2):
         sheet.cell(row=i, column=4).border = border_left
         sheet.cell(row=i, column=5).border = border_right
-      sheet.cell(row=4+n1+n2+n3-1, column=4).border = border_bottomleft
-      sheet.cell(row=4+n1+n2+n3-1, column=5).border = border_bottomright
-      sheet.cell(row=4+n2+n3, column=4).border = border_topleft
-      sheet.cell(row=4+n2+n3, column=5).border = border_topright
+      sheet.cell(row=4+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-1, column=4).border = border_bottomleft
+      sheet.cell(row=4+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-1, column=5).border = border_bottomright
+      sheet.cell(row=4+st.session_state["n2"]+st.session_state["n3"], column=4).border = border_topleft
+      sheet.cell(row=4+st.session_state["n2"]+st.session_state["n3"], column=5).border = border_topright
   
   
   
       #列E～の枠線
       sheet.cell(row=3, column=6).border = border_topleft
       sheet.cell(row=4, column=6).border = border_topleft
-      sheet.cell(row=3+n1+n2+n3, column=6).border = border_bottomleft
+      sheet.cell(row=3+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"], column=6).border = border_bottomleft
   
       for i in range(7, 7+tt-2):
         sheet.cell(row=3, column=i).border = border_topcenter
         sheet.cell(row=4, column=i).border = border_topcenter
-        sheet.cell(row=3+n1+n2+n3, column=i).border = border_bottomcenter
+        sheet.cell(row=3+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"], column=i).border = border_bottomcenter
   
       #右端の枠線
       sheet.cell(row=3, column=7+tt-2).border = border_topright
       sheet.cell(row=4, column=7+tt-2).border = border_topright
-      sheet.cell(row=3+n1+n2+n3, column=7+tt-2).border = border_bottomright
+      sheet.cell(row=3+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"], column=7+tt-2).border = border_bottomright
   
       #右,左端の枠線
-      for i in range(5,5+n1+n2+n3-2):
+      for i in range(5,5+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-2):
         sheet.cell(row=i, column=6).border = border_left
         sheet.cell(row=i, column=7+tt-2).border = border_right
   
-      for i in range(5,5+n1+n2+n3-2):
+      for i in range(5,5+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-2):
         for j in range(7,7+tt-2):
           sheet.cell(row=i, column=j).border = border_allthin
   
       #インタミ塗りつぶし
       fill = PatternFill(patternType='solid', fgColor='d3d3d3')
-      for i in range(3,3+n1+n2+n3+1):
+      for i in range(3,3+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
         sheet.cell(row=i, column=6+st.session_state["intami"]).fill = fill
 
 
@@ -1138,7 +1138,7 @@ def part_shift_main():
             if c[i,t] == 2:
               sheet.cell(row=3+i, column=5+t, value = "出演")
             if st.session_state["x2"][f"{i}_{t}"] > 0.01:
-              if i >= n2+n3+1:
+              if i >= st.session_state["n2"]+st.session_state["n3"]+1:
                 if g[i] == 1:
                   sheet.cell(row=3+i, column=5+t).value = "☆"
                 else:
@@ -1149,7 +1149,7 @@ def part_shift_main():
               if c[i,t] == 2:
                 sheet.cell(row=3+i, column=5+t+1, value = "出演")
               if st.session_state["x2"][f"{i}_{t}"] > 0.01:
-                if i >= n2+n3+1:
+                if i >= st.session_state["n2"]+st.session_state["n3"]+1:
                   if g[i] == 1:
                     sheet.cell(row=3+i, column=5+t+1).value = "☆"
                   else:
