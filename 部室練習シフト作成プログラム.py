@@ -821,10 +821,11 @@ def part_shift_main():
       for i in st.session_state["I"]:
         for t in st.session_state["T"]:
           value = sheet.cell(row=10+i, column=4+t).value
+          st.write(i+", "+t)
           # if value is None:
           #   value = 1
           c[i, t] = value
-          st.write(c[i,t])
+          # st.write(c[i,t])
 
       g = {} #1回生の講習会参加
       for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
