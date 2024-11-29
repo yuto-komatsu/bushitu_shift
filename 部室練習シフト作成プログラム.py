@@ -821,8 +821,8 @@ def part_shift_main():
       for i in st.session_state["I"]:
         for t in st.session_state["T"]:
           value = sheet.cell(row=10+i, column=4+t).value
-          if value is None:
-            value = 1
+          # if value is None:
+          #   value = 1
           c[i, t] = value
           st.write(c[i,t])
 
