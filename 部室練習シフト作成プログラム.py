@@ -783,7 +783,7 @@ def part_shift_main():
         
     if "page_control2" in st.session_state and st.session_state["page_control2"] == 3:
       #最適化
-      st.session_state["book"] = load_workbook(book)
+      st.session_state["book"] = load_workbook(st.session_state["kibou_file2"])
 
       sheet = st.session_state["book"][st.session_state["Part"]]
       jouken = [0,0,0,0,0]
