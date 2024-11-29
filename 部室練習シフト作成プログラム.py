@@ -549,7 +549,7 @@ def part_shift_main():
         t += 1
 
       #インタミ直前のバンド数の読み込み
-      intami = st.session_state["sheet"].cell(row=3, column=4).value
+      st.session_state["intami"] = st.session_state["sheet"].cell(row=3, column=4).value
 
 
       book = openpyxl.Workbook()
@@ -610,7 +610,7 @@ def part_shift_main():
         sheet.cell(row=7, column=3).value = n1
     
         sheet.cell(row=2, column=5).value = "インタミ直前"
-        sheet.cell(row=2, column=6).value = intami
+        sheet.cell(row=2, column=6).value = st.session_state["intami"]
     
         #c[i,j,t]の表示
         sheet.cell(row=10, column=2).value = "c_(i,j,t)"
@@ -815,7 +815,7 @@ def part_shift_main():
       T = [i+1 for i in range(m)]
     
       #インタミ直前のバンド
-      intami = sheet.cell(row=2, column=6).value
+      st.session_state["intami"] = sheet.cell(row=2, column=6).value
     
       c ={} #出演都合
       for i in I:
@@ -914,7 +914,7 @@ def part_shift_main():
         for i in I:
           for t in range(1,m):
             if c[i,t] == 2:
-              if t != intami:
+              if t != st.session_state["intami"]:
                 model += x[i,t+1] == 0
     
     
@@ -991,7 +991,7 @@ def part_shift_main():
       for i in st.session_state["timetable"]:
         T.append(st.session_state["timetable"][i])
         tt += 1
-      T.insert(intami,"インタミ")
+      T.insert(st.session_state["intami"],"インタミ")
       tt += 1
       timetable_new = {}
       for i in range(1,tt+1):
@@ -1125,7 +1125,7 @@ def part_shift_main():
       #インタミ塗りつぶし
       fill = PatternFill(patternType='solid', fgColor='d3d3d3')
       for i in range(3,3+n1+n2+n3+1):
-        sheet.cell(row=i, column=6+intami).fill = fill
+        sheet.cell(row=i, column=6+st.session_state["intami"]).fill = fill
 
 
 
@@ -1134,7 +1134,7 @@ def part_shift_main():
     
       for i in I:
         for t in T:
-          if t <= intami:
+          if t <= st.session_state["intami"]:
             if c[i,t] == 2:
               sheet.cell(row=3+i, column=5+t, value = "出演")
             if st.session_state["x2"][f"{i}_{t}"].x > 0.01:
@@ -1145,7 +1145,7 @@ def part_shift_main():
                   sheet.cell(row=3+i, column=5+t).value = "〇"
               else:
                 sheet.cell(row=3+i, column=5+t).value = "〇"
-          elif t > intami:
+          elif t > st.session_state["intami"]:
               if c[i,t] == 2:
                 sheet.cell(row=3+i, column=5+t+1, value = "出演")
               if st.session_state["x2"][f"{i}_{t}"].x > 0.01:
