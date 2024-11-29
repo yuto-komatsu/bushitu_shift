@@ -783,9 +783,9 @@ def part_shift_main():
         
     if "page_control2" in st.session_state and st.session_state["page_control2"] == 3:
       #最適化
-      # st.session_state["book"] = load_workbook(book)
+      st.session_state["book"] = load_workbook(book)
 
-      # sheet = st.session_state["book"][st.session_state["Part"]]
+      sheet = st.session_state["book"][st.session_state["Part"]]
       jouken = [0,0,0,0,0]
       if st.session_state["Part"] == "ボーカル":
         jouken=[3,0,1,0,1,1]
@@ -821,13 +821,10 @@ def part_shift_main():
       for i in st.session_state["I"]:
         for t in st.session_state["T"]:
           value = sheet.cell(row=10+i, column=4+t).value
-          st.write(i)
-          st.write(t)
-          st.write("")
-          # if value is None:
-          #   value = 1
+          if value is None:
+            value = 1
           c[i, t] = value
-          # st.write(c[i,t])
+          st.write(c[i,t])
 
       g = {} #1回生の講習会参加
       for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
