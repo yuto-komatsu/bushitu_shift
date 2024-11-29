@@ -966,208 +966,216 @@ def part_shift_main():
       -jouken[5]*xsum(z[i,j] for i in I for j in I)
       + jouken[5]*1.1*xsum(s[i,j] for i in I for j in I)
       +xsum(x[i,t] for i in range(n3+1,n2+n3+1) for t in T) +5*xsum(x[i,t] for i in range(1,n3+1) for t in T))
-    
+
+
+
+      
       #最適化の実行
       status = model.optimize()
       if status == OptimizationStatus.OPTIMAL:
+        st.session_state["x2"] = x
         st.write('最適値('+ st.session_state["Part"] +') =', model.objective_value)
-        #出力用ファイルの作成
-        book2 = openpyxl.Workbook()    
-        #パートシートの追加
-        book2.create_sheet(index=-1, title=st.session_state["Part"])
-        sheet = book2[st.session_state["Part"]]
-    
-        #インタミ要素の追加
-        T=[]
-        tt = 0
-        for i in st.session_state["timetable"]:
-          T.append(st.session_state["timetable"][i])
-          tt += 1
-        T.insert(intami,"インタミ")
-        tt += 1
-        timetable_new = {}
-        for i in range(1,tt+1):
-          timetable_new[i] = T[i-1]
-    
-        m=7
-        n=1
-  
-        
-        #c[i,j,t]の表示
-        sheet.cell(row=3, column=2).value = st.session_state["Part"]
-        sheet.cell(row=11-m, column=2+n).value = "3年生"
-        sheet.cell(row=11+n3-m, column=2+n).value = "2年生"
-        sheet.cell(row=11+n3+n2-m, column=2+n).value = "1年生"
-    
-        sheet.merge_cells(start_row=3, start_column=2, end_row=3+n1+n2+n3, end_column=2)
-    
-        sheet.merge_cells(start_row=11-m, start_column=2+n, end_row=11+n3-1-m, end_column=2+n)
-        sheet.merge_cells(start_row=11+n3-m, start_column=2+n, end_row=11+n2+n3-1-m, end_column=2+n)
-        sheet.merge_cells(start_row=11+n2+n3-m, start_column=2+n, end_row=11+n1+n2+n3-1-m, end_column=2+n)
-    
-        sheet.merge_cells(start_row=3, start_column=3, end_row=3, end_column=5)
-    
-        #タイムテーブルの表示(横)
-        for i in timetable_new:
-          sheet.cell(row=10-m, column=5+i).value = timetable_new[i]
-    
-        #パートメンバーの表示(縦)
-        j=0
-        for i in st.session_state["member"]:
-          sheet.cell(row=11+j-m, column=3+n).value = i
-          sheet.cell(row=11+j-m, column=4+n).value = st.session_state["member"][i]
-          j += 1
-    
-        #書式設定
-        font = Font(name="游ゴシック",size=14,bold=True)
-        for i in range(1,30):
-          for j in range(1,30):
-            sheet.cell(row=1+i, column=1+j).font = font
-            sheet.cell(row=1+i, column=1+j).alignment = Alignment(horizontal = 'left', vertical = 'center')
-    
-    
-        #幅の自動調整(関数呼び出し)
-        sheet_adjusted_width(sheet)
-    
-        #列Bの枠線
-        sheet.cell(row=3, column=2).border = border_topthick
-        sheet.cell(row=3+n1+n2+n3, column=2).border = border_bottomthick
-        for i in range(4,3+n1+n2+n3):
-          sheet.cell(row=i, column=2).border = border_sidethick
-    
-    
-        #列Cの枠線
-        sheet.cell(row=3, column=3).border = border_topleft
-    
-        sheet.cell(row=4, column=3).border = border_topthick
-        sheet.cell(row=4+n3, column=3).border = border_topthick
-        sheet.cell(row=4+n3+n2, column=3).border = border_topthick
-    
-        sheet.cell(row=4+n3-1, column=3).border = border_bottomthick
-        sheet.cell(row=4+n2+n3-1, column=3).border = border_bottomthick
-        sheet.cell(row=4+n3+n2+n1-1, column=3).border = border_bottomthick
-        for i in range(5,5+n3-2):
-            sheet.cell(row=i, column=3).border = border_sidethick
-        for i in range(5+n3,5+n3+n2-2):
-            sheet.cell(row=i, column=3).border = border_sidethick
-        for i in range(5+n3+n2,5+n3+n2+n1-2):
-            sheet.cell(row=i, column=3).border = border_sidethick
-    
-        #列D,Eの枠線
-        #3回生
-        sheet.cell(row=3, column=4).border = border_topcenter
-        sheet.cell(row=3, column=5).border = border_topright
-    
-        sheet.cell(row=4+n3-1, column=4).border = border_bottomleft
-        sheet.cell(row=4+n3-1, column=5).border = border_bottomright
-        for i in range(5,5+n3-2):
-          sheet.cell(row=i, column=4).border = border_left
-          sheet.cell(row=i, column=5).border = border_right
-        sheet.cell(row=4, column=4).border = border_topleft
-        sheet.cell(row=4, column=5).border = border_topcenter
-        sheet.cell(row=4, column=6).border = border_topright
-    
-    
-    
-        #2回生
-        for i in range(5+n3,5+n2+n3-2):
-          sheet.cell(row=i, column=4).border = border_left
-          sheet.cell(row=i, column=5).border = border_right
-        sheet.cell(row=4+n2+n3-1, column=4).border = border_bottomleft
-        sheet.cell(row=4+n2+n3-1, column=5).border = border_bottomright
-        sheet.cell(row=4+n3, column=4).border = border_topleft
-        sheet.cell(row=4+n3, column=5).border = border_topright
-    
-    
-        #1回生
-        for i in range(5+n2+n3,5+n1+n2+n3-2):
-          sheet.cell(row=i, column=4).border = border_left
-          sheet.cell(row=i, column=5).border = border_right
-        sheet.cell(row=4+n1+n2+n3-1, column=4).border = border_bottomleft
-        sheet.cell(row=4+n1+n2+n3-1, column=5).border = border_bottomright
-        sheet.cell(row=4+n2+n3, column=4).border = border_topleft
-        sheet.cell(row=4+n2+n3, column=5).border = border_topright
-    
-    
-    
-        #列E～の枠線
-        sheet.cell(row=3, column=6).border = border_topleft
-        sheet.cell(row=4, column=6).border = border_topleft
-        sheet.cell(row=3+n1+n2+n3, column=6).border = border_bottomleft
-    
-        for i in range(7, 7+tt-2):
-          sheet.cell(row=3, column=i).border = border_topcenter
-          sheet.cell(row=4, column=i).border = border_topcenter
-          sheet.cell(row=3+n1+n2+n3, column=i).border = border_bottomcenter
-    
-        #右端の枠線
-        sheet.cell(row=3, column=7+tt-2).border = border_topright
-        sheet.cell(row=4, column=7+tt-2).border = border_topright
-        sheet.cell(row=3+n1+n2+n3, column=7+tt-2).border = border_bottomright
-    
-        #右,左端の枠線
-        for i in range(5,5+n1+n2+n3-2):
-          sheet.cell(row=i, column=6).border = border_left
-          sheet.cell(row=i, column=7+tt-2).border = border_right
-    
-        for i in range(5,5+n1+n2+n3-2):
-          for j in range(7,7+tt-2):
-            sheet.cell(row=i, column=j).border = border_allthin
-    
-        #インタミ塗りつぶし
-        fill = PatternFill(patternType='solid', fgColor='d3d3d3')
-        for i in range(3,3+n1+n2+n3+1):
-          sheet.cell(row=i, column=6+intami).fill = fill
-  
-  
-  
-  
-        
-      
         for i in I:
           for t in T:
-            if t <= intami:
-              if c[i,t] == 2:
-                sheet.cell(row=3+i, column=5+t, value = "出演")
-              if x[i,t].x > 0.01:
-                if i >= n2+n3+1:
-                  if g[i] == 1:
-                    sheet.cell(row=3+i, column=5+t).value = "☆"
-                  else:
-                    sheet.cell(row=3+i, column=5+t).value = "〇"
+            st.session_state["x2"][f"{i}_{t}"] = x[i, t].x
+            
+      #出力用ファイルの作成
+      book2 = openpyxl.Workbook()    
+      #パートシートの追加
+      book2.create_sheet(index=-1, title=st.session_state["Part"])
+      sheet = book2[st.session_state["Part"]]
+  
+      #インタミ要素の追加
+      T=[]
+      tt = 0
+      for i in st.session_state["timetable"]:
+        T.append(st.session_state["timetable"][i])
+        tt += 1
+      T.insert(intami,"インタミ")
+      tt += 1
+      timetable_new = {}
+      for i in range(1,tt+1):
+        timetable_new[i] = T[i-1]
+  
+      m=7
+      n=1
+
+      
+      #c[i,j,t]の表示
+      sheet.cell(row=3, column=2).value = st.session_state["Part"]
+      sheet.cell(row=11-m, column=2+n).value = "3年生"
+      sheet.cell(row=11+n3-m, column=2+n).value = "2年生"
+      sheet.cell(row=11+n3+n2-m, column=2+n).value = "1年生"
+  
+      sheet.merge_cells(start_row=3, start_column=2, end_row=3+n1+n2+n3, end_column=2)
+  
+      sheet.merge_cells(start_row=11-m, start_column=2+n, end_row=11+n3-1-m, end_column=2+n)
+      sheet.merge_cells(start_row=11+n3-m, start_column=2+n, end_row=11+n2+n3-1-m, end_column=2+n)
+      sheet.merge_cells(start_row=11+n2+n3-m, start_column=2+n, end_row=11+n1+n2+n3-1-m, end_column=2+n)
+  
+      sheet.merge_cells(start_row=3, start_column=3, end_row=3, end_column=5)
+  
+      #タイムテーブルの表示(横)
+      for i in timetable_new:
+        sheet.cell(row=10-m, column=5+i).value = timetable_new[i]
+  
+      #パートメンバーの表示(縦)
+      j=0
+      for i in st.session_state["member"]:
+        sheet.cell(row=11+j-m, column=3+n).value = i
+        sheet.cell(row=11+j-m, column=4+n).value = st.session_state["member"][i]
+        j += 1
+  
+      #書式設定
+      font = Font(name="游ゴシック",size=14,bold=True)
+      for i in range(1,30):
+        for j in range(1,30):
+          sheet.cell(row=1+i, column=1+j).font = font
+          sheet.cell(row=1+i, column=1+j).alignment = Alignment(horizontal = 'left', vertical = 'center')
+  
+  
+      #幅の自動調整(関数呼び出し)
+      sheet_adjusted_width(sheet)
+  
+      #列Bの枠線
+      sheet.cell(row=3, column=2).border = border_topthick
+      sheet.cell(row=3+n1+n2+n3, column=2).border = border_bottomthick
+      for i in range(4,3+n1+n2+n3):
+        sheet.cell(row=i, column=2).border = border_sidethick
+  
+  
+      #列Cの枠線
+      sheet.cell(row=3, column=3).border = border_topleft
+  
+      sheet.cell(row=4, column=3).border = border_topthick
+      sheet.cell(row=4+n3, column=3).border = border_topthick
+      sheet.cell(row=4+n3+n2, column=3).border = border_topthick
+  
+      sheet.cell(row=4+n3-1, column=3).border = border_bottomthick
+      sheet.cell(row=4+n2+n3-1, column=3).border = border_bottomthick
+      sheet.cell(row=4+n3+n2+n1-1, column=3).border = border_bottomthick
+      for i in range(5,5+n3-2):
+          sheet.cell(row=i, column=3).border = border_sidethick
+      for i in range(5+n3,5+n3+n2-2):
+          sheet.cell(row=i, column=3).border = border_sidethick
+      for i in range(5+n3+n2,5+n3+n2+n1-2):
+          sheet.cell(row=i, column=3).border = border_sidethick
+  
+      #列D,Eの枠線
+      #3回生
+      sheet.cell(row=3, column=4).border = border_topcenter
+      sheet.cell(row=3, column=5).border = border_topright
+  
+      sheet.cell(row=4+n3-1, column=4).border = border_bottomleft
+      sheet.cell(row=4+n3-1, column=5).border = border_bottomright
+      for i in range(5,5+n3-2):
+        sheet.cell(row=i, column=4).border = border_left
+        sheet.cell(row=i, column=5).border = border_right
+      sheet.cell(row=4, column=4).border = border_topleft
+      sheet.cell(row=4, column=5).border = border_topcenter
+      sheet.cell(row=4, column=6).border = border_topright
+  
+  
+  
+      #2回生
+      for i in range(5+n3,5+n2+n3-2):
+        sheet.cell(row=i, column=4).border = border_left
+        sheet.cell(row=i, column=5).border = border_right
+      sheet.cell(row=4+n2+n3-1, column=4).border = border_bottomleft
+      sheet.cell(row=4+n2+n3-1, column=5).border = border_bottomright
+      sheet.cell(row=4+n3, column=4).border = border_topleft
+      sheet.cell(row=4+n3, column=5).border = border_topright
+  
+  
+      #1回生
+      for i in range(5+n2+n3,5+n1+n2+n3-2):
+        sheet.cell(row=i, column=4).border = border_left
+        sheet.cell(row=i, column=5).border = border_right
+      sheet.cell(row=4+n1+n2+n3-1, column=4).border = border_bottomleft
+      sheet.cell(row=4+n1+n2+n3-1, column=5).border = border_bottomright
+      sheet.cell(row=4+n2+n3, column=4).border = border_topleft
+      sheet.cell(row=4+n2+n3, column=5).border = border_topright
+  
+  
+  
+      #列E～の枠線
+      sheet.cell(row=3, column=6).border = border_topleft
+      sheet.cell(row=4, column=6).border = border_topleft
+      sheet.cell(row=3+n1+n2+n3, column=6).border = border_bottomleft
+  
+      for i in range(7, 7+tt-2):
+        sheet.cell(row=3, column=i).border = border_topcenter
+        sheet.cell(row=4, column=i).border = border_topcenter
+        sheet.cell(row=3+n1+n2+n3, column=i).border = border_bottomcenter
+  
+      #右端の枠線
+      sheet.cell(row=3, column=7+tt-2).border = border_topright
+      sheet.cell(row=4, column=7+tt-2).border = border_topright
+      sheet.cell(row=3+n1+n2+n3, column=7+tt-2).border = border_bottomright
+  
+      #右,左端の枠線
+      for i in range(5,5+n1+n2+n3-2):
+        sheet.cell(row=i, column=6).border = border_left
+        sheet.cell(row=i, column=7+tt-2).border = border_right
+  
+      for i in range(5,5+n1+n2+n3-2):
+        for j in range(7,7+tt-2):
+          sheet.cell(row=i, column=j).border = border_allthin
+  
+      #インタミ塗りつぶし
+      fill = PatternFill(patternType='solid', fgColor='d3d3d3')
+      for i in range(3,3+n1+n2+n3+1):
+        sheet.cell(row=i, column=6+intami).fill = fill
+
+
+
+
+      
+    
+      for i in I:
+        for t in T:
+          if t <= intami:
+            if c[i,t] == 2:
+              sheet.cell(row=3+i, column=5+t, value = "出演")
+            if st.session_state["x2"][f"{i}_{t}"].x > 0.01:
+              if i >= n2+n3+1:
+                if g[i] == 1:
+                  sheet.cell(row=3+i, column=5+t).value = "☆"
                 else:
                   sheet.cell(row=3+i, column=5+t).value = "〇"
-            elif t > intami:
-                if c[i,t] == 2:
-                  sheet.cell(row=3+i, column=5+t+1, value = "出演")
-                if x[i,t].x > 0.01:
-                  if i >= n2+n3+1:
-                    if g[i] == 1:
-                      sheet.cell(row=3+i, column=5+t+1).value = "☆"
-                    else:
-                      sheet.cell(row=3+i, column=5+t+1).value = "〇"
+              else:
+                sheet.cell(row=3+i, column=5+t).value = "〇"
+          elif t > intami:
+              if c[i,t] == 2:
+                sheet.cell(row=3+i, column=5+t+1, value = "出演")
+              if st.session_state["x2"][f"{i}_{t}"].x > 0.01:
+                if i >= n2+n3+1:
+                  if g[i] == 1:
+                    sheet.cell(row=3+i, column=5+t+1).value = "☆"
                   else:
                     sheet.cell(row=3+i, column=5+t+1).value = "〇"
-      
-            #書式設定
-            font = Font(size=18,bold=True)
-            for i in I:
-              for t in range(1,m+2):
-                sheet.cell(row=3+i, column=5+t).font = font
-                sheet.cell(row=3+i, column=5+t).alignment = Alignment(horizontal = 'center', vertical = 'center')
+                else:
+                  sheet.cell(row=3+i, column=5+t+1).value = "〇"
     
-        # バイトストリームにExcelファイルを保存
-        buffer = BytesIO()
-        book.save(buffer)
-        buffer.seek(0)
-      
-        # StreamlitのダウンロードボタンでExcelファイルをダウンロード
-        st.download_button(
-            label="ダウンロード",
-            data=buffer,
-            file_name='シフト希望記入表.xlsx',
-            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
+          #書式設定
+          font = Font(size=18,bold=True)
+          for i in I:
+            for t in range(1,m+2):
+              sheet.cell(row=3+i, column=5+t).font = font
+              sheet.cell(row=3+i, column=5+t).alignment = Alignment(horizontal = 'center', vertical = 'center')
+  
+      # バイトストリームにExcelファイルを保存
+      buffer = BytesIO()
+      book.save(buffer)
+      buffer.seek(0)
+    
+      # StreamlitのダウンロードボタンでExcelファイルをダウンロード
+      st.download_button(
+          label="ダウンロード",
+          data=buffer,
+          file_name='シフト希望記入表.xlsx',
+          mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      )
 
     
         
