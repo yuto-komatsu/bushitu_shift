@@ -1176,6 +1176,11 @@ def part_shift_main():
       #     file_name='シフト希望記入表.xlsx',
       #     mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       # )
+
+        # デフォルトで作成されるシートを削除
+      if 'Sheet' in book2.sheetnames:
+        book2.remove(book2['Sheet'])
+        
       buffer2 = BytesIO()
       book2.save(buffer2)
       buffer2.seek(0)
