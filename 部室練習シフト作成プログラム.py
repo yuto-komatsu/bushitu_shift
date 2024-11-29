@@ -808,7 +808,6 @@ def part_shift_main():
       n1 = sheet.cell(row=7, column=3).value
       n2 = sheet.cell(row=6, column=3).value
       n3 = sheet.cell(row=5, column=3).value
-      st.write(n1)
     
       #定数用のデータの作成
       st.session_state["I"] = [i+1 for i in range(n1 + n2 + n3)]
@@ -973,7 +972,7 @@ def part_shift_main():
       #最適化の実行
       status = model.optimize()
       if status == OptimizationStatus.OPTIMAL:
-        st.session_state["x2"] = x
+        st.session_state["x2"] = {}
         st.write('最適値('+ st.session_state["Part"] +') =', model.objective_value)
         for i in st.session_state["I"]:
           for t in st.session_state["T"]:
