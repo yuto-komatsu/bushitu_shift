@@ -811,15 +811,15 @@ def part_shift_main():
       st.write(n1)
     
       #定数用のデータの作成
-      I = [i+1 for i in range(n1 + n2 + n3)]
-      T = [i+1 for i in range(m)]
+      st.session_state["I"] = [i+1 for i in range(n1 + n2 + n3)]
+      st.session_state["T"] = [i+1 for i in range(m)]
     
       #インタミ直前のバンド
       st.session_state["intami"] = sheet.cell(row=2, column=6).value
     
       c ={} #出演都合
-      for i in I:
-        for t in T:
+      for i in st.session_state["I"]:
+        for t in st.session_state["T"]:
           value = sheet.cell(row=10+i, column=4+t).value
           c[i, t] = value if value is not None else 1
     
@@ -834,40 +834,40 @@ def part_shift_main():
 
       #決定変数の作成
       x = {}
-      for i in I:
-        for t in T:
+      for i in st.session_state["I"]:
+        for t in st.session_state["T"]:
           x[i, t] = model.add_var(f'x{i},{t}', var_type='B')
     
       y = {}
-      for i in I:
-        for j in I:
-          for t in T:
+      for i in st.session_state["I"]:
+        for j in st.session_state["I"]:
+          for t in st.session_state["T"]:
             y[i,j,t] = model.add_var(f'y{i},{j},{t}', var_type='B')
     
       z = {}
-      for i in I:
-        for j in I:
+      for i in st.session_state["I"]:
+        for j in st.session_state["I"]:
           z[i,j] = model.add_var(f'z{i},{j}', var_type='B')
     
       #ペナルティ変数
       w = {}
-      for i in I:
-        for t in T:
+      for i in st.session_state["I"]:
+        for t in st.session_state["T"]:
           w[i, t] = model.add_var(f'w{i},{t}', var_type='B')
     
       v = {}
-      for i in I:
+      for i in st.session_state["I"]:
         for t in range(1,m):
           v[i, t] = model.add_var(f'v{i},{t}', var_type='B')
     
       u = {}
-      for i in I:
+      for i in st.session_state["I"]:
         for t in range(1,m):
           u[i, t] = model.add_var(f'u{i},{t}', var_type='B')
     
       s = {}
-      for i in I:
-        for j in I:
+      for i in st.session_state["I"]:
+        for j in st.session_state["I"]:
           s[i,j] = model.add_var(f's{i},{j}', var_type='B')
     
     
@@ -882,36 +882,36 @@ def part_shift_main():
     
       #ハード制約条件
       #スロットｔには2人以上,4人以下を割り当てる
-      for t in T:
-        model += xsum(x[i,t] for i in I) >= 2
-        model += xsum(x[i,t] for i in I) <= jouken[0]
+      for t in st.session_state["T"]:
+        model += xsum(x[i,t] for i in st.session_state["I"]) >= 2
+        model += xsum(x[i,t] for i in st.session_state["I"]) <= jouken[0]
     
       #連続して仕事ができるのは最大3回まで
       if jouken[3] == 0:
-        for i in I:
+        for i in st.session_state["I"]:
           for t in range(1,m-2):
             model += x[i,t] + x[i,t+1] + x[i,t+2] +x[i,t+3] <= 3
     
       #希望スロット以外に仕事を割り振らない
-      for i in I:
-        for t in T:
+      for i in st.session_state["I"]:
+        for t in st.session_state["T"]:
           if c[i,t] == 2 or c[i,t] == 0:
             model += x[i,t] == 0
           # elif c[i,t] == 1:
           #   model += x[i,t] <= 1
     
       #1回生が仕事を割り当てられた場合、必ず2回生が1人以上同じスロットに入る
-      for t in T:
+      for t in st.session_state["T"]:
         model += xsum(x[i,t] for i in range(n2+n3+1, n1+n2+n3+1)) <= xsum(x[i,t] for i in range(1,n2+n3+1))*3
     
       #講習会に参加していない1回生は最低2回以上仕事をする
       for i in range(n2+n3+1,n1+n2+n3+1):
-        if xsum(c[i,t] for t in T) >= 1:
-          model += xsum(x[i,t] for t in T) >= 1
+        if xsum(c[i,t] for t in st.session_state["T"]) >= 1:
+          model += xsum(x[i,t] for t in st.session_state["T"]) >= 1
     
       #①出演直後のメンバーに仕事を割り当てない
       if jouken[1] == 1:
-        for i in I:
+        for i in st.session_state["I"]:
           for t in range(1,m):
             if c[i,t] == 2:
               if t != st.session_state["intami"]:
@@ -922,16 +922,16 @@ def part_shift_main():
       #②講習会に参加していない1回生が仕事を割り当てられた場合、必ず2回生が２人以上同じスロットに入る
       for i in range(n2+n3+1, n1+n2+n3+1):
         if g[i] == 1:
-          for t in T:
+          for t in st.session_state["T"]:
             model += xsum(x[j,t] for j in range(1,n2+n3+1)) >= 2 * x[i,t] - w[i,t]
     
       #③できるだけメンバーは連続して仕事をしない
-      for i in I:
+      for i in st.session_state["I"]:
         for t in range(1,m):
           model += x[i,t] + x[i,t+1] <= 1 + v[i,t]
     
       #④できるだけ出演前のシフトに仕事を割り当てない
-      for i in I:
+      for i in st.session_state["I"]:
         for t in range(1,m):
           if c[i,t+1] == 2:
             model += x[i,t] <= u[i,t]
@@ -939,33 +939,33 @@ def part_shift_main():
       #⑤なるべく違う部員と仕事をする
       if n2 < n1:
         for i in range(n2+1,n2+n3+1):
-          for j in I:
-            for t in T:
+          for j in st.session_state["I"]:
+            for t in st.session_state["T"]:
               if i != j:
                 model += x[i,t] + x[j,t] >= 2*y[i,j,t]
     
         for i in range(n2+1,n2+n3+1):
-          for j in I:
+          for j in st.session_state["I"]:
             if i != j:
-              model += xsum(y[i,j,t] for t in T) >= z[i,j] - s[i,j]
+              model += xsum(y[i,j,t] for t in st.session_state["T"]) >= z[i,j] - s[i,j]
       elif n1 <= n2:
         for i in range(n2+n3+1,n1+n2+n3+1):
-          for j in I:
-            for t in T:
+          for j in st.session_state["I"]:
+            for t in st.session_state["T"]:
               if i != j:
                 model += x[i,t] + x[j,t] >= 2*y[i,j,t]
     
         for i in range(n2+n3+1,n1+n2+n3+1):
-          for j in I:
+          for j in st.session_state["I"]:
             if i != j:
-              model += xsum(y[i,j,t] for t in T) >= z[i,j] - s[i,j]
+              model += xsum(y[i,j,t] for t in st.session_state["T"]) >= z[i,j] - s[i,j]
     
       #最適化
       #目的関数の設定
-      model.objective = minimize(jouken[2]*xsum(w[i,t] for i in I for t in T) + jouken[3]*xsum(v[i,t] for i in I for t in range(1,m)) + jouken[4]*xsum(u[i,t] for i in I for t in range(1,m))
-      -jouken[5]*xsum(z[i,j] for i in I for j in I)
-      + jouken[5]*1.1*xsum(s[i,j] for i in I for j in I)
-      +xsum(x[i,t] for i in range(n3+1,n2+n3+1) for t in T) +5*xsum(x[i,t] for i in range(1,n3+1) for t in T))
+      model.objective = minimize(jouken[2]*xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"]) + jouken[3]*xsum(v[i,t] for i in st.session_state["I"] for t in range(1,m)) + jouken[4]*xsum(u[i,t] for i in st.session_state["st.session_state["I"]"] for t in range(1,m))
+      -jouken[5]*xsum(z[i,j] for i in st.session_state["I"] for j in st.session_state["I"])
+      + jouken[5]*1.1*xsum(s[i,j] for i in st.session_state["I"] for j in st.session_state["I"])
+      +xsum(x[i,t] for i in range(n3+1,n2+n3+1) for t in st.session_state["T"]) +5*xsum(x[i,t] for i in range(1,n3+1) for t in st.session_state["T"]))
 
 
 
@@ -975,8 +975,8 @@ def part_shift_main():
       if status == OptimizationStatus.OPTIMAL:
         st.session_state["x2"] = x
         st.write('最適値('+ st.session_state["Part"] +') =', model.objective_value)
-        for i in I:
-          for t in T:
+        for i in st.session_state["I"]:
+          for t in st.session_state["T"]:
             st.session_state["x2"][f"{i}_{t}"] = x[i, t].x
             
       #出力用ファイルの作成
@@ -1132,8 +1132,8 @@ def part_shift_main():
 
       
     
-      for i in I:
-        for t in T:
+      for i in st.session_state["I"]:
+        for t in st.session_state["T"]:
           if t <= st.session_state["intami"]:
             if c[i,t] == 2:
               sheet.cell(row=3+i, column=5+t, value = "出演")
@@ -1159,7 +1159,7 @@ def part_shift_main():
     
           #書式設定
           font = Font(size=18,bold=True)
-          for i in I:
+          for i in st.session_state["I"]:
             for t in range(1,m+2):
               sheet.cell(row=3+i, column=5+t).font = font
               sheet.cell(row=3+i, column=5+t).alignment = Alignment(horizontal = 'center', vertical = 'center')
