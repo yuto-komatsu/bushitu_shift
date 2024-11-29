@@ -821,6 +821,7 @@ def part_shift_main():
         for t in st.session_state["T"]:
           value = sheet.cell(row=10+i, column=4+t).value
           c[i, t] = value if value is not None else 1
+          st.write(c[i, t])
     
       g = {} #1回生の講習会参加
       for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
