@@ -977,7 +977,7 @@ def part_shift_main():
         for i in st.session_state["I"]:
           for t in st.session_state["T"]:
             st.session_state["x2"][f"{i}_{t}"] = x[i, t].x
-            st.write(st.session_state["x2"][f"{i}_{t}"])
+
             
       #出力用ファイルの作成
       book2 = openpyxl.Workbook()    
