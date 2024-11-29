@@ -1137,7 +1137,7 @@ def part_shift_main():
           if t <= st.session_state["intami"]:
             if c[i,t] == 2:
               sheet.cell(row=3+i, column=5+t, value = "出演")
-            if st.session_state["x2"][f"{i}_{t}"].x > 0.01:
+            if st.session_state["x2"][f"{i}_{t}"] > 0.01:
               if i >= n2+n3+1:
                 if g[i] == 1:
                   sheet.cell(row=3+i, column=5+t).value = "☆"
@@ -1148,7 +1148,7 @@ def part_shift_main():
           elif t > st.session_state["intami"]:
               if c[i,t] == 2:
                 sheet.cell(row=3+i, column=5+t+1, value = "出演")
-              if st.session_state["x2"][f"{i}_{t}"].x > 0.01:
+              if st.session_state["x2"][f"{i}_{t}"] > 0.01:
                 if i >= n2+n3+1:
                   if g[i] == 1:
                     sheet.cell(row=3+i, column=5+t+1).value = "☆"
