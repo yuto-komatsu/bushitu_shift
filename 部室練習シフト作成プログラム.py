@@ -962,7 +962,7 @@ def part_shift_main():
     
       #最適化
       #目的関数の設定
-      model.objective = minimize(jouken[2]*xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"]) + jouken[3]*xsum(v[i,t] for i in st.session_state["I"] for t in range(1,m)) + jouken[4]*xsum(u[i,t] for i in st.session_state["st.session_state["I"]"] for t in range(1,m))
+      model.objective = minimize(jouken[2]*xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"]) + jouken[3]*xsum(v[i,t] for i in st.session_state["I"] for t in range(1,m)) + jouken[4]*xsum(u[i,t] for i in st.session_state["I"]] for t in range(1,m))
       -jouken[5]*xsum(z[i,j] for i in st.session_state["I"] for j in st.session_state["I"])
       + jouken[5]*1.1*xsum(s[i,j] for i in st.session_state["I"] for j in st.session_state["I"])
       +xsum(x[i,t] for i in range(n3+1,n2+n3+1) for t in st.session_state["T"]) +5*xsum(x[i,t] for i in range(1,n3+1) for t in st.session_state["T"]))
