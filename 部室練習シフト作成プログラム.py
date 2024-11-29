@@ -1164,19 +1164,26 @@ def part_shift_main():
               sheet.cell(row=3+i, column=5+t).font = font
               sheet.cell(row=3+i, column=5+t).alignment = Alignment(horizontal = 'center', vertical = 'center')
   
-      # バイトストリームにExcelファイルを保存
-      buffer = BytesIO()
-      book.save(buffer)
-      buffer.seek(0)
+      # # バイトストリームにExcelファイルを保存
+      # buffer = BytesIO()
+      # book.save(buffer)
+      # buffer.seek(0)
     
-      # StreamlitのダウンロードボタンでExcelファイルをダウンロード
+      # # StreamlitのダウンロードボタンでExcelファイルをダウンロード
+      # st.download_button(
+      #     label="ダウンロード",
+      #     data=buffer,
+      #     file_name='シフト希望記入表.xlsx',
+      #     mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      # )
+      buffer2 = BytesIO()
+      book2.save(buffer2)
+      buffer2.seek(0)
       st.download_button(
-          label="ダウンロード",
-          data=buffer,
-          file_name='シフト希望記入表.xlsx',
-          mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      )
-
+        label="結果をダウンロード",
+        data=buffer2,
+        file_name="最適化結果.xlsx",
+      mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     
         
   
