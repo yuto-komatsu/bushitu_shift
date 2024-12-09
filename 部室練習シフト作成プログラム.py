@@ -412,7 +412,7 @@ def practice_shift_main():
   #ページ２：ライブ情報の入力
   if "page_control" in st.session_state and st.session_state["page_control"] == 1:
       # st.session_state['uploaded'] = True
-      st.header('２．ライブ情報の入力')
+      st.header('２．シフト概要の入力')
       st.session_state["book"] = load_workbook(st.session_state["uploaded_file1"])
       st.session_state["sheet"] = st.session_state["book"]["概要"]
       st.session_state["band_sum"] = band_list_making()
