@@ -505,7 +505,7 @@ def part_shift_main():
     member_listfile = file.read()
   
 
-    st.header('１．情報登録')
+    st.header('１．シフトの情報登録')
     
     
     
