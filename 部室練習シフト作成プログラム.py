@@ -507,7 +507,7 @@ def part_shift_main():
 
     st.header('１．情報登録')
     
-    st.caption('記入を終えたファイルをアップロードしてください。')
+    
     
     st.caption("下のセレクトボックスから、シフトを作成するパートを選択してください。")
     st.session_state["Part"] = st.selectbox(
@@ -524,7 +524,7 @@ def part_shift_main():
       file_name='パートメンバー登録＿テンプレート.xlsx',
       mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    
+    st.caption('記入を終えたファイルをアップロードしてください。')
     st.session_state["member_file1"] = st.file_uploader("パート名簿をアップロード", type=["xlsx"],key = "パート名簿")
     if st.session_state["member_file1"] is not None:
       change_page2()
