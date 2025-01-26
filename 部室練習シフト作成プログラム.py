@@ -330,7 +330,7 @@ def saitekika():
   status = model.optimize()
   
   if status == OptimizationStatus.OPTIMAL:
-    st.header('5．実行結果')
+    st.header('５．実行結果')
     st.write('最適値 =', model.objective_value)
     st.session_state["y2"] = y
     for i in st.session_state["I"]:
