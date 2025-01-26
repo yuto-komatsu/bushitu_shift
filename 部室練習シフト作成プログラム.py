@@ -44,7 +44,7 @@ def sheet_adjusted_width(ws):
             ws.column_dimensions[column].width= max_length*max_diameter + 1.2
 
 
-tab_titles = ['部室練習固定シフト', '設営パートシフト']
+tab_titles = ['部室練習シフト', '設営パートシフト']
 tab1, tab2 = st.tabs(tab_titles)
 
 border1 = Border(top=Side(style='thick', color='000000'),
