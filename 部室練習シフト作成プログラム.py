@@ -976,6 +976,7 @@ def part_shift_main():
       #最適化の実行
       status = model.optimize()
       if status == OptimizationStatus.OPTIMAL:
+        st.header('４．実行結果')
         st.session_state["x2"] = {}
         st.write('最適値('+ st.session_state["Part"] +') =', model.objective_value)
         for i in st.session_state["I"]:
