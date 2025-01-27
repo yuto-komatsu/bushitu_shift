@@ -1011,7 +1011,7 @@ def part_shift_main():
           for t in st.session_state["T"]:
             if x[i, t].x > 0:
               if t <= st.session_state["intami"]:
-                sheet.cell(row=3+i, column=5+t+1).value = "〇"
+                sheet.cell(row=3+i, column=5+t).value = "〇"
               elif t > st.session_state["intami"]:
                 sheet.cell(row=3+i, column=5+t+1).value = "〇"
   
