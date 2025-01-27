@@ -505,270 +505,272 @@ def part_shift_main():
     member_listfile = file.read()
   
 
-    st.header('１．シフトの概要登録')
+  st.header('１．シフトの概要登録')
     
     
     
-    st.caption("下のセレクトボックスから、シフトを作成するパートを選択してください。")
-    st.session_state["Part"] = st.selectbox(
-      '作成パートの選択',
-      ["ボーカル","ギター","ベース","ドラム","キーボード","PA","照明"],
-      index=0,
-      placeholder="パートを選択してください"
-    ) 
+  st.caption("下のセレクトボックスから、シフトを作成するパートを選択してください。")
+  st.session_state["Part"] = st.selectbox(
+    '作成パートの選択',
+    ["ボーカル","ギター","ベース","ドラム","キーボード","PA","照明"],
+    index=0,
+    placeholder="パートを選択してください"
+  ) 
 
-    st.caption('下のダウンロードボタンからテンプレートをダウンロードして、該当ライブのタイムテーブルとパートの所属部員を記入してください。')
-    st.download_button(
-      label="テンプレートをダウンロード",
-      data=member_listfile,
-      file_name='パートメンバー登録＿テンプレート.xlsx',
-      mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
-    st.caption('記入を終えたファイルをアップロードしてください。')
-    st.session_state["member_file1"] = st.file_uploader("パート名簿をアップロード", type=["xlsx"],key = "パート名簿")
-    if st.session_state["member_file1"] is not None:
-      change_page2()
+  st.caption('下のダウンロードボタンからテンプレートをダウンロードして、該当ライブのタイムテーブルとパートの所属部員を記入してください。')
+  st.download_button(
+    label="テンプレートをダウンロード",
+    data=member_listfile,
+    file_name='パートメンバー登録＿テンプレート.xlsx',
+    mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  )
+  st.caption('記入を終えたファイルをアップロードしてください。')
+  st.session_state["member_file1"] = st.file_uploader("パート名簿をアップロード", type=["xlsx"],key = "パート名簿")
+  if st.session_state["member_file1"] is not None:
+    change_page2()
 
-    #ページ２
+  #ページ２
 
-    if "page_control2" in st.session_state and st.session_state["page_control2"] == 1:
-      st.header('２．シフト希望の入力')
-      st.caption('シフト希望入力表を作成しました。')
-      st.caption('ダウンロードボタンからダウンロードし、記入を終えたファイルをアップロードしてください。')
+  if "page_control2" in st.session_state and st.session_state["page_control2"] == 1:
+    st.header('２．シフト希望の入力')
+    st.caption('シフト希望入力表を作成しました。')
+    st.caption('ダウンロードボタンからダウンロードし、記入を終えたファイルをアップロードしてください。')
+    
+    st.session_state["book"] = load_workbook(st.session_state["member_file1"])
+    st.session_state["sheet"] = st.session_state["book"]["タイムテーブル"]
+
+    #タイムテーブルの読み込み
+    st.session_state["timetable"]={}
+    t=0
+    while True:
+      value = st.session_state["sheet"].cell(row=3+t, column=2).value
+      if value is None:
+        break
+      st.session_state["timetable"][t] = value
+      t += 1
+
+    #インタミ直前のバンド数の読み込み
+    st.session_state["intami"] = st.session_state["sheet"].cell(row=3, column=4).value
+
+
+    book = openpyxl.Workbook()
+
+    #↓パートごとに分かれる
+    st.session_state["sheet"] = st.session_state["book"]["メンバー"]
+
+    i = 0  
+    st.session_state["n1"] = 0
+    st.session_state["n2"] = 0
+    st.session_state["n3"] = 0
+    
+    #3年生のデータを読み込む
+    st.session_state["member"] = {}
+    while True:
+      value = st.session_state["sheet"].cell(row=4+i, column=2).value
+      if value is None:
+        break
+      st.session_state["member"][value] =  st.session_state["sheet"].cell(row=4+i, column=3).value
+      i += 1
+      st.session_state["n3"] += 1
+    
+    #2年生のデータを読み込む
+    i = 0
+    while True:
+      value = st.session_state["sheet"].cell(row=4+i, column=5).value
+      if value is None:
+        break
+      st.session_state["member"][value] =  st.session_state["sheet"].cell(row=4+i, column=6).value
+      i += 1
+      st.session_state["n2"] += 1
+    
+    #1年生のデータを読み込む
+    i = 0
+    while True:
+      value = st.session_state["sheet"].cell(row=4+i, column=8).value
+      if value is None:
+        break
+      st.session_state["member"][value] =  st.session_state["sheet"].cell(row=4+i, column=9).value
+      i += 1
+      st.session_state["n1"] += 1
       
-      st.session_state["book"] = load_workbook(st.session_state["member_file1"])
-      st.session_state["sheet"] = st.session_state["book"]["タイムテーブル"]
-
-      #タイムテーブルの読み込み
-      st.session_state["timetable"]={}
-      t=0
-      while True:
-        value = st.session_state["sheet"].cell(row=3+t, column=2).value
-        if value is None:
-          break
-        st.session_state["timetable"][t] = value
-        t += 1
-
-      #インタミ直前のバンド数の読み込み
-      st.session_state["intami"] = st.session_state["sheet"].cell(row=3, column=4).value
-
-
-      book = openpyxl.Workbook()
-
-      #↓パートごとに分かれる
-      st.session_state["sheet"] = st.session_state["book"]["メンバー"]
-
-      i = 0  
-      st.session_state["n1"] = 0
-      st.session_state["n2"] = 0
-      st.session_state["n3"] = 0
-    
-      #3年生のデータを読み込む
-      st.session_state["member"] = {}
-      while True:
-        value = st.session_state["sheet"].cell(row=4+i, column=2).value
-        if value is None:
-          break
-        st.session_state["member"][value] =  st.session_state["sheet"].cell(row=4+i, column=3).value
-        i += 1
-        st.session_state["n3"] += 1
-    
-      #2年生のデータを読み込む
-      i = 0
-      while True:
-        value = st.session_state["sheet"].cell(row=4+i, column=5).value
-        if value is None:
-          break
-        st.session_state["member"][value] =  st.session_state["sheet"].cell(row=4+i, column=6).value
-        i += 1
-        st.session_state["n2"] += 1
-    
-      #1年生のデータを読み込む
-      i = 0
-      while True:
-        value = st.session_state["sheet"].cell(row=4+i, column=8).value
-        if value is None:
-          break
-        st.session_state["member"][value] =  st.session_state["sheet"].cell(row=4+i, column=9).value
-        i += 1
-        st.session_state["n1"] += 1
-      if st.session_state["n1"]  != 0 and st.session_state["n2"] != 0 and st.session_state["n3"] != 0:
-        #希望用エクセルファイルの作成
-        book.create_sheet(index=-1, title=st.session_state["Part"])
-        sheet = book[st.session_state["Part"]]
-    
-        #固定の文字列の作成
-        sheet.cell(row=2, column=2).value = "総バンド数"
-        sheet.cell(row=2, column=3).value = t
-    
-        sheet.cell(row=4, column=3).value = "人数"
-        sheet.cell(row=5, column=2).value = "3年生"
-        sheet.cell(row=6, column=2).value = "2年生"
-        sheet.cell(row=7, column=2).value = "1年生"
-    
-        sheet.cell(row=5, column=3).value = st.session_state["n3"]
-        sheet.cell(row=6, column=3).value = st.session_state["n2"]
-        sheet.cell(row=7, column=3).value = st.session_state["n1"]
-    
-        sheet.cell(row=2, column=5).value = "インタミ直前"
-        sheet.cell(row=2, column=6).value = st.session_state["intami"]
-    
-        #c[i,j,t]の表示
-        sheet.cell(row=10, column=2).value = "c_(i,j,t)"
-        sheet.cell(row=11, column=2).value = "3年生"
-        sheet.cell(row=11+st.session_state["n3"], column=2).value = "2年生"
-        sheet.cell(row=11+st.session_state["n3"]+st.session_state["n2"], column=2).value = "1年生"
-    
-        sheet.merge_cells(start_row=11, start_column=2, end_row=11+st.session_state["n3"]-1, end_column=2)
-        sheet.merge_cells(start_row=11+st.session_state["n3"], start_column=2, end_row=11+st.session_state["n2"]+st.session_state["n3"]-1, end_column=2)
-        sheet.merge_cells(start_row=11+st.session_state["n2"]+st.session_state["n3"], start_column=2, end_row=11+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-1, end_column=2)
-    
-        sheet.merge_cells(start_row=10, start_column=3, end_row=10, end_column=4)
-    
-        #タイムテーブルの表示(横)
-        for i in st.session_state["timetable"]:
-          sheet.cell(row=10, column=5+i).value = st.session_state["timetable"][i]
-    
-        #パートメンバーの表示(縦)
-        j=0
-        for i in st.session_state["member"]:
-          sheet.cell(row=11+j, column=3).value = str(i)
-          sheet.cell(row=11+j, column=4).value = st.session_state["member"][i]
-          j += 1
-    
-        #g_(i)を表示
-        sheet.cell(row=10, column=4+t+2).value = "g_(i)"
-        j = 1
-        for i in st.session_state["member"]:
-          if j >= st.session_state["n2"]+st.session_state["n3"]+1 and j < st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1:
-            sheet.cell(row=10+j-st.session_state["n2"]-st.session_state["n3"], column=4+t+2).value = i
-          j+=1
-
-        #書式設定
-        font = Font(name="游ゴシック",size=14,bold=True)
-        for i in range(1,11+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]):
-          for j in range(1,5+t+2):
-            sheet.cell(row=1+i, column=1+j).font = font
-            sheet.cell(row=1+i, column=1+j).alignment = Alignment(horizontal = 'left', vertical = 'center')
-
-        #幅の自動調整(関数呼び出し)
-        sheet_adjusted_width(sheet)
-        
-        #総バンド数の枠線
-        sheet.cell(row=2, column=2).border = border1
-        sheet.cell(row=2, column=3).border = border2
-
-        #インタミ直前の枠線
-        sheet.cell(row=2, column=5).border = border1
-        sheet.cell(row=2, column=6).border = border2
-        #各学年の部員の人数の枠線
+    # if st.session_state["n1"]  != 0 and st.session_state["n2"] != 0 and st.session_state["n3"] != 0:
+    #希望用エクセルファイルの作成
+    book.create_sheet(index=-1, title=st.session_state["Part"])
+    sheet = book[st.session_state["Part"]]
   
-        sheet.cell(row=4, column=2).border = border_topleft
-        sheet.cell(row=4, column=3).border = border_topright
-        sheet.cell(row=7, column=2).border = border_bottomleft
-        sheet.cell(row=7, column=3).border = border_bottomright
-        for i in range(5,7):
-          sheet.cell(row=i, column=2).border = border_left
-          sheet.cell(row=i, column=3).border = border_right
+    #固定の文字列の作成
+    sheet.cell(row=2, column=2).value = "総バンド数"
+    sheet.cell(row=2, column=3).value = t
+
+    sheet.cell(row=4, column=3).value = "人数"
+    sheet.cell(row=5, column=2).value = "3年生"
+    sheet.cell(row=6, column=2).value = "2年生"
+    sheet.cell(row=7, column=2).value = "1年生"
+
+    sheet.cell(row=5, column=3).value = st.session_state["n3"]
+    sheet.cell(row=6, column=3).value = st.session_state["n2"]
+    sheet.cell(row=7, column=3).value = st.session_state["n1"]
+
+    sheet.cell(row=2, column=5).value = "インタミ直前"
+    sheet.cell(row=2, column=6).value = st.session_state["intami"]
+
+    #c[i,j,t]の表示
+    sheet.cell(row=10, column=2).value = "c_(i,j,t)"
+    sheet.cell(row=11, column=2).value = "3年生"
+    sheet.cell(row=11+st.session_state["n3"], column=2).value = "2年生"
+    sheet.cell(row=11+st.session_state["n3"]+st.session_state["n2"], column=2).value = "1年生"
+
+    sheet.merge_cells(start_row=11, start_column=2, end_row=11+st.session_state["n3"]-1, end_column=2)
+    sheet.merge_cells(start_row=11+st.session_state["n3"], start_column=2, end_row=11+st.session_state["n2"]+st.session_state["n3"]-1, end_column=2)
+    sheet.merge_cells(start_row=11+st.session_state["n2"]+st.session_state["n3"], start_column=2, end_row=11+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-1, end_column=2)
+
+    sheet.merge_cells(start_row=10, start_column=3, end_row=10, end_column=4)
+
+    #タイムテーブルの表示(横)
+    for i in st.session_state["timetable"]:
+      sheet.cell(row=10, column=5+i).value = st.session_state["timetable"][i]
+
+    #パートメンバーの表示(縦)
+    j=0
+    for i in st.session_state["member"]:
+      sheet.cell(row=11+j, column=3).value = str(i)
+      sheet.cell(row=11+j, column=4).value = st.session_state["member"][i]
+      j += 1
+
+    #g_(i)を表示
+    sheet.cell(row=10, column=4+t+2).value = "g_(i)"
+    j = 1
+    for i in st.session_state["member"]:
+      if j >= st.session_state["n2"]+st.session_state["n3"]+1 and j < st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1:
+        sheet.cell(row=10+j-st.session_state["n2"]-st.session_state["n3"], column=4+t+2).value = i
+      j+=1
+
+    #書式設定
+    font = Font(name="游ゴシック",size=14,bold=True)
+    for i in range(1,11+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]):
+      for j in range(1,5+t+2):
+        sheet.cell(row=1+i, column=1+j).font = font
+        sheet.cell(row=1+i, column=1+j).alignment = Alignment(horizontal = 'left', vertical = 'center')
+
+    #幅の自動調整(関数呼び出し)
+    sheet_adjusted_width(sheet)
     
-        #↓バンドによって出力が変わる
-        #g[i]の枠線
-        sheet.cell(row=10, column=5+t+1).border = border_topleft
-        sheet.cell(row=10, column=5+t+2).border = border_topright
-        sheet.cell(row=10+st.session_state["n1"], column=5+t+1).border = border_bottomleft
-        sheet.cell(row=10+st.session_state["n1"], column=5+t+2).border = border_bottomright
-        for i in range(11,10+st.session_state["n1"]):
-          sheet.cell(row=i, column=5+t+1).border = border_left
-          sheet.cell(row=i, column=5+t+2).border = border_right
+    #総バンド数の枠線
+    sheet.cell(row=2, column=2).border = border1
+    sheet.cell(row=2, column=3).border = border2
+
+    #インタミ直前の枠線
+    sheet.cell(row=2, column=5).border = border1
+    sheet.cell(row=2, column=6).border = border2
+    #各学年の部員の人数の枠線
+
+    sheet.cell(row=4, column=2).border = border_topleft
+    sheet.cell(row=4, column=3).border = border_topright
+    sheet.cell(row=7, column=2).border = border_bottomleft
+    sheet.cell(row=7, column=3).border = border_bottomright
+    for i in range(5,7):
+      sheet.cell(row=i, column=2).border = border_left
+      sheet.cell(row=i, column=3).border = border_right
+
+    #↓バンドによって出力が変わる
+    #g[i]の枠線
+    sheet.cell(row=10, column=5+t+1).border = border_topleft
+    sheet.cell(row=10, column=5+t+2).border = border_topright
+    sheet.cell(row=10+st.session_state["n1"], column=5+t+1).border = border_bottomleft
+    sheet.cell(row=10+st.session_state["n1"], column=5+t+2).border = border_bottomright
+    for i in range(11,10+st.session_state["n1"]):
+      sheet.cell(row=i, column=5+t+1).border = border_left
+      sheet.cell(row=i, column=5+t+2).border = border_right
+
+    #c[i,t]の枠線
+    #列Bの枠線
+    sheet.cell(row=10, column=2).border = border_topthick
+
+    sheet.cell(row=11, column=2).border = border_topthick
+    sheet.cell(row=11+st.session_state["n3"], column=2).border = border_topthick
+    sheet.cell(row=11+st.session_state["n3"]+st.session_state["n2"], column=2).border = border_topthick
+
+    sheet.cell(row=11+st.session_state["n3"]-1, column=2).border = border_bottomthick
+    sheet.cell(row=11+st.session_state["n2"]+st.session_state["n3"]-1, column=2).border = border_bottomthick
+    sheet.cell(row=11+st.session_state["n3"]+st.session_state["n2"]+st.session_state["n1"]-1, column=2).border = border_bottomthick
+    for i in range(12,12+st.session_state["n3"]-2):
+        sheet.cell(row=i, column=2).border = border_sidethick
+    for i in range(12+st.session_state["n3"],12+st.session_state["n3"]+st.session_state["n2"]-2):
+        sheet.cell(row=i, column=2).border = border_sidethick
+    for i in range(12+st.session_state["n3"]+st.session_state["n2"],12+st.session_state["n3"]+st.session_state["n2"]+st.session_state["n1"]-2):
+        sheet.cell(row=i, column=2).border = border_sidethick
+
+    #列C,Dの枠線
+    sheet.cell(row=10, column=3).border = border_topleft
+    sheet.cell(row=10, column=4).border = border_topright
+    #3回生
+    sheet.cell(row=11+st.session_state["n3"]-1, column=3).border = border_bottomleft
+    sheet.cell(row=11+st.session_state["n3"]-1, column=4).border = border_bottomright
+    sheet.cell(row=11, column=3).border = border_topleft
+    sheet.cell(row=11, column=4).border = border_topright
+    for i in range(12,10+st.session_state["n3"]):
+      sheet.cell(row=i, column=3).border = border_left
+      sheet.cell(row=i, column=4).border = border_right
+
+    #2回生
+    sheet.cell(row=11+st.session_state["n2"]+st.session_state["n3"]-1, column=3).border = border_bottomleft
+    sheet.cell(row=11+st.session_state["n2"]+st.session_state["n3"]-1, column=4).border = border_bottomright
+    sheet.cell(row=11+st.session_state["n3"], column=3).border = border_topleft
+    sheet.cell(row=11+st.session_state["n3"], column=4).border = border_topright
+    for i in range(12+st.session_state["n3"],10+st.session_state["n2"]+st.session_state["n3"]):
+      sheet.cell(row=i, column=3).border = border_left
+      sheet.cell(row=i, column=4).border = border_right
+
+    #1回生
+    sheet.cell(row=11+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-1, column=3).border = border_bottomleft
+    sheet.cell(row=11+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-1, column=4).border = border_bottomright
+    sheet.cell(row=11+st.session_state["n2"]+st.session_state["n3"], column=3).border = border_topleft
+    sheet.cell(row=11+st.session_state["n2"]+st.session_state["n3"], column=4).border = border_topright
+    for i in range(12+st.session_state["n2"]+st.session_state["n3"],10+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]):
+      sheet.cell(row=i, column=3).border = border_left
+      sheet.cell(row=i, column=4).border = border_right
+
+    #列E～の枠線
+    sheet.cell(row=10, column=5).border = border_topleft
+    sheet.cell(row=11, column=5).border = border_topleft
+    sheet.cell(row=10+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"], column=5).border = border_bottomleft
+
+    for i in range(6, 6+t-2):
+      sheet.cell(row=10, column=i).border = border_topcenter
+      sheet.cell(row=11, column=i).border = border_topcenter
+      sheet.cell(row=10+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"], column=i).border = border_bottomcenter
+
+
+    #右端の枠線
+    sheet.cell(row=10, column=6+t-2).border = border_topright
+    sheet.cell(row=11, column=6+t-2).border = border_topright
+    sheet.cell(row=10+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"], column=6+t-2).border = border_bottomright
+
+    #右,左端の枠線
+    for i in range(12,12+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-2):
+      sheet.cell(row=i, column=5).border = border_left
+      sheet.cell(row=i, column=6+t-2).border = border_right
+
+    for i in range(12,12+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-2):
+      for j in range(6,6+t-2):
+        sheet.cell(row=i, column=j).border = border_allthin
+  
+    book.remove(book['Sheet'])
+  
+   # バイトストリームにExcelファイルを保存
+    buffer = BytesIO()
+    book.save(buffer)
+    buffer.seek(0)
+
     
-        #c[i,t]の枠線
-        #列Bの枠線
-        sheet.cell(row=10, column=2).border = border_topthick
-    
-        sheet.cell(row=11, column=2).border = border_topthick
-        sheet.cell(row=11+st.session_state["n3"], column=2).border = border_topthick
-        sheet.cell(row=11+st.session_state["n3"]+st.session_state["n2"], column=2).border = border_topthick
-    
-        sheet.cell(row=11+st.session_state["n3"]-1, column=2).border = border_bottomthick
-        sheet.cell(row=11+st.session_state["n2"]+st.session_state["n3"]-1, column=2).border = border_bottomthick
-        sheet.cell(row=11+st.session_state["n3"]+st.session_state["n2"]+st.session_state["n1"]-1, column=2).border = border_bottomthick
-        for i in range(12,12+st.session_state["n3"]-2):
-            sheet.cell(row=i, column=2).border = border_sidethick
-        for i in range(12+st.session_state["n3"],12+st.session_state["n3"]+st.session_state["n2"]-2):
-            sheet.cell(row=i, column=2).border = border_sidethick
-        for i in range(12+st.session_state["n3"]+st.session_state["n2"],12+st.session_state["n3"]+st.session_state["n2"]+st.session_state["n1"]-2):
-            sheet.cell(row=i, column=2).border = border_sidethick
-    
-        #列C,Dの枠線
-        sheet.cell(row=10, column=3).border = border_topleft
-        sheet.cell(row=10, column=4).border = border_topright
-        #3回生
-        sheet.cell(row=11+st.session_state["n3"]-1, column=3).border = border_bottomleft
-        sheet.cell(row=11+st.session_state["n3"]-1, column=4).border = border_bottomright
-        sheet.cell(row=11, column=3).border = border_topleft
-        sheet.cell(row=11, column=4).border = border_topright
-        for i in range(12,10+st.session_state["n3"]):
-          sheet.cell(row=i, column=3).border = border_left
-          sheet.cell(row=i, column=4).border = border_right
-    
-        #2回生
-        sheet.cell(row=11+st.session_state["n2"]+st.session_state["n3"]-1, column=3).border = border_bottomleft
-        sheet.cell(row=11+st.session_state["n2"]+st.session_state["n3"]-1, column=4).border = border_bottomright
-        sheet.cell(row=11+st.session_state["n3"], column=3).border = border_topleft
-        sheet.cell(row=11+st.session_state["n3"], column=4).border = border_topright
-        for i in range(12+st.session_state["n3"],10+st.session_state["n2"]+st.session_state["n3"]):
-          sheet.cell(row=i, column=3).border = border_left
-          sheet.cell(row=i, column=4).border = border_right
-    
-        #1回生
-        sheet.cell(row=11+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-1, column=3).border = border_bottomleft
-        sheet.cell(row=11+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-1, column=4).border = border_bottomright
-        sheet.cell(row=11+st.session_state["n2"]+st.session_state["n3"], column=3).border = border_topleft
-        sheet.cell(row=11+st.session_state["n2"]+st.session_state["n3"], column=4).border = border_topright
-        for i in range(12+st.session_state["n2"]+st.session_state["n3"],10+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]):
-          sheet.cell(row=i, column=3).border = border_left
-          sheet.cell(row=i, column=4).border = border_right
-    
-        #列E～の枠線
-        sheet.cell(row=10, column=5).border = border_topleft
-        sheet.cell(row=11, column=5).border = border_topleft
-        sheet.cell(row=10+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"], column=5).border = border_bottomleft
-    
-        for i in range(6, 6+t-2):
-          sheet.cell(row=10, column=i).border = border_topcenter
-          sheet.cell(row=11, column=i).border = border_topcenter
-          sheet.cell(row=10+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"], column=i).border = border_bottomcenter
-    
-    
-        #右端の枠線
-        sheet.cell(row=10, column=6+t-2).border = border_topright
-        sheet.cell(row=11, column=6+t-2).border = border_topright
-        sheet.cell(row=10+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"], column=6+t-2).border = border_bottomright
-    
-        #右,左端の枠線
-        for i in range(12,12+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-2):
-          sheet.cell(row=i, column=5).border = border_left
-          sheet.cell(row=i, column=6+t-2).border = border_right
-    
-        for i in range(12,12+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]-2):
-          for j in range(6,6+t-2):
-            sheet.cell(row=i, column=j).border = border_allthin
-    
-        book.remove(book['Sheet'])
-    
-       # バイトストリームにExcelファイルを保存
-        buffer = BytesIO()
-        book.save(buffer)
-        buffer.seek(0)
-      
-        # StreamlitのダウンロードボタンでExcelファイルをダウンロード
-        st.download_button(
-            label="ダウンロード",
-            data=buffer,
-            file_name='シフト希望記入表.xlsx',
-            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
-      st.session_state["kibou_file2"] = st.file_uploader(label="シフト希望をアップロード", type=["xlsx"],key = "パート希望")
+    # StreamlitのダウンロードボタンでExcelファイルをダウンロード
+    st.download_button(
+        label="ダウンロード",
+        data=buffer,
+        file_name='シフト希望記入表.xlsx',
+        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    st.session_state["kibou_file2"] = st.file_uploader(label="シフト希望をアップロード", type=["xlsx"],key = "パート希望")
     if st.session_state["kibou_file2"] is not None:
       change_page2()
         
