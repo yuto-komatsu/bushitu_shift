@@ -491,10 +491,6 @@ def practice_shift_main():
 
 
 
-
-
-
-
 def part_shift_main():
   st.title('設営パートシフト最適化')
   
@@ -936,44 +932,6 @@ def part_shift_main():
             model += x[i,t] + x[j,t] >= 2*y[i,j,t]
             model += xsum(y[i,j,t] for t in st.session_state["T"]) >= z[i,j]
 
-      #いったん保留
-      # if st.session_state["n2"] < st.session_state["n1"]:
-      #   for i in range(st.session_state["n2"]+1,st.session_state["n2"]+st.session_state["n3"]+1):
-      #     for j in st.session_state["I"]:
-      #       for t in st.session_state["T"]:
-      #         if i != j:
-      #           model += x[i,t] + x[j,t] >= 2*y[i,j,t]
-    
-      #   for i in range(st.session_state["n2"]+1,st.session_state["n2"]+st.session_state["n3"]+1):
-      #     for j in st.session_state["I"]:
-      #       if i != j:
-      #         model += xsum(y[i,j,t] for t in st.session_state["T"]) >= z[i,j] - s[i,j]
-      # elif st.session_state["n1"] <= st.session_state["n2"]:
-      #   for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
-      #     for j in st.session_state["I"]:
-      #       for t in st.session_state["T"]:
-      #         if i != j:
-      #           model += x[i,t] + x[j,t] >= 2*y[i,j,t]
-    
-      #   for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
-      #     for j in st.session_state["I"]:
-      #       if i != j:
-      #         model += xsum(y[i,j,t] for t in st.session_state["T"]) >= z[i,j] - s[i,j]
-    
-      #最適化
-      #目的関数の設定
-      # model.objective = minimize(jouken[2]*xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"]) + jouken[3]*xsum(v[i,t] for i in st.session_state["I"] for t in range(1,m)) + jouken[4]*xsum(u[i,t] for i in st.session_state["I"] for t in range(1,m))
-      # -jouken[5]*xsum(z[i,j] for i in st.session_state["I"] for j in st.session_state["I"])
-      # + jouken[5]*1.1*xsum(s[i,j] for i in st.session_state["I"] for j in st.session_state["I"])
-      # +xsum(x[i,t] for i in range(st.session_state["n3"]+1,st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"]) +5*xsum(x[i,t] for i in range(1,st.session_state["n3"]+1) for t in st.session_state["T"]))
-
-      model.objective = minimize(-10*xsum(x[i,t] for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
-      -5*xsum(x[i,t] for i in range(st.session_state["n3"]+1,st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
-      +xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"])
-      +xsum(v[i,t] + u[i,t] for i in st.session_state["I"] for t in range(1,m))
-      -10*xsum(z[i,j] for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1) for j in st.session_state["I"])
-      +5*xsum(y[i,j,t] for i in st.session_state["I"] for j in st.session_state["I"] for t in st.session_state["T"]))
-      
       #最適化の実行
       status = model.optimize()
 
@@ -982,16 +940,6 @@ def part_shift_main():
       #パートシートの追加
       book2.create_sheet(index=-1, title=st.session_state["Part"])
       sheet = book2[st.session_state["Part"]]
-      
-      # if status == OptimizationStatus.OPTIMAL:
-      #   st.header('４．実行結果')
-      #   st.session_state["x2"] = {}
-      #   st.write('最適値('+ st.session_state["Part"] +') =', model.objective_value)
-      #   for i in st.session_state["I"]:
-      #     for t in st.session_state["T"]:
-      #       st.session_state["x2"][f"{i}_{t}"] = x[i, t].x
-      #       if x[i, t].x > 0:
-      #         sheet.cell(row=3+i, column=5+t).value = "〇"
               
       if status == OptimizationStatus.OPTIMAL:
         st.header('４．実行結果')
@@ -1016,9 +964,6 @@ def part_shift_main():
             elif t > st.session_state["intami"]:
               if c[i,t] == 2:
                 sheet.cell(row=3+i, column=5+t+1).value = "出演"
-                  
-                
-              
   
       #インタミ要素の追加
       T=[]
@@ -1161,36 +1106,6 @@ def part_shift_main():
       fill = PatternFill(patternType='solid', fgColor='d3d3d3')
       for i in range(3,3+st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
         sheet.cell(row=i, column=6+st.session_state["intami"]).fill = fill
-
-
-
-
-      
-    
-      # for i in st.session_state["I"]:
-      #   for t in st.session_state["T"]:
-      #     if t <= st.session_state["intami"]:
-      #       if c[i,t] == 2:
-      #         sheet.cell(row=3+i, column=5+t, value = "出演")
-      #       if st.session_state["x2"][f"{i}_{t}"] > 0.01:
-      #         if i >= st.session_state["n2"]+st.session_state["n3"]+1:
-      #           if g[i] == 0:
-      #             sheet.cell(row=3+i, column=5+t).value = "☆"
-      #           else:
-      #             sheet.cell(row=3+i, column=5+t).value = "〇"
-      #         else:
-      #           sheet.cell(row=3+i, column=5+t).value = "〇"
-      #     elif t > st.session_state["intami"]:
-      #         if c[i,t] == 2:
-      #           sheet.cell(row=3+i, column=5+t+1, value = "出演")
-      #         if st.session_state["x2"][f"{i}_{t}"] > 0.01:
-      #           if i >= st.session_state["n2"]+st.session_state["n3"]+1:
-      #             if g[i] == 1:
-      #               sheet.cell(row=3+i, column=5+t+1).value = "☆"
-      #             else:
-      #               sheet.cell(row=3+i, column=5+t+1).value = "〇"
-      #           else:
-      #             sheet.cell(row=3+i, column=5+t+1).value = "〇"
     
       #書式設定
       font = Font(size=18,bold=True)
@@ -1198,20 +1113,7 @@ def part_shift_main():
         for t in range(1,50):
           sheet.cell(row=3+i, column=5+t).font = font
           sheet.cell(row=3+i, column=5+t).alignment = Alignment(horizontal = 'center', vertical = 'center')
-
-      # # バイトストリームにExcelファイルを保存
-      # buffer = BytesIO()
-      # book.save(buffer)
-      # buffer.seek(0)
-    
-      # # StreamlitのダウンロードボタンでExcelファイルをダウンロード
-      # st.download_button(
-      #     label="ダウンロード",
-      #     data=buffer,
-      #     file_name='シフト希望記入表.xlsx',
-      #     mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      # )
-
+          
         # デフォルトで作成されるシートを削除
       if 'Sheet' in book2.sheetnames:
         book2.remove(book2['Sheet'])
@@ -1224,9 +1126,7 @@ def part_shift_main():
         data=buffer2,
         file_name="最適化結果.xlsx",
       mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    
-        
-  
+
 
 with tab1:
   practice_shift_main()
