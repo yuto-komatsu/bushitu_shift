@@ -1004,13 +1004,16 @@ def part_shift_main():
                   sheet.cell(row=3+i, column=5+t).value = "☆"                 
                 else:
                   sheet.cell(row=3+i, column=5+t).value = "〇"
+                if c[i,t] == 2:
+                  sheet.cell(row=3+i, column=5+t).value = "出演" 
               elif t > st.session_state["intami"]:
                 if i > (st.session_state["n2"]+st.session_state["n3"]) and (st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1)>i and g[i] == 0:
-                  sheet.cell(row=3+i, column=5+t).value = "☆"             
+                  sheet.cell(row=3+i, column=5+t+1).value = "☆"             
                 else:
-                  sheet.cell(row=3+i, column=5+t).value = "〇"
-            if c[i,t] == 2:
-              sheet.cell(row=3+i, column=5+t).value = "出演" 
+                  sheet.cell(row=3+i, column=5+t+1).value = "〇"
+                if c[i,t] == 2:
+                  sheet.cell(row=3+i, column=5+t).value = "出演" 
+            
   
       #インタミ要素の追加
       T=[]
