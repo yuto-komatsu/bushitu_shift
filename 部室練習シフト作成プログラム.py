@@ -768,7 +768,7 @@ def part_shift_main():
             file_name='シフト希望記入表.xlsx',
             mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
-    st.session_state["kibou_file2"] = st.file_uploader(label="シフト希望をアップロード", type=["xlsx"],key = "パート希望")
+      st.session_state["kibou_file2"] = st.file_uploader(label="シフト希望をアップロード", type=["xlsx"],key = "パート希望")
     if st.session_state["kibou_file2"] is not None:
       change_page2()
         
