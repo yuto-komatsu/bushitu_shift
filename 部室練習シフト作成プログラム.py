@@ -835,7 +835,7 @@ def part_shift_main():
       for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
         value = sheet.cell(row=10+i-st.session_state["n2"]-st.session_state["n3"], column=18).value
         g[i] = value if value is not None else 0
-        st.caption(g[i])
+      
     
       #空問題の作成
       model = Model('PartShift')
@@ -896,19 +896,16 @@ def part_shift_main():
         model += xsum(x[i,t] for i in st.session_state["I"]) <= 4
     
       #②連続して仕事ができるのは最大3回まで
-      if jouken[3] == 0:
-        for i in st.session_state["I"]:
-          for t in range(1,m-2):
-            model += x[i,t] + x[i,t+1] + x[i,t+2] +x[i,t+3] <= 3
+      for i in st.session_state["I"]:
+        for t in range(1,m-2):
+          model += x[i,t] + x[i,t+1] + x[i,t+2] +x[i,t+3] <= 3
     
       #③希望スロット以外に仕事を割り振らない
       for i in st.session_state["I"]:
         for t in st.session_state["T"]:
           if c[i,t] == 2 or c[i,t] == 0:
             model += x[i,t] == 0
-          # elif c[i,t] == 1:
-          #   model += x[i,t] <= 1
-    
+
       #④1回生が仕事を割り当てられた場合、必ず2回生が1人以上同じスロットに入る〇
       for t in st.session_state["T"]:
         model += xsum(x[i,t] for i in range(st.session_state["n2"]+st.session_state["n3"]+1, st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1)) <= xsum(x[i,t] for i in range(1,st.session_state["n2"]+st.session_state["n3"]+1))
@@ -919,12 +916,11 @@ def part_shift_main():
           model += xsum(x[i,t] for t in st.session_state["T"]) >= 2
     
       #⑥出演直後のメンバーに仕事を割り当てない
-      if jouken[1] == 1:
-        for i in st.session_state["I"]:
-          for t in range(1,m):
-            if c[i,t] == 2:
-              if t+1 != st.session_state["intami"]:
-                model += x[i,t+1] == 0
+      for i in st.session_state["I"]:
+        for t in range(1,m):
+          if c[i,t] == 2:
+            if t+1 != st.session_state["intami"]:
+              model += x[i,t+1] == 0
     
     
       #ソフト制約条件
@@ -1002,6 +998,8 @@ def part_shift_main():
         for i in st.session_state["I"]:
           for t in st.session_state["T"]:
             st.session_state["x2"][f"{i}_{t}"] = x[i, t].x
+            if x[i, t].x > 0:
+              st.caption("メンバー"+i+"が、バンド"+t+"で仕事をする。")
 
             
       #出力用ファイルの作成
