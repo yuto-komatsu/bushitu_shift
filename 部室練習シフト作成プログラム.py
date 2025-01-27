@@ -979,7 +979,7 @@ def part_shift_main():
       # +xsum(x[i,t] for i in range(st.session_state["n3"]+1,st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"]) +5*xsum(x[i,t] for i in range(1,st.session_state["n3"]+1) for t in st.session_state["T"]))
 
       model.objective = minimize(-10*xsum(x[i,t] for i range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
-      -xsum(x[i,t] for i in range(st.session_state["n3"]+1,1st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
+      -xsum(x[i,t] for i in range(st.session_state["n3"]+1,st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
       +xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"])
       +xsum(v[i,t] + u[i,t] for i in st.session_state["I"] for t in range(1,m))
       -xsum(z[i,j] for i in st.session_state["I"] for j in st.session_state["I"])
