@@ -820,14 +820,16 @@ def part_shift_main():
       #インタミ直前のバンド
       st.session_state["intami"] = sheet.cell(row=2, column=6).value
 
-      count=0
       c ={} #出演都合
       for i in st.session_state["I"]:
         for t in st.session_state["T"]:
           value = sheet.cell(row=10+i, column=4+t).value
           if value is None:
-            value = 1
+            value = 0
           c[i, t] = value
+          st.caption(c[i,t])
+      
+      
 
       g = {} #1回生の講習会参加（講習会参加者は1,講習会不参加は0）
       for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
