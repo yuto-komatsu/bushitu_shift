@@ -982,9 +982,9 @@ def part_shift_main():
       model.objective = minimize(-10*xsum(x[i,t] for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
       -xsum(x[i,t] for i in range(st.session_state["n3"]+1,st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
       +xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"])
-      +0*xsum(v[i,t] + u[i,t] for i in st.session_state["I"] for t in range(1,m))
+      +xsum(v[i,t] + u[i,t] for i in st.session_state["I"] for t in range(1,m))
       -5*xsum(z[i,j] for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1) for j in st.session_state["I"])
-      +xsum(y[i,j,t] for i in st.session_state["I"] for j in st.session_state["I"] for t in st.session_state["T"]))
+      +2*xsum(y[i,j,t] for i in st.session_state["I"] for j in st.session_state["I"] for t in st.session_state["T"]))
       
       #最適化の実行
       status = model.optimize()
