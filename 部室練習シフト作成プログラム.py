@@ -790,20 +790,19 @@ def part_shift_main():
 
       jouken=[1,1,1,1,1,1]
       sheet = st.session_state["book"][st.session_state["Part"]]
-      # jouken = [0,0,0,0,0]
-      # if st.session_state["Part"] == "ボーカル":
-      #   jouken=[3,0,1,0,1,1]
-      # elif st.session_state["Part"] == "ギター":
-      #   jouken=[3,0,1,0,1,1]
-      # elif st.session_state["Part"] == "ベース":
-      #   jouken=[3,0,1,0,1,1]
-      # elif st.session_state["Part"] == "PA":
-      #   jouken=[4,1,1,0,1,1]
-      # elif st.session_state["Part"] == "照明":
-      #   jouken=[4,1,1,0,1,1]
-      # elif st.session_state["Part"] == "ドラム":
-      #   jouken=[4,1,1,1,0,0]
-
+      j = [0,0,0,0,0]
+      if st.session_state["Part"] == "ボーカル":
+        j=[3,0,1,0,1,1]
+      elif st.session_state["Part"] == "ギター":
+        j=[3,0,1,0,1,1]
+      elif st.session_state["Part"] == "ベース":
+        j=[3,0,1,0,1,1]
+      elif st.session_state["Part"] == "PA":
+        j=[4,1,1,0,1,1]
+      elif st.session_state["Part"] == "照明":
+        j=[4,1,1,0,1,1]
+      elif st.session_state["Part"] == "ドラム":
+        j=[4,1,1,1,0,0]
 
       #総バンド数
       m = sheet.cell(row=2, column=3).value
@@ -828,9 +827,6 @@ def part_shift_main():
             value = 0
           c[i, t] = value
           
-      
-      
-
       g = {} #1回生の講習会参加（講習会参加者は1,講習会不参加は0）
       for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
         value = sheet.cell(row=10+i-st.session_state["n2"]-st.session_state["n3"], column=18).value
@@ -874,15 +870,7 @@ def part_shift_main():
         for t in range(1,m):
           u[i, t] = model.add_var(f'u{i},{t}', var_type='B')
     
-      # s = {}
-      # for i in st.session_state["I"]:
-      #   for j in st.session_state["I"]:
-      #     s[i,j] = model.add_var(f's{i},{j}', var_type='B')
-    
-    
       #制約条件の追加
-    
-    
       #①出演直後のメンバーに仕事を割り当てない
       #②講習会に参加していない1回生が仕事を割り当てられた場合、必ず2回生が２人以上同じスロットに入る
       #③できるだけメンバーは連続して仕事をしない
@@ -982,7 +970,7 @@ def part_shift_main():
       model.objective = minimize(-10*xsum(x[i,t] for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
       -5*xsum(x[i,t] for i in range(st.session_state["n3"]+1,st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
       +xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"])
-      +xsum(0.05*v[i,t] + u[i,t] for i in st.session_state["I"] for t in range(1,m))
+      +xsum(v[i,t] + u[i,t] for i in st.session_state["I"] for t in range(1,m))
       -10*xsum(z[i,j] for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1) for j in st.session_state["I"])
       +5*xsum(y[i,j,t] for i in st.session_state["I"] for j in st.session_state["I"] for t in st.session_state["T"]))
       
@@ -1012,9 +1000,19 @@ def part_shift_main():
           for t in st.session_state["T"]:
             if x[i, t].x > 0:
               if t <= st.session_state["intami"]:
-                sheet.cell(row=3+i, column=5+t).value = "〇"
+                if c[i,t] == 2:
+                  sheet.cell(row=3+i, column=5+t).value = "出演"
+                elif g[i] == 0:
+                  sheet.cell(row=3+i, column=5+t).value = "☆"
+                else:
+                  sheet.cell(row=3+i, column=5+t).value = "〇"
               elif t > st.session_state["intami"]:
-                sheet.cell(row=3+i, column=5+t+1).value = "〇"
+                if c[i,t] == 2:
+                  sheet.cell(row=3+i, column=5+t).value = "出演"
+                elif g[i] == 0:
+                  sheet.cell(row=3+i, column=5+t).value = "☆"
+                else:
+                  sheet.cell(row=3+i, column=5+t).value = "〇"
   
       #インタミ要素の追加
       T=[]
