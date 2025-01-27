@@ -999,7 +999,7 @@ def part_shift_main():
           for t in st.session_state["T"]:
             st.session_state["x2"][f"{i}_{t}"] = x[i, t].x
             if x[i, t].x > 0:
-              st.caption(i,t)
+              st.caption(st.session_state["x2"][f"{i}_{t}"])
 
             
       #出力用ファイルの作成
