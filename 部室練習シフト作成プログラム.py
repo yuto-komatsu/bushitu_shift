@@ -383,7 +383,7 @@ def result():
 
 def practice_shift_main():
   # Webアプリのタイトル
-  st.title('シフトスケジュール最適化')
+  st.title('部室練習シフト最適化')
   
   
   #ページ１：参加バンド登録
