@@ -1055,8 +1055,8 @@ def part_shift_main():
   
       #書式設定
       font = Font(name="游ゴシック",size=14,bold=True)
-      for i in range(1,30):
-        for j in range(1,30):
+      for i in range(1,50):
+        for j in range(1,50):
           sheet.cell(row=1+i, column=1+j).font = font
           sheet.cell(row=1+i, column=1+j).alignment = Alignment(horizontal = 'left', vertical = 'center')
   
