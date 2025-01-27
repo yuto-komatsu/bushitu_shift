@@ -1177,13 +1177,13 @@ def part_shift_main():
       #           else:
       #             sheet.cell(row=3+i, column=5+t+1).value = "〇"
     
-          #書式設定
-          font = Font(size=18,bold=True)
-          for i in st.session_state["I"]:
-            for t in range(1,m+2):
-              sheet.cell(row=3+i, column=5+t).font = font
-              sheet.cell(row=3+i, column=5+t).alignment = Alignment(horizontal = 'center', vertical = 'center')
-  
+      #書式設定
+      font = Font(size=18,bold=True)
+      for i in st.session_state["I"]:
+        for t in range(1,m+2):
+          sheet.cell(row=3+i, column=5+t).font = font
+          sheet.cell(row=3+i, column=5+t).alignment = Alignment(horizontal = 'center', vertical = 'center')
+
       # # バイトストリームにExcelファイルを保存
       # buffer = BytesIO()
       # book.save(buffer)
