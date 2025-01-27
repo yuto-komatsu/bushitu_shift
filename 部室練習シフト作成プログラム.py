@@ -1000,19 +1000,24 @@ def part_shift_main():
           for t in st.session_state["T"]:
             if x[i, t].x > 0:
               if t <= st.session_state["intami"]:
-                if c[i,t] == 2:
-                  sheet.cell(row=3+i, column=5+t).value = "出演" 
                 if i > (st.session_state["n2"]+st.session_state["n3"]) and (st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1)>i and g[i] == 0:
                   sheet.cell(row=3+i, column=5+t).value = "☆"                 
                 else:
                   sheet.cell(row=3+i, column=5+t).value = "〇"
               elif t > st.session_state["intami"]:
-                if c[i,t] == 2:
-                  sheet.cell(row=3+i, column=5+t+1).value = "出演" 
                 if i > (st.session_state["n2"]+st.session_state["n3"]) and (st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1)>i and g[i] == 0:
                   sheet.cell(row=3+i, column=5+t+1).value = "☆"             
                 else:
                   sheet.cell(row=3+i, column=5+t+1).value = "〇"
+                  
+              if t <= st.session_state["intami"]:
+                if c[i,t] == 2:
+                  sheet.cell(row=3+i, column=5+t).value = "出演"
+              elif t > st.session_state["intami"]:
+                if c[i,t] == 2:
+                  sheet.cell(row=3+i, column=5+t+1).value = "出演"
+                  
+                
               
   
       #インタミ要素の追加
