@@ -984,13 +984,16 @@ def part_shift_main():
       +xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"])
       +xsum(v[i,t] + u[i,t] for i in st.session_state["I"] for t in range(1,m))
       -xsum(z[i,j] for i in st.session_state["I"] for j in st.session_state["I"]))
-
-
-
-
       
       #最適化の実行
       status = model.optimize()
+
+      #出力用ファイルの作成
+      book2 = openpyxl.Workbook()    
+      #パートシートの追加
+      book2.create_sheet(index=-1, title=st.session_state["Part"])
+      sheet = book2[st.session_state["Part"]]
+      
       if status == OptimizationStatus.OPTIMAL:
         st.header('４．実行結果')
         st.session_state["x2"] = {}
@@ -999,14 +1002,8 @@ def part_shift_main():
           for t in st.session_state["T"]:
             st.session_state["x2"][f"{i}_{t}"] = x[i, t].x
             if x[i, t].x > 0:
-              st.caption(st.session_state["x2"][f"{i}_{t}"])
+              sheet.cell(row=3+i, column=5+t).value = "〇"
 
-            
-      #出力用ファイルの作成
-      book2 = openpyxl.Workbook()    
-      #パートシートの追加
-      book2.create_sheet(index=-1, title=st.session_state["Part"])
-      sheet = book2[st.session_state["Part"]]
   
       #インタミ要素の追加
       T=[]
@@ -1155,30 +1152,30 @@ def part_shift_main():
 
       
     
-      for i in st.session_state["I"]:
-        for t in st.session_state["T"]:
-          if t <= st.session_state["intami"]:
-            if c[i,t] == 2:
-              sheet.cell(row=3+i, column=5+t, value = "出演")
-            if st.session_state["x2"][f"{i}_{t}"] > 0.01:
-              if i >= st.session_state["n2"]+st.session_state["n3"]+1:
-                if g[i] == 1:
-                  sheet.cell(row=3+i, column=5+t).value = "☆"
-                else:
-                  sheet.cell(row=3+i, column=5+t).value = "〇"
-              else:
-                sheet.cell(row=3+i, column=5+t).value = "〇"
-          elif t > st.session_state["intami"]:
-              if c[i,t] == 2:
-                sheet.cell(row=3+i, column=5+t+1, value = "出演")
-              if st.session_state["x2"][f"{i}_{t}"] > 0.01:
-                if i >= st.session_state["n2"]+st.session_state["n3"]+1:
-                  if g[i] == 1:
-                    sheet.cell(row=3+i, column=5+t+1).value = "☆"
-                  else:
-                    sheet.cell(row=3+i, column=5+t+1).value = "〇"
-                else:
-                  sheet.cell(row=3+i, column=5+t+1).value = "〇"
+      # for i in st.session_state["I"]:
+      #   for t in st.session_state["T"]:
+      #     if t <= st.session_state["intami"]:
+      #       if c[i,t] == 2:
+      #         sheet.cell(row=3+i, column=5+t, value = "出演")
+      #       if st.session_state["x2"][f"{i}_{t}"] > 0.01:
+      #         if i >= st.session_state["n2"]+st.session_state["n3"]+1:
+      #           if g[i] == 0:
+      #             sheet.cell(row=3+i, column=5+t).value = "☆"
+      #           else:
+      #             sheet.cell(row=3+i, column=5+t).value = "〇"
+      #         else:
+      #           sheet.cell(row=3+i, column=5+t).value = "〇"
+      #     elif t > st.session_state["intami"]:
+      #         if c[i,t] == 2:
+      #           sheet.cell(row=3+i, column=5+t+1, value = "出演")
+      #         if st.session_state["x2"][f"{i}_{t}"] > 0.01:
+      #           if i >= st.session_state["n2"]+st.session_state["n3"]+1:
+      #             if g[i] == 1:
+      #               sheet.cell(row=3+i, column=5+t+1).value = "☆"
+      #             else:
+      #               sheet.cell(row=3+i, column=5+t+1).value = "〇"
+      #           else:
+      #             sheet.cell(row=3+i, column=5+t+1).value = "〇"
     
           #書式設定
           font = Font(size=18,bold=True)
