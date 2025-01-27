@@ -1010,12 +1010,12 @@ def part_shift_main():
                 else:
                   sheet.cell(row=3+i, column=5+t+1).value = "〇"
                   
-              if t <= st.session_state["intami"]:
-                if c[i,t] == 2:
-                  sheet.cell(row=3+i, column=5+t).value = "出演"
-              elif t > st.session_state["intami"]:
-                if c[i,t] == 2:
-                  sheet.cell(row=3+i, column=5+t+1).value = "出演"
+            if t <= st.session_state["intami"]:
+              if c[i,t] == 2:
+                sheet.cell(row=3+i, column=5+t).value = "出演"
+            elif t > st.session_state["intami"]:
+              if c[i,t] == 2:
+                sheet.cell(row=3+i, column=5+t+1).value = "出演"
                   
                 
               
