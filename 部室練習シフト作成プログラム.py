@@ -827,7 +827,7 @@ def part_shift_main():
           if value is None:
             value = 0
           c[i, t] = value
-          st.caption(c[i,t])
+          
       
       
 
@@ -835,6 +835,7 @@ def part_shift_main():
       for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
         value = sheet.cell(row=10+i-st.session_state["n2"]-st.session_state["n3"], column=18).value
         g[i] = value if value is not None else 0
+        st.caption(g[i])
     
       #空問題の作成
       model = Model('PartShift')
