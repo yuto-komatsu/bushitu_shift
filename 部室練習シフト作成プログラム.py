@@ -1009,7 +1009,7 @@ def part_shift_main():
               elif t > st.session_state["intami"]:
                 if c[i,t] == 2:
                   sheet.cell(row=3+i, column=5+t).value = "出演"
-                elif i > st.session_state["n2"]+st.session_state["n3"] and st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1<i and g[i] == 0::
+                elif i > (st.session_state["n2"]+st.session_state["n3"]) and (st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1)>i and g[i] == 0:
                   sheet.cell(row=3+i, column=5+t).value = "☆"
                 else:
                   sheet.cell(row=3+i, column=5+t).value = "〇"
