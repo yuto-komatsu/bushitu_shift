@@ -983,7 +983,7 @@ def part_shift_main():
       -5*xsum(x[i,t] for i in range(st.session_state["n3"]+1,st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
       +xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"])
       +xsum(5*v[i,t] + u[i,t] for i in st.session_state["I"] for t in range(1,m))
-      -7*xsum(z[i,j] for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1) for j in st.session_state["I"])
+      -10*xsum(z[i,j] for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1) for j in st.session_state["I"])
       +xsum(y[i,j,t] for i in st.session_state["I"] for j in st.session_state["I"] for t in st.session_state["T"]))
       
       #最適化の実行
