@@ -123,8 +123,8 @@ band_list = {}
 week = {}
 
 
-st.session_state["page_control"] = 0
-st.session_state["page_control2"] = 0
+# st.session_state["page_control"] = 0
+# st.session_state["page_control2"] = 0
 st.session_state["kinshi"] = {}
 
 if "3pagenext" not in st.session_state:
