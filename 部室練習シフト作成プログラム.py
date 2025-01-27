@@ -786,20 +786,21 @@ def part_shift_main():
       #最適化
       st.session_state["book"] = load_workbook(st.session_state["kibou_file2"])
 
+      jouken=[1,1,1,1,1,1]
       sheet = st.session_state["book"][st.session_state["Part"]]
-      jouken = [0,0,0,0,0]
-      if st.session_state["Part"] == "ボーカル":
-        jouken=[3,0,1,0,1,1]
-      elif st.session_state["Part"] == "ギター":
-        jouken=[3,0,1,0,1,1]
-      elif st.session_state["Part"] == "ベース":
-        jouken=[3,0,1,0,1,1]
-      elif st.session_state["Part"] == "PA":
-        jouken=[4,1,1,0,1,1]
-      elif st.session_state["Part"] == "照明":
-        jouken=[4,1,1,0,1,1]
-      elif st.session_state["Part"] == "ドラム":
-        jouken=[4,1,1,1,0,0]
+      # jouken = [0,0,0,0,0]
+      # if st.session_state["Part"] == "ボーカル":
+      #   jouken=[3,0,1,0,1,1]
+      # elif st.session_state["Part"] == "ギター":
+      #   jouken=[3,0,1,0,1,1]
+      # elif st.session_state["Part"] == "ベース":
+      #   jouken=[3,0,1,0,1,1]
+      # elif st.session_state["Part"] == "PA":
+      #   jouken=[4,1,1,0,1,1]
+      # elif st.session_state["Part"] == "照明":
+      #   jouken=[4,1,1,0,1,1]
+      # elif st.session_state["Part"] == "ドラム":
+      #   jouken=[4,1,1,1,0,0]
 
 
       #総バンド数
@@ -826,7 +827,7 @@ def part_shift_main():
             value = 1
           c[i, t] = value
 
-      g = {} #1回生の講習会参加
+      g = {} #1回生の講習会参加（講習会参加者は1,講習会不参加は0）
       for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
         value = sheet.cell(row=10+i-st.session_state["n2"]-st.session_state["n3"], column=18).value
         g[i] = value if value is not None else 0
@@ -868,10 +869,10 @@ def part_shift_main():
         for t in range(1,m):
           u[i, t] = model.add_var(f'u{i},{t}', var_type='B')
     
-      s = {}
-      for i in st.session_state["I"]:
-        for j in st.session_state["I"]:
-          s[i,j] = model.add_var(f's{i},{j}', var_type='B')
+      # s = {}
+      # for i in st.session_state["I"]:
+      #   for j in st.session_state["I"]:
+      #     s[i,j] = model.add_var(f's{i},{j}', var_type='B')
     
     
       #制約条件の追加
@@ -884,18 +885,18 @@ def part_shift_main():
       #⑤なるべく違う部員と仕事をする
     
       #ハード制約条件
-      #スロットｔには2人以上,4人以下を割り当てる
+      #①スロットｔには2人以上,4人以下を割り当てる
       for t in st.session_state["T"]:
         model += xsum(x[i,t] for i in st.session_state["I"]) >= 2
-        model += xsum(x[i,t] for i in st.session_state["I"]) <= jouken[0]
+        model += xsum(x[i,t] for i in st.session_state["I"]) <= 4
     
-      #連続して仕事ができるのは最大3回まで
+      #②連続して仕事ができるのは最大3回まで
       if jouken[3] == 0:
         for i in st.session_state["I"]:
           for t in range(1,m-2):
             model += x[i,t] + x[i,t+1] + x[i,t+2] +x[i,t+3] <= 3
     
-      #希望スロット以外に仕事を割り振らない
+      #③希望スロット以外に仕事を割り振らない
       for i in st.session_state["I"]:
         for t in st.session_state["T"]:
           if c[i,t] == 2 or c[i,t] == 0:
@@ -903,72 +904,86 @@ def part_shift_main():
           # elif c[i,t] == 1:
           #   model += x[i,t] <= 1
     
-      #1回生が仕事を割り当てられた場合、必ず2回生が1人以上同じスロットに入る
+      #④1回生が仕事を割り当てられた場合、必ず2回生が1人以上同じスロットに入る〇
       for t in st.session_state["T"]:
-        model += xsum(x[i,t] for i in range(st.session_state["n2"]+st.session_state["n3"]+1, st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1)) <= xsum(x[i,t] for i in range(1,st.session_state["n2"]+st.session_state["n3"]+1))*3
+        model += xsum(x[i,t] for i in range(st.session_state["n2"]+st.session_state["n3"]+1, st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1)) <= xsum(x[i,t] for i in range(1,st.session_state["n2"]+st.session_state["n3"]+1))
     
-      #講習会に参加していない1回生は最低2回以上仕事をする
+      #⑤講習会に参加していない1回生は最低2回以上仕事をする〇
       for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
-        if xsum(c[i,t] for t in st.session_state["T"]) >= 1:
-          model += xsum(x[i,t] for t in st.session_state["T"]) >= 1
+        if g[i] == 0:
+          model += xsum(x[i,t] for t in st.session_state["T"]) >= 2
     
-      #①出演直後のメンバーに仕事を割り当てない
+      #⑥出演直後のメンバーに仕事を割り当てない
       if jouken[1] == 1:
         for i in st.session_state["I"]:
           for t in range(1,m):
             if c[i,t] == 2:
-              if t != st.session_state["intami"]:
+              if t+1 != st.session_state["intami"]:
                 model += x[i,t+1] == 0
     
     
       #ソフト制約条件
-      #②講習会に参加していない1回生が仕事を割り当てられた場合、必ず2回生が２人以上同じスロットに入る
+      #７講習会に参加していない1回生が仕事を割り当てられた場合、必ず2,3回生が２人以上同じスロットに入る
       for i in range(st.session_state["n2"]+st.session_state["n3"]+1, st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
-        if g[i] == 1:
+        if g[i] == 0:
           for t in st.session_state["T"]:
             model += xsum(x[j,t] for j in range(1,st.session_state["n2"]+st.session_state["n3"]+1)) >= 2 * x[i,t] - w[i,t]
     
-      #③できるだけメンバーは連続して仕事をしない
+      #８できるだけメンバーは連続して仕事をしない
       for i in st.session_state["I"]:
         for t in range(1,m):
           model += x[i,t] + x[i,t+1] <= 1 + v[i,t]
     
-      #④できるだけ出演前のシフトに仕事を割り当てない
+      #９できるだけ出演前のシフトに仕事を割り当てない
       for i in st.session_state["I"]:
         for t in range(1,m):
           if c[i,t+1] == 2:
             model += x[i,t] <= u[i,t]
     
-      #⑤なるべく違う部員と仕事をする
-      if st.session_state["n2"] < st.session_state["n1"]:
-        for i in range(st.session_state["n2"]+1,st.session_state["n2"]+st.session_state["n3"]+1):
-          for j in st.session_state["I"]:
-            for t in st.session_state["T"]:
-              if i != j:
-                model += x[i,t] + x[j,t] >= 2*y[i,j,t]
+      #１０なるべく違う部員と仕事をする
+      for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
+        for j in st.session_state["I"]:
+          if i != j:
+            model += x[i,t] + x[j,t] >= 2*y[i,j,t]
+            model += xsum(y[i,j,t] for t in st.session_state["T"]) >= z[i,j]
+
+      #いったん保留
+      # if st.session_state["n2"] < st.session_state["n1"]:
+      #   for i in range(st.session_state["n2"]+1,st.session_state["n2"]+st.session_state["n3"]+1):
+      #     for j in st.session_state["I"]:
+      #       for t in st.session_state["T"]:
+      #         if i != j:
+      #           model += x[i,t] + x[j,t] >= 2*y[i,j,t]
     
-        for i in range(st.session_state["n2"]+1,st.session_state["n2"]+st.session_state["n3"]+1):
-          for j in st.session_state["I"]:
-            if i != j:
-              model += xsum(y[i,j,t] for t in st.session_state["T"]) >= z[i,j] - s[i,j]
-      elif st.session_state["n1"] <= st.session_state["n2"]:
-        for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
-          for j in st.session_state["I"]:
-            for t in st.session_state["T"]:
-              if i != j:
-                model += x[i,t] + x[j,t] >= 2*y[i,j,t]
+      #   for i in range(st.session_state["n2"]+1,st.session_state["n2"]+st.session_state["n3"]+1):
+      #     for j in st.session_state["I"]:
+      #       if i != j:
+      #         model += xsum(y[i,j,t] for t in st.session_state["T"]) >= z[i,j] - s[i,j]
+      # elif st.session_state["n1"] <= st.session_state["n2"]:
+      #   for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
+      #     for j in st.session_state["I"]:
+      #       for t in st.session_state["T"]:
+      #         if i != j:
+      #           model += x[i,t] + x[j,t] >= 2*y[i,j,t]
     
-        for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
-          for j in st.session_state["I"]:
-            if i != j:
-              model += xsum(y[i,j,t] for t in st.session_state["T"]) >= z[i,j] - s[i,j]
+      #   for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1):
+      #     for j in st.session_state["I"]:
+      #       if i != j:
+      #         model += xsum(y[i,j,t] for t in st.session_state["T"]) >= z[i,j] - s[i,j]
     
       #最適化
       #目的関数の設定
-      model.objective = minimize(jouken[2]*xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"]) + jouken[3]*xsum(v[i,t] for i in st.session_state["I"] for t in range(1,m)) + jouken[4]*xsum(u[i,t] for i in st.session_state["I"] for t in range(1,m))
-      -jouken[5]*xsum(z[i,j] for i in st.session_state["I"] for j in st.session_state["I"])
-      + jouken[5]*1.1*xsum(s[i,j] for i in st.session_state["I"] for j in st.session_state["I"])
-      +xsum(x[i,t] for i in range(st.session_state["n3"]+1,st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"]) +5*xsum(x[i,t] for i in range(1,st.session_state["n3"]+1) for t in st.session_state["T"]))
+      # model.objective = minimize(jouken[2]*xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"]) + jouken[3]*xsum(v[i,t] for i in st.session_state["I"] for t in range(1,m)) + jouken[4]*xsum(u[i,t] for i in st.session_state["I"] for t in range(1,m))
+      # -jouken[5]*xsum(z[i,j] for i in st.session_state["I"] for j in st.session_state["I"])
+      # + jouken[5]*1.1*xsum(s[i,j] for i in st.session_state["I"] for j in st.session_state["I"])
+      # +xsum(x[i,t] for i in range(st.session_state["n3"]+1,st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"]) +5*xsum(x[i,t] for i in range(1,st.session_state["n3"]+1) for t in st.session_state["T"]))
+
+      model.objective = minimize(-10*xsum(x[i,t] for i range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
+      -xsum(x[i,t] for i in range(st.session_state["n3"]+1,1st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
+      +xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"])
+      +xsum(v[i,t] + u[i,t] for i in st.session_state["I"] for t in range(1,m))
+      -xsum(z[i,j] for i in st.session_state["I"] for j in st.session_state["I"])
+
 
 
 
