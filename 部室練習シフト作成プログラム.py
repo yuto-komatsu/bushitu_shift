@@ -1186,8 +1186,8 @@ def part_shift_main():
     
       #書式設定
       font = Font(size=18,bold=True)
-      for i in st.session_state["I"]:
-        for t in range(1,m+2):
+      for i in range(1,50):
+        for t in range(1,50):
           sheet.cell(row=3+i, column=5+t).font = font
           sheet.cell(row=3+i, column=5+t).alignment = Alignment(horizontal = 'center', vertical = 'center')
 
