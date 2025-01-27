@@ -994,16 +994,26 @@ def part_shift_main():
       book2.create_sheet(index=-1, title=st.session_state["Part"])
       sheet = book2[st.session_state["Part"]]
       
+      # if status == OptimizationStatus.OPTIMAL:
+      #   st.header('４．実行結果')
+      #   st.session_state["x2"] = {}
+      #   st.write('最適値('+ st.session_state["Part"] +') =', model.objective_value)
+      #   for i in st.session_state["I"]:
+      #     for t in st.session_state["T"]:
+      #       st.session_state["x2"][f"{i}_{t}"] = x[i, t].x
+      #       if x[i, t].x > 0:
+      #         sheet.cell(row=3+i, column=5+t).value = "〇"
+              
       if status == OptimizationStatus.OPTIMAL:
         st.header('４．実行結果')
-        st.session_state["x2"] = {}
         st.write('最適値('+ st.session_state["Part"] +') =', model.objective_value)
         for i in st.session_state["I"]:
           for t in st.session_state["T"]:
-            st.session_state["x2"][f"{i}_{t}"] = x[i, t].x
             if x[i, t].x > 0:
-              sheet.cell(row=3+i, column=5+t).value = "〇"
-
+              if t <= st.session_state["intami"]:
+                sheet.cell(row=3+i, column=5+t+1).value = "〇"
+              elif t > st.session_state["intami"]:
+                sheet.cell(row=3+i, column=5+t+1).value = "〇"
   
       #インタミ要素の追加
       T=[]
