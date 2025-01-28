@@ -223,18 +223,18 @@ def kinshi_select():
   # # 日付の差分を含む辞書を表示
   # st.write('日付と今日との差分（日数）の辞書:', st.session_state["kinshi"])
 
-def week_judge(start_day, vacation):
-  # 平日と土日祝の判別
-  current_day = start_day
-  for i in range(1, st.session_state["day_sum"] + 1):
-    if not vacation:
-      if jpholiday.is_holiday(current_day) or current_day.weekday() in [5, 6]:
-        week[i] = 1  # 祝日または土日
-      else:
-        week[i] = 0  # 平日
-    else:
-      week[i] = 1  # 長期休暇中
-    current_day += datetime.timedelta(days=1)
+# def week_judge(start_day, vacation):
+#   # 平日と土日祝の判別
+#   current_day = start_day
+#   for i in range(1, st.session_state["day_sum"] + 1):
+#     if not vacation:
+#       if jpholiday.is_holiday(current_day) or current_day.weekday() in [5, 6]:
+#         week[i] = 1  # 祝日または土日
+#       else:
+#         week[i] = 0  # 平日
+#     else:
+#       week[i] = 1  # 長期休暇中
+#     current_day += datetime.timedelta(days=1)
 
 
 
