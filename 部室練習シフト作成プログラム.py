@@ -426,7 +426,7 @@ def practice_shift_main():
   
       st.session_state["day_sum"] = (st.session_state["end_day"] - st.session_state["start_day"] + datetime.timedelta(days=1)).days
       st.session_state["max_practice"] = option_select()
-      vacation = st.toggle("長期休暇期間")
+      # vacation = st.toggle("長期休暇期間")
       d = st.toggle("部室利用禁止日あり")
       if d == True:
         kinshi_select()
