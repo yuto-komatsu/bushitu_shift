@@ -430,7 +430,7 @@ def practice_shift_main():
       d = st.toggle("部室利用禁止日あり")
       if d == True:
         kinshi_select()
-      week_judge(st.session_state["start_day"], vacation)
+      # week_judge(st.session_state["start_day"], vacation)
       
       if st.button("入力完了"):
         st.session_state["3pagenext"] = True
