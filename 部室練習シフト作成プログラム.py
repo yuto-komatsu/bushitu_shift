@@ -780,19 +780,19 @@ def part_shift_main():
       st.session_state["book"] = load_workbook(st.session_state["kibou_file2"])
 
       sheet = st.session_state["book"][st.session_state["Part"]]
-      j = [0,0,0,0]
+      j = {}
       if st.session_state["Part"] == "ボーカル":
-        j=[1,0,1,1]
+        j = {0:1,1:0,2:1,3:1}
       elif st.session_state["Part"] == "ギター":
-        j=[1,0,1,1]
+        j = {0:1,1:0,2:1,3:1}
       elif st.session_state["Part"] == "ベース":
-        j=[1,0,1,1]
+        j = {0:1,1:0,2:1,3:1}
       elif st.session_state["Part"] == "PA":
-        j=[1,0,1,1]
+        j = {0:1,1:0,2:1,3:1}
       elif st.session_state["Part"] == "照明":
-        j=[1,0,1,1]
+        j = {0:1,1:0,2:1,3:1}
       elif st.session_state["Part"] == "ドラム":
-        j=[1,1,0,0]
+        j = {0:1,1:1,2:0,3:0}
 
       #総バンド数
       m = sheet.cell(row=2, column=3).value
