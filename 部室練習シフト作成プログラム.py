@@ -339,7 +339,7 @@ def result():
         if j == i:
           fill = PatternFill(patternType='solid', fgColor='d3d3d3')
           for t in st.session_state["T"]:
-            sheet.cell(row=t+2, column=i).fill = fill
+            sheet.cell(row=t+2, column=i+2).fill = fill
           
     
       j += 1
