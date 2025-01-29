@@ -338,8 +338,8 @@ def result():
       for i in st.session_state["kinshi"].values():
         if j == i:
           fill = PatternFill(patternType='solid', fgColor='d3d3d3')
-          for t in st.session_state["T"]:
-            sheet.cell(row=t+2, column=i+2).fill = fill
+          for t in range(1, 9):
+            sheet.cell(row=t+1, column=i+2).fill = fill
           
     
       j += 1
