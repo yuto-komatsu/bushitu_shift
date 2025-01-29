@@ -926,7 +926,7 @@ def part_shift_main():
             model += x[i,t] + x[j,t] >= 2*y[i,j,t]
             model += xsum(y[i,j,t] for t in st.session_state["T"]) >= z[i,j]
 
-
+      st.write(j[0])
       model.objective = minimize(-10*xsum(x[i,t] for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
       -5*xsum(x[i,t] for i in range(st.session_state["n3"]+1,st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
       +j[0]*xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"])
