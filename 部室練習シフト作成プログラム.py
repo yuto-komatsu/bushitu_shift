@@ -336,10 +336,11 @@ def result():
   while calc_day <= st.session_state["end_day"]:
       sheet.cell(row=2, column=2 + j).value = str(calc_day.month) + "/" + str(calc_day.day)
       for i in st.session_state["kinshi"]:
+        st.write(i)
         if j == i:
           fill = PatternFill(patternType='solid', fgColor='d3d3d3')
           for t in st.session_state["T"]:
-            sheet.cell(row=t, column=i).fill = fill
+            sheet.cell(row=t+2, column=i).fill = fill
           
     
       j += 1
