@@ -337,7 +337,6 @@ def result():
       sheet.cell(row=2, column=2 + j).value = str(calc_day.month) + "/" + str(calc_day.day)
       for i in st.session_state["kinshi"].values():
         if j == i:
-          st.write(i)
           fill = PatternFill(patternType='solid', fgColor='d3d3d3')
           for t in st.session_state["T"]:
             sheet.cell(row=t+2, column=i).fill = fill
