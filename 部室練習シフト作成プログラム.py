@@ -1126,6 +1126,7 @@ def part_shift_main():
         label="結果をダウンロード",
         data=buffer2,
         file_name="最適化結果.xlsx",
+        key=5,
       mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 
