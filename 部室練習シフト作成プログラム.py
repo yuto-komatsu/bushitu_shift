@@ -770,7 +770,7 @@ def part_shift_main():
       st.caption('シフト希望入力表の読み込みが完了しました。')
       st.caption('実行ボタンを押して最適化を実行してください。')
       
-      if st.button("実行ボタン"):
+      if st.button("実行ボタン",key=11):
         st.session_state["saitekika_button"] = True
       if st.session_state["saitekika_button"]:
         change_page2()
