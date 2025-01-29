@@ -340,6 +340,8 @@ def result():
           fill = PatternFill(patternType='solid', fgColor='d3d3d3')
           for t in range(1, 9):
             sheet.cell(row=t+1, column=i+2).fill = fill
+            sheet.merge_cells(start_row=3, start_column=i, end_row=9, end_column=i)
+
           
     
       j += 1
