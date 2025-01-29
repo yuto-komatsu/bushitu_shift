@@ -784,21 +784,20 @@ def part_shift_main():
       #最適化
       st.session_state["book"] = load_workbook(st.session_state["kibou_file2"])
 
-      jouken=[1,1,1,1,1,1]
       sheet = st.session_state["book"][st.session_state["Part"]]
-      j = [0,0,0,0,0]
+      j = [0,0,0,0]
       if st.session_state["Part"] == "ボーカル":
-        j=[3,0,1,0,1,1]
+        j=[1,0,1,1]
       elif st.session_state["Part"] == "ギター":
-        j=[3,0,1,0,1,1]
+        j=[1,0,1,1]
       elif st.session_state["Part"] == "ベース":
-        j=[3,0,1,0,1,1]
+        j=[1,0,1,1]
       elif st.session_state["Part"] == "PA":
-        j=[4,1,1,0,1,1]
+        j=[1,0,1,1]
       elif st.session_state["Part"] == "照明":
-        j=[4,1,1,0,1,1]
+        j=[1,0,1,1]
       elif st.session_state["Part"] == "ドラム":
-        j=[4,1,1,1,0,0]
+        j=[1,1,0,0]
 
       #総バンド数
       m = sheet.cell(row=2, column=3).value
@@ -935,10 +934,10 @@ def part_shift_main():
 
       model.objective = minimize(-10*xsum(x[i,t] for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
       -5*xsum(x[i,t] for i in range(st.session_state["n3"]+1,st.session_state["n2"]+st.session_state["n3"]+1) for t in st.session_state["T"])
-      +xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"])
-      +xsum(v[i,t] + u[i,t] for i in st.session_state["I"] for t in range(1,m))
-      -10*xsum(z[i,j] for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1) for j in st.session_state["I"])
-      +5*xsum(y[i,j,t] for i in st.session_state["I"] for j in st.session_state["I"] for t in st.session_state["T"]))
+      +j[0]*xsum(w[i,t] for i in st.session_state["I"] for t in st.session_state["T"])
+      +j[1]*xsum(v[i,t] + u[i,t] for i in st.session_state["I"] for t in range(1,m))
+      -10*j[2]*xsum(z[i,j] for i in range(st.session_state["n2"]+st.session_state["n3"]+1,st.session_state["n1"]+st.session_state["n2"]+st.session_state["n3"]+1) for j in st.session_state["I"])
+      +5*j[3]*xsum(y[i,j,t] for i in st.session_state["I"] for j in st.session_state["I"] for t in st.session_state["T"]))
 
       #最適化の実行
       status = model.optimize()
