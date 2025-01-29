@@ -211,31 +211,13 @@ def kinshi_select():
 
   # 追加された日付と今日の日付の差分を辞書に登録（キーを1, 2, 3, ...とする）
   st.session_state["kinshi"] = {int(i + 1): (d - st.session_state["start_day"] + datetime.timedelta(days=1)).days for i, d in enumerate(st.session_state['dates_list'])}
-
+  st.write(st.session_state["kinshi"])
   # 現在の追加済みの日付を表示
   st.write('追加された日付一覧:')
   i = 0
   while i < len(st.session_state['dates_list']):
     st.write(st.session_state['dates_list'][i])
     i += 1
-
-
-  # # 日付の差分を含む辞書を表示
-  # st.write('日付と今日との差分（日数）の辞書:', st.session_state["kinshi"])
-
-# def week_judge(start_day, vacation):
-#   # 平日と土日祝の判別
-#   current_day = start_day
-#   for i in range(1, st.session_state["day_sum"] + 1):
-#     if not vacation:
-#       if jpholiday.is_holiday(current_day) or current_day.weekday() in [5, 6]:
-#         week[i] = 1  # 祝日または土日
-#       else:
-#         week[i] = 0  # 平日
-#     else:
-#       week[i] = 1  # 長期休暇中
-#     current_day += datetime.timedelta(days=1)
-
 
 
 def input_date():
