@@ -758,6 +758,7 @@ def part_shift_main():
         label="ダウンロード",
         data=buffer,
         file_name='シフト希望記入表.xlsx',
+        key=1,
         mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
     st.session_state["kibou_file2"] = st.file_uploader(label="シフト希望をアップロード", type=["xlsx"],key = "パート希望")
