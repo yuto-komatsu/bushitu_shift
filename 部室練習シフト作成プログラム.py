@@ -368,6 +368,9 @@ def result():
   if 'Sheet' in book2.sheetnames:
     book2.remove(book2['Sheet'])
 
+  #幅の自動調整(関数呼び出し)
+  sheet_adjusted_width(sheet)
+
   # sheet_adjusted_width(sheet)
   
   buffer2 = BytesIO()
