@@ -338,7 +338,7 @@ def result():
       for i in st.session_state["kinshi"]:
         if j == i:
           fill = PatternFill(patternType='solid', fgColor='d3d3d3')
-          for t in st.session_state["T"]::
+          for t in st.session_state["T"]:
             sheet.cell(row=t, column=i).fill = fill
           
     
