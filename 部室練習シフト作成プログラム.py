@@ -381,7 +381,7 @@ def practice_shift_main():
   
   
   #ページ１：参加バンド登録
-  uploaded_file_path = 'バンドリスト_テンプレート.xlsx'
+  uploaded_file_path = '部室練習シフトバンド登録用テンプレート.xlsx'
   # ファイルをバイトとして読み込む
   with open(uploaded_file_path, 'rb') as file:
       band_listfile = file.read()
