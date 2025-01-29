@@ -211,7 +211,6 @@ def kinshi_select():
 
   # 追加された日付と今日の日付の差分を辞書に登録（キーを1, 2, 3, ...とする）
   st.session_state["kinshi"] = {int(i + 1): (d - st.session_state["start_day"] + datetime.timedelta(days=1)).days for i, d in enumerate(st.session_state['dates_list'])}
-  st.write(st.session_state["kinshi"])
   # 現在の追加済みの日付を表示
   st.write('追加された日付一覧:')
   i = 0
